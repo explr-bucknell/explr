@@ -39,7 +39,7 @@ export default class LoginOther extends Component {
 
 const styles = StyleSheet.create({
 	container: {
-		flex: 4,
+		flex: 3.5,
 		alignItems: 'center',
 		justifyContent: 'center',
 		marginLeft: MARGIN,

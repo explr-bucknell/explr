@@ -19,7 +19,7 @@ export default class LoginLogo extends Component {
 
 const styles = StyleSheet.create({
 	container: {
-		flex: 3,
+		flex: 2.5,
 		alignItems: 'center',
 		justifyContent: 'center',
 	},

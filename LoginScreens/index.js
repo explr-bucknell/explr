@@ -6,14 +6,13 @@ import Logo from './logo';
 import Buttons from './buttons';
 import LoginLogo from './Login/loginLogo';
 import LoginForm from './Login/loginForm';
-import LoginForget from './Login/loginForget';
-import LoginSubmit from './Login/loginSubmit';
 import LoginOther from './Login/loginOther';
 import SignupName from './SignUp/signupName';
 import SignupEmail from './SignUp/signupEmail';
 import SignupPwd from './SignUp/signupPwd';
 import SignupConfirm from './SignUp/signupConfirm';
 import SignupDone from './SignUp/signupDone';
+import Main from '../main.js';
 import { primary, white } from '../utils/colors';
 
 const DEVICE_WIDTH = Dimensions.get('window').width;
@@ -67,11 +66,13 @@ const SignUpComplete = ( {navigation} ) => (
 const LoginScreen = ( {navigation} ) => (
 	<View style={{flex: 1, backgroundColor: white}}>
 		<LoginLogo />
-		<LoginForm />
-		<LoginForget nav={navigation}/>
-		<LoginSubmit />
+		<LoginForm nav={navigation}/>
 		<LoginOther />
 	</View>
+);
+
+const MainPage = () => (
+	<Main />
 );
 
 const SignUpNavOpts = {
@@ -123,6 +124,9 @@ const LoginNavigator = StackNavigator({
 			},
 			headerTintColor: primary,
     	},
+  	},
+  	MainPage: {
+  		screen: MainPage,
   	}
 }, );
 

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 import Dimensions from 'Dimensions';
 import { Container, Header, Content, Form, Item, Input, Label } from 'native-base';
+import firebase from 'firebase';
 import { primary, secondary, white, gray } from '../../utils/colors';
 
 const DEVICE_WIDTH = Dimensions.get('window').width;
@@ -15,51 +16,92 @@ const BUTTON_WIDTH = DEVICE_WIDTH * 0.75;
 const BUTTON_HEIGHT = BUTTON_WIDTH / 7;
 const BUTTON_RADIUS = BUTTON_HEIGHT / 2;
 
+const WIDTH = DEVICE_WIDTH * 0.75;
+const HEIGHT = WIDTH / 7;
+const RADIUS = HEIGHT / 2;
+
 export default class LoginForm extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			validEmail: false,
-			validPwd: false,
+			email: "",
+			pwd: "",
 		};
 	}
+
+	updateEmail(email) {
+		this.setState({
+			email: email,
+		});
+	}
+
+	updatePwd(pwd) {
+		this.setState({
+			pwd: pwd,
+		});
+	}
+
+	loginSubmit() {
+		var email = this.state.email;
+		var password = this.state.pwd;
+		var navigate = this.props.nav.navigate;
+
+		firebase.auth().signInWithEmailAndPassword(email, password).then(function() {
+			navigate("MainPage");
+		}).catch(function(error) {
+			// Handle Errors here.
+			var errorCode = error.code;
+			var errorMessage = error.message;
+		});
+	}
+
 	render() {
 		return (
-			<Container style={styles.container}>
-				<Content scrollEnabled={false} style={styles.test}>
-					<Form>
-						<Item stackedLabel style={styles.item}>
-							<Label style={styles.label}>USERNAME / EMAIL</Label>
-							<Input autoCapitalize='none' autoCorrect={false} keyboardType={'email-address'} keyboardAppearance={'light'} style={styles.input}/>
-						</Item>
-						<Item stackedLabel style={styles.item}>
-							<Label style={styles.label}>PASSWORD</Label>
-							<Input secureTextEntry={true} autoCapitalize='none' keyboardAppearance={'light'} style={styles.input}/>
-						</Item>
-					</Form>
-				</Content>
-			</Container>
+			<View style={styles.container}>
+				<Container style={styles.container1}>
+					<Content scrollEnabled={false} style={styles.test}>
+						<Form>
+							<Item stackedLabel style={styles.item}>
+								<Label style={styles.label}>USERNAME / EMAIL</Label>
+								<Input onChangeText={(text) => this.updateEmail(text)} autoCapitalize='none' autoCorrect={false} keyboardType={'email-address'} keyboardAppearance={'light'} style={styles.input}/>
+							</Item>
+							<Item stackedLabel style={styles.item}>
+								<Label style={styles.label}>PASSWORD</Label>
+								<Input onChangeText={(text) => this.updatePwd(text)} secureTextEntry={true} autoCapitalize='none' keyboardAppearance={'light'} style={styles.input}/>
+							</Item>
+						</Form>
+					</Content>
+				</Container>
+				<View style={styles.container2}>
+					<TouchableOpacity><Text style={styles.text}>Forgot Password?</Text></TouchableOpacity>
+					<TouchableOpacity onPress={() => {this.props.nav.navigate('SignUpName')}}><Text style={styles.text}>New Here? Sign Up</Text></TouchableOpacity>
+				</View>
+				<View style={styles.container3}>
+	    			<TouchableOpacity style={styles.button} onPress={() => {this.loginSubmit()}}>
+				    	<Text style={styles.buttonText}>LOGIN</Text>
+				    </TouchableOpacity>
+				</View>
+			</View>
 		);
 	}
 }
 
 const styles = StyleSheet.create({
 	container: {
+		flex: 8,
+	},
+	container1: {
 		marginTop: SKIP,
 		marginLeft: MARGIN,
 		marginRight: MARGIN,
 		justifyContent:'center',
-		flex: 4.5,
+		flex: 4.7,
 	},
 	label: {
 		color: primary,
 		fontSize: 12,
 		fontWeight: "700",
 		marginBottom: DEVICE_HEIGHT * 0.01,
-	},
-	test: {
-		marginBottom: 0,
-		paddingBottom: 0,
 	},
 	input: {
 		height: INPUT_HEIGHT,
@@ -70,5 +112,35 @@ const styles = StyleSheet.create({
 		paddingLeft: 0,
 		marginLeft: 0,
 		paddingBottom: 0,
+	},
+	container2: {
+		flex: 0.8,
+		marginLeft: 20,
+		marginRight: 20,
+		flexDirection: 'row',
+		justifyContent: 'space-around',
+	},
+	text: {
+		color: gray,
+		backgroundColor: 'transparent',
+		fontSize: 12,
+		fontWeight: '500',
+	},
+	container3: {
+		flex: 2,
+		alignItems: 'center',
+		justifyContent: 'center',
+	},
+	button: {
+		width: WIDTH,
+		height: HEIGHT,
+		alignItems: 'center',
+		justifyContent: 'center',
+		backgroundColor: primary,
+		borderRadius: RADIUS,
+	},
+	buttonText: {
+		color: white,
+		fontWeight: 'bold',
 	},
 });

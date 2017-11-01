@@ -4,6 +4,7 @@ import Dimensions from 'Dimensions';
 import { FontAwesome } from '@expo/vector-icons';
 import { Container, Header, Content, Form, Item, Input, Label } from 'native-base';
 import { StackNavigator } from 'react-navigation';
+import firebase from 'firebase';
 import { primary, white, transparentWhite } from '../../utils/colors';
 
 const DEVICE_WIDTH = Dimensions.get('window').width;
@@ -71,8 +72,34 @@ export default class SignupPwd extends Component {
 		*/
 	}
 
-	getUserData() {
-		return {firstName: this.state.firstName, lastName: this.state.lastName, email: this.state.email, pwd: this.state.pwd};
+	async createAccount() {
+		var navigate = this.props.nav.navigate;
+		var email = this.state.email;
+		var displayName = this.state.firstName + " " + this.state.lastName;
+
+		firebase.auth().createUserWithEmailAndPassword(this.state.email, this.state.pwd).then(function() {
+
+			var user = firebase.auth().currentUser;
+
+			user.updateProfile({
+				displayName: displayName,
+			}).then(function() {
+				user.sendEmailVerification().then(function() {
+				  	// Email sent.
+				  	navigate('SignUpConfirm', {email: email});
+				}).catch(function(error) {
+				  	// An error happened.
+				  	navigate('SignUpConfirm', {email: error.message});
+				});
+			}, function(error) {
+				// An error happened.
+			});
+
+		}).catch(function(error) {
+			// Handle Errors here.
+			var errorCode = error.code;
+			var errorMessage = error.message;
+		});
 	}
 
 	render() {
@@ -85,7 +112,7 @@ export default class SignupPwd extends Component {
 							<Input onChangeText={(text) => this.checkPwd(text)} secureTextEntry={true} autoCapitalize='none' autoCorrect={false} keyboardAppearance={'light'} style={styles.input}/>
 						</Item>
 					</Form>
-					<TouchableOpacity disabled={this.state.disabled} style={this.state.disabled ? [styles.button, styles.disabled] : styles.button} onPress={() => {this.props.nav.navigate('SignUpConfirm', this.getUserData())}}>
+					<TouchableOpacity disabled={this.state.disabled} style={this.state.disabled ? [styles.button, styles.disabled] : styles.button} onPress={() => {this.createAccount()}}>
 				    	<FontAwesome name="angle-right" style={styles.next}/>
 				    </TouchableOpacity>
 				</Content>

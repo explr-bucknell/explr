@@ -3,6 +3,7 @@ import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 import Dimensions from 'Dimensions';
 import { FontAwesome } from '@expo/vector-icons';
 import { StackNavigator } from 'react-navigation';
+import firebase from 'firebase';
 import { primary, white } from '../../utils/colors';
 
 const DEVICE_WIDTH = Dimensions.get('window').width;
@@ -18,12 +19,26 @@ export default class SignupConfirm extends Component {
 		super(props);
     	this.state = {
     		disabled: false,
-    		firstName: this.props.nav.state.params.firstName,
-    		lastName: this.props.nav.state.params.lastName,
     		email: this.props.nav.state.params.email,
-    		pwd: this.props.nav.state.params.pwd,
     	};
 	}
+
+	componentDidMount() {
+        var navigate = this.props.nav.navigate;
+        var intervalID = setInterval(function(){
+        	var user = firebase.auth().currentUser;
+        	if (!user) {
+                navigate('Start');
+            } else {
+            	user.reload();
+            	if (user.emailVerified) {
+    				clearInterval(intervalID);
+					navigate("SignUpDone");
+				}
+            }
+        }, 2000);
+    }
+
 	render() {
 		return (
 			<View style={styles.container}>
@@ -33,7 +48,7 @@ export default class SignupConfirm extends Component {
 				<Text style={styles.emailText}>{this.state.email}</Text>
 				<Text style={styles.text}>Check your email and click on the confirmation link to continue.</Text>
 				<View style={styles.bottom}>
-					<TouchableOpacity disabled={this.state.disabled} onPress={() => {this.props.nav.navigate("SignUpDone")}}>
+					<TouchableOpacity disabled={this.state.disabled} onPress={() => {null}}>
 						<Text style={styles.resendText}>Resend email</Text>
 			    	</TouchableOpacity>
 				</View>
