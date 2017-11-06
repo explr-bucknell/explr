@@ -127,6 +127,9 @@ const LoginNavigator = StackNavigator({
   	},
   	MainPage: {
   		screen: MainPage,
+  		navigationOptions: {
+      		header: null,
+    	},
   	}
 }, );
 
