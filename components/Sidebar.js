@@ -1,4 +1,4 @@
-import React from 'react';
+import React from 'react'
 import { StyleSheet, Text, View, Animated, Easing } from 'react-native';
 
 export default class Sidebar extends React.Component {
@@ -18,7 +18,7 @@ export default class Sidebar extends React.Component {
         easing: Easing.ease,
         duration: 200,
       }
-    ).start();
+    ).start()
   }
 
   hideSelf () {
@@ -29,7 +29,7 @@ export default class Sidebar extends React.Component {
         easing: Easing.ease,
         duration: 200,
       }
-    ).start();
+    ).start()
   }
 
   render () {

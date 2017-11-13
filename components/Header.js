@@ -1,31 +1,22 @@
-import React, { Component } from 'react';
-import {
-	AppRegistry,
-	StyleSheet,
-	Text,
-	View,
-	Image,
-	Animated
-} from 'react-native';
+import React, { Component } from 'react'
+import { AppRegistry, StyleSheet, Text, View, Image, Animated } from 'react-native'
 
-const HEADER_MAX_HEIGHT = 300;
-const HEADER_MIN_HEIGHT = 73;
-const HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
+const HEADER_MAX_HEIGHT = 300
+const HEADER_MIN_HEIGHT = 73
+const HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT
 
 export default class Header extends Component {
   constructor(props) {
-    super(props);
+    super(props)
 
     this.state = {
       scrollY: new Animated.Value(0),
-    };
+    }
   }
 
-	render() {
-		return (
-
-			<View style={styles.header}>
-
+  render() {
+    return (
+      <View style={styles.header}>
 				<View style={styles.profilePicHolder}>
 					<Image style={styles.profilePic} source={require('../assets/images/profilePic.png')} />
 				</View>
