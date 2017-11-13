@@ -59,7 +59,7 @@ const EmailConfirmation = ( {navigation} ) => (
 
 const SignUpComplete = ( {navigation} ) => (
 	<View style={styles.container}>
-		<SignupDone />
+		<SignupDone nav={navigation}/>
 	</View>
 );
 
@@ -67,7 +67,7 @@ const LoginScreen = ( {navigation} ) => (
 	<View style={{flex: 1, backgroundColor: white}}>
 		<LoginLogo />
 		<LoginForm nav={navigation}/>
-		<LoginOther />
+		<LoginOther nav={navigation}/>
 	</View>
 );
 

@@ -3,6 +3,7 @@ import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 import Dimensions from 'Dimensions';
 import { FontAwesome } from '@expo/vector-icons';
 import { StackNavigator } from 'react-navigation';
+import firebase from 'firebase';
 import { primary, white } from '../../utils/colors';
 
 const DEVICE_WIDTH = Dimensions.get('window').width;
@@ -25,6 +26,20 @@ export default class SignupDone extends Component {
     		disabled: false,
     	};
 	}
+
+	signedUp() {
+		var navigate = this.props.nav.navigate;
+		var user = firebase.auth().currentUser;
+
+		if (user) {
+			// User is signed in.
+			navigate("MainPage");
+		} else {
+			// No user is signed in.
+			navigate("Start");
+		}
+	}
+
 	render() {
 		return (
 			<View style={styles.container}>
@@ -34,7 +49,7 @@ export default class SignupDone extends Component {
 				<Text style={styles.text}>Your account is ready to use</Text>
 				<FontAwesome name="check" style={styles.icon}/>
 				<View style={styles.buttonWrapper}>
-					<TouchableOpacity disabled={this.state.disabled} onPress={() => {null}} style={styles.button}>
+					<TouchableOpacity disabled={this.state.disabled} onPress={() => this.signedUp()} style={styles.button}>
 						<Text style={styles.buttonText}>Start your journey!</Text>
 				    </TouchableOpacity>
 			    </View>
