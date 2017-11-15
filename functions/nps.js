@@ -13,8 +13,9 @@ admin.initializeApp({
 var db = admin.database();
 var ref = db.ref("national_parks");
 
-request('https://developer.nps.gov/api/v1/parks?api_key=ixWMRYRSzcQBgLHaFf2vZwjx3SWRSGQBsiE1CRab', { json: true }, (err, res, body) => {
+request('https://developer.nps.gov/api/v1/parks?api_key=ixWMRYRSzcQBgLHaFf2vZwjx3SWRSGQBsiE1CRab&limit=500', { json: true }, (err, res, body) => {
 	if (err) { return console.log(err); }
+	console.log(body.data.length);
 	extractNPSData(body.data, ref);
 });
 
