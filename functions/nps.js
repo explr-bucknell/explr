@@ -1,4 +1,5 @@
 const request = require('request');
+const async = require('async');
 var admin = require("firebase-admin");
 
 admin.initializeApp({
@@ -11,27 +12,87 @@ admin.initializeApp({
 });
 
 var db = admin.database();
-var ref = db.ref("national_parks");
+var npRef = db.ref("national_parks");
+var nmRef = db.ref("national_monuments");
 
-request('https://developer.nps.gov/api/v1/parks?api_key=ixWMRYRSzcQBgLHaFf2vZwjx3SWRSGQBsiE1CRab&limit=500', { json: true }, (err, res, body) => {
-	if (err) { return console.log(err); }
-	console.log(body.data.length);
-	extractNPSData(body.data, ref);
+var startNum = 1;
+var stop = false;
+
+async.whilst(function () {
+ 	return !stop;
+},
+function (next) {
+	requestURL = 'https://developer.nps.gov/api/v1/parks?api_key=ixWMRYRSzcQBgLHaFf2vZwjx3SWRSGQBsiE1CRab&fields=fullName,parkCode,latLong,designation,description,images&excludeDefaultFields=1&limit=100';
+	requestURL += '&start=' + startNum.toString();
+	request(requestURL, { json: true }, function (error, response, body) {
+		if (!error && response.statusCode == 200) {
+			console.log(body.data.length);
+		  	if (body.data.length < 100) {
+				stop = true;
+			}
+			startNum += 100;
+			extractNPSData(body.data, npRef, nmRef);
+		}
+		else {
+			return;
+		}
+		next();
+	});
+},
+function (err) {
+  // All things are done!
 });
 
-function extractNPSData(rawData, dbRef) {
+/*
+while (!stop) {
+	requestURL = 'https://developer.nps.gov/api/v1/parks?api_key=ixWMRYRSzcQBgLHaFf2vZwjx3SWRSGQBsiE1CRab&fields=fullName,parkCode,latLong,designation&excludeDefaultFields=1&limit=100';
+	requestURL += '&start=' + startNum.toString();
+	request('https://developer.nps.gov/api/v1/parks?api_key=ixWMRYRSzcQBgLHaFf2vZwjx3SWRSGQBsiE1CRab&limit=100', { json: true }, (err, res, body) => {
+		if (err) { return console.log(err); }
+		console.log(body.data.length);
+		if (body.data.length < 100) {
+			stop = true;
+		}
+		startNum += 100;
+		extractNPSData(body.data, ref);
+	});
+}
+*/
+
+function extractNPSData(rawData, npRef, nmRef) {
 	for (i = 0; i < rawData.length; i++) {
 		curr = {}
+		designation = rawData[i].designation;
+
+		myRef = null;
+		if (designation.includes("National Park")) {
+			myRef = npRef;
+		} else if (designation.includes("National Monument")) {
+			myRef = nmRef;
+		}
+
 		code = rawData[i].parkCode;
 		curr.name = rawData[i].fullName;
+		curr.description = rawData[i].description;
+		if (rawData[i].images[0]) {
+			curr.image = rawData[i].images[0].url;
+		} else {
+			curr.image = null;
+		}
+		
 		latlong = rawData[i].latLong;
+
 		if (latlong == "") {
 			continue;
 		}
+
 		latlong = extractLatLong(latlong);
 		curr.lat = latlong[0];
 		curr.long = latlong[1];
-		dbRef.child(code).set(curr);
+
+		if (myRef) {
+			myRef.child(code).set(curr);
+		}
 	}
 	return;
 }
