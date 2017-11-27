@@ -25,6 +25,12 @@ export default class Toolbar extends React.Component {
     })
   }
 
+  toggleSearchBar () {
+    this.setState({
+      searchBarShowing: this.state.searchBarShowing ? false : true
+    })
+  }
+
   render () {
     return (
       <View style={styles.toolbar}>
@@ -34,7 +40,7 @@ export default class Toolbar extends React.Component {
             size={30}
             color="white"
             backgroundColor="transparent"
-            onPress={this.props.toggleNav}
+            onPress={this.toggleSearchBar.bind(this)}
           />
         </View>
         <View style={styles.header}>

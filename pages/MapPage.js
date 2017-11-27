@@ -12,6 +12,7 @@ import MapView from 'react-native-maps' // eslint-disable-line no-unused-vars
 import Sidebar from '../components/Sidebar' // eslint-disable-line no-unused-vars
 import Toolbar from '../components/Toolbar' // eslint-disable-line no-unused-vars
 import MapMarkerCallout from '../components/MapMarkerCallout'
+import { getLocations } from '../network/Requests'
 
 export default class MapPage extends React.Component {
   constructor (props) {
@@ -24,53 +25,13 @@ export default class MapPage extends React.Component {
         latitudeDelta: 0.0922,
         longitudeDelta: 0.0421,
       },
-      markers: [
-        Bald_Eagle = {
-          latlng: {
-            latitude: 41.0328,
-            longitude: -77.6499,
-          },
-          title: 'Bald Eagle',
-          description: 'Lovely state park',
-          image: 'https://www.naturallyamazing.com/americasparks/490.jpg'
-        },
-        Milton = {
-          latlng: {
-            latitude: 41.0182,
-            longitude: -76.8612
-          },
-          title: 'Milton',
-          description: 'Beautiful state park',
-          image: 'https://farm5.staticflickr.com/4243/34457148450_9b1b0dcdbf.jpg'
-        },
-        Hawk_Mountain = {
-          latlng: {
-            latitude: 40.6456,
-            longitude: -75.9799
-          },
-          title: 'Hawk Mountain',
-          description: 'Gorgeous state park',
-          image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Hawk_Mountain_Stannik.jpg/1200px-Hawk_Mountain_Stannik.jpg'
-        },
-        Hershey_Park = {
-          latlng: {
-            latitude: 40.2888,
-            longitude: -76.6547
-          },
-          title: 'Hershey Park',
-          description: 'Rowdy state park',
-          image: 'https://upload.wikimedia.org/wikipedia/en/d/df/Hershey_Park_-_The_Boardwalk.JPG'
-        },
-        RBWinter_Park = {
-          latlng: {
-            latitude: 40.9912,
-            longitude: -77.1920
-          },
-          title: 'R.B. Winter State Park',
-          description: 'Weird state park',
-          image: 'https://media-cdn.tripadvisor.com/media/photo-s/07/cb/66/ad/the-dam-at-rb-winter.jpg'
-        },
-      ]
+      locations: {},
+      locationsLoaded: false,
+      locationTypes: [
+        'national_monuments',
+        'national_parks'
+      ],
+      sideBarMoveAnim: new Animated.Value(-200),  // Initial value for left pos: -200
     }
   }
 
@@ -78,30 +39,65 @@ export default class MapPage extends React.Component {
     this.setState({ region })
   }
 
+  componentDidMount () {
+    let locations = this.state.locations
+    this.state.locationTypes.forEach((locationType) => (
+      getLocations (locationType)
+        .then((data) => {
+          locations[locationType] = data
+          this.setState({
+            locations: locations
+          })
+        })
+    ))
+
+    this.setState({
+      locationsLoaded: true
+    })
+  }
+
   toggleSideBar () {
+    console.log('toggling')
     if (!this.state.sideBarShowing) {
-      this.sidebar.displaySelf()
+      console.log('gonna display')
+      this.displaySidebar.bind(this)
     } else {
-      this.sidebar.hideSelf()
+      this.hideSidebar.bind(this)
     }
     this.setState({
       sideBarShowing: !this.state.sideBarShowing
     })
   }
 
+  displaySidebar () {
+    console.log('displaying')
+    Animated.timing(
+      this.state.sideBarMoveAnim,
+      {
+        toValue: 0,
+        easing: Easing.ease,
+        duration: 500,
+      }
+    ).start()
+  }
+
+  hideSidebar () {
+    console.log('hiding')
+    Animated.timing(
+      this.state.sideBarMoveAnim,
+      {
+        toValue: -200,
+        easing: Easing.ease,
+        duration: 500,
+      }
+    ).start()
+  }
+
   hideBarElements () {
-    if (this.state.sideBarShowing) {
-      this.setState({
-        sideBarShowing: false
-      })
-      this.sidebar.hideSelf()
-    }
-    if (this.toolbar.state.searchBarShowing) {
-      this.toolbar.hideSearchBar()
-    }
   }
 
   render() {
+    let locations = this.state.locations
     return (
       <View style={styles.container}>
         <MapView
@@ -110,29 +106,34 @@ export default class MapPage extends React.Component {
           onRegionChange={this.onRegionChange.bind(this)}
           onPress={this.hideBarElements.bind(this)}
         >
-          { this.state.markers.map((marker, index) => (
-            <MapView.Marker
-              key={index}
-              coordinate={marker.latlng}
-              pinColor='green'
-            >
-              <MapView.Callout>
-                <MapMarkerCallout
-                  title={marker.title}
-                  description={marker.description}
-                  imageUrl={marker.image}
-                />
-              </MapView.Callout>
-            </MapView.Marker>
-          )) }
+          { Object.keys(locations).length > 0 &&
+            Object.keys(locations).map((locationType) =>
+              Object.keys(locations[locationType]).map((locationName, index) =>
+                <MapView.Marker
+                  key={index}
+                  coordinate={{
+                    latitude: locations[locationType][locationName].lat,
+                    longitude: locations[locationType][locationName].long
+                  }}
+                  pinColor={locationType === 'national_parks' ? 'green' : 'blue'}
+                >
+                  <MapView.Callout>
+                    <MapMarkerCallout
+                      title={locations[locationType][locationName].name}
+                      description='asdfasdf'
+                      imageUrl='https://www.naturallyamazing.com/americasparks/490.jpg'
+                    />
+                  </MapView.Callout>
+                </MapView.Marker>
+              )
+            )
+          }
         </MapView>
         <Toolbar
           toggleNav={this.toggleSideBar.bind(this)}
           ref={instance => { this.toolbar = instance }}
         />
-        <Sidebar
-          ref={instance => { this.sidebar = instance }}
-        />
+        <Animated.View style={[styles.sidebar, {left: this.state.sideBarMoveAnim}]} />
       </View>
     )
   }
@@ -151,5 +152,14 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0
-  }
+  },
+  sidebar: {
+    position: 'absolute',
+    top: 60,
+    height: '100%',
+    width: 200,
+    backgroundColor: 'lightslategrey',
+    display: 'flex',
+    flexDirection: 'column',
+  },
 })

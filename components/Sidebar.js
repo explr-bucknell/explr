@@ -1,5 +1,5 @@
 import React from 'react'
-import { StyleSheet, Text, View, Animated, Easing } from 'react-native';
+import { StyleSheet, Text, View, Animated, Easing } from 'react-native'
 
 export default class Sidebar extends React.Component {
 
@@ -11,6 +11,7 @@ export default class Sidebar extends React.Component {
   }
 
   displaySelf () {
+    console.log('displaying')
     Animated.timing(
       this.state.moveAnim,
       {
@@ -22,6 +23,7 @@ export default class Sidebar extends React.Component {
   }
 
   hideSelf () {
+    console.log('hiding')
     Animated.timing(
       this.state.moveAnim,
       {
