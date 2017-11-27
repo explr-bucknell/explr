@@ -18,7 +18,6 @@ export default class MapPage extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
-      sideBarShowing: false,
       region: {
         latitude: 40.9549774,
         longitude: -76.8813942,
@@ -31,7 +30,7 @@ export default class MapPage extends React.Component {
         'national_monuments',
         'national_parks'
       ],
-      sideBarMoveAnim: new Animated.Value(-200),  // Initial value for left pos: -200
+      searching: false
     }
   }
 
@@ -56,44 +55,12 @@ export default class MapPage extends React.Component {
     })
   }
 
-  toggleSideBar () {
-    console.log('toggling')
-    if (!this.state.sideBarShowing) {
-      console.log('gonna display')
-      this.displaySidebar.bind(this)
-    } else {
-      this.hideSidebar.bind(this)
-    }
-    this.setState({
-      sideBarShowing: !this.state.sideBarShowing
-    })
+  handleSearchChange (text) {
+    console.log(text)
   }
 
-  displaySidebar () {
-    console.log('displaying')
-    Animated.timing(
-      this.state.sideBarMoveAnim,
-      {
-        toValue: 0,
-        easing: Easing.ease,
-        duration: 500,
-      }
-    ).start()
-  }
-
-  hideSidebar () {
-    console.log('hiding')
-    Animated.timing(
-      this.state.sideBarMoveAnim,
-      {
-        toValue: -200,
-        easing: Easing.ease,
-        duration: 500,
-      }
-    ).start()
-  }
-
-  hideBarElements () {
+  hideSearchBar () {
+    this.toolbar.hideSearchBar()
   }
 
   render() {
@@ -104,7 +71,7 @@ export default class MapPage extends React.Component {
           style={styles.map}
           initialRegion={this.state.region}
           onRegionChange={this.onRegionChange.bind(this)}
-          onPress={this.hideBarElements.bind(this)}
+          onPress={this.hideSearchBar.bind(this)}
         >
           { Object.keys(locations).length > 0 &&
             Object.keys(locations).map((locationType) =>
@@ -130,10 +97,9 @@ export default class MapPage extends React.Component {
           }
         </MapView>
         <Toolbar
-          toggleNav={this.toggleSideBar.bind(this)}
-          ref={instance => { this.toolbar = instance }}
+          searchChange={(text) => this.handleSearchChange(text)}
+          ref={(instance) => this.toolbar = instance}
         />
-        <Animated.View style={[styles.sidebar, {left: this.state.sideBarMoveAnim}]} />
       </View>
     )
   }
