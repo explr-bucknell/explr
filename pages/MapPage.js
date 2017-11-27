@@ -8,11 +8,14 @@ import {
   Animated, // eslint-disable-line no-unused-vars
   Easing // eslint-disable-line no-unused-vars
 } from 'react-native'
+import { StackNavigator, headerMode, navigationOptions } from 'react-navigation';
 import MapView from 'react-native-maps' // eslint-disable-line no-unused-vars
 import MapMarkerCallout from '../components/MapMarkerCallout'
 import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete'
 import Modal from 'react-native-modalbox'
 import { getLocations } from '../network/Requests'
+import Profile from '../ProfilePage'
+import Toolbar from '../components/Toolbar'
 
 export default class MapPage extends React.Component {
   constructor (props) {
@@ -30,12 +33,9 @@ export default class MapPage extends React.Component {
       locationTypes: [
         'national_monuments',
         'national_parks'
-      ]
+      ],
+      searching: false
     }
-  }
-
-  onRegionChange (region) {
-    this.setState({ region })
   }
 
   setModalVisible(visible) {
@@ -61,6 +61,14 @@ export default class MapPage extends React.Component {
     this.setState({
       locationsLoaded: true
     })
+  }
+
+  handleSearchChange (text) {
+    console.log(text)
+  }
+
+  hideSearchBar () {
+    this.toolbar.hideSearchBar()
   }
 
   render() {
@@ -117,6 +125,7 @@ export default class MapPage extends React.Component {
           initialRegion={this.state.region}
           onRegionChange={this.onRegionChange.bind(this)}
           onLongPress={e => this.setModalVisible(true)}
+          onPress={this.hideSearchBar.bind(this)}
         >
           { Object.keys(locations).length > 0 &&
             Object.keys(locations).map((locationType) =>
@@ -141,10 +150,28 @@ export default class MapPage extends React.Component {
             )
           }
         </MapView>
+        {/*<Toolbar
+          searchChange={(text) => this.handleSearchChange(text)}
+          ref={(instance) => this.toolbar = instance}
+        />*/}
       </View>
     )
   }
 }
+
+
+const MapS = ( {navigation}) => (
+  <MapPage navigate={navigation}/>
+);
+
+const ProfileScreen = ( {navigation}) => (
+  <Profile navigate={navigation}/>
+);
+
+const NatParkProfScreen = ( {navigation}) => (
+  <NatParkProf navigate={navigation}/>
+);
+
 
 const styles = StyleSheet.create({
   container: {

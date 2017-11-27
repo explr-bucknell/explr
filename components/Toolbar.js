@@ -29,13 +29,6 @@ export default class Toolbar extends React.Component {
     return (
       <View style={styles.toolbar}>
         <View style={{ flex: 1 }}>
-          <Icon.Button
-            name="navicon"
-            size={30}
-            color="white"
-            backgroundColor="transparent"
-            onPress={this.props.toggleNav}
-          />
         </View>
         <View style={styles.header}>
           <Text style={styles.headerText}>EXPLR</Text>
@@ -45,6 +38,7 @@ export default class Toolbar extends React.Component {
             searchBarShowing={this.state.searchBarShowing}
             showSearchBar={this.showSearchBar.bind(this)}
             hideSearchBar={this.hideSearchBar.bind(this)}
+            handleInputChange={(text) => this.props.searchChange(text)}
           />
         </View>
       </View>

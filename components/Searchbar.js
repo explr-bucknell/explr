@@ -23,6 +23,13 @@ export default class Searchbar extends Component {
     })
   }
 
+  handleInputChange (text) {
+    this.setState({
+      text: text
+    })
+    this.props.handleInputChange(text)
+  }
+
   render () {
     return (
       <View style={styles.searchContainer}>
@@ -48,10 +55,12 @@ export default class Searchbar extends Component {
             <TextInput
               style={styles.searchBar}
               value={this.state.text}
-              onChangeText={(text) => this.setState({text})}
+              onChangeText={(text) => this.handleInputChange(text)}
               placeholderTextColor='black'
               autoFocus
-              onBlur={this.props.hideSearchBar}
+              onFocus={() => this.setState({
+                text: ''
+              })}
               returnKeyType='search'
             />
           </View>
