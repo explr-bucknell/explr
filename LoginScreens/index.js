@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { StyleSheet, View, KeyboardAvoidingView, Text } from 'react-native';
 import Dimensions from 'Dimensions';
-import { StackNavigator, headerMode, navigationOptions } from 'react-navigation';
+import { StackNavigator, navigationOptions } from 'react-navigation';
 import Logo from './logo';
 import Buttons from './buttons';
 import LoginLogo from './Login/loginLogo';
@@ -12,7 +12,7 @@ import SignupEmail from './SignUp/signupEmail';
 import SignupPwd from './SignUp/signupPwd';
 import SignupConfirm from './SignUp/signupConfirm';
 import SignupDone from './SignUp/signupDone';
-import Main from '../main.js';
+import MainNavigator from '../main.js';
 import { primary, white } from '../utils/colors';
 
 const DEVICE_WIDTH = Dimensions.get('window').width;
@@ -72,7 +72,7 @@ const LoginScreen = ( {navigation} ) => (
 );
 
 const MainPage = () => (
-	<Main />
+	<MainNavigator />
 );
 
 const SignUpNavOpts = {
@@ -89,10 +89,7 @@ const LoginNavigator = StackNavigator({
   	Start: {
     	screen: StartScreen,
     	navigationOptions: {
-      		headerStyle: { 
-				backgroundColor: primary,
-				borderBottomWidth: 0,
-			},
+      		header: null,
     	},
   	},
   	SignUpName: {

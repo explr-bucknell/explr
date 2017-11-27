@@ -19,7 +19,7 @@ const HEADER_MAX_HEIGHT = 300;
 const HEADER_MIN_HEIGHT = 73;
 const HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
 
-export default class App extends Component {
+export default class ProfilePage extends Component {
   constructor(props) {
     super(props);
 
@@ -162,4 +162,4 @@ const styles = StyleSheet.create({
   },
 });
 
-Expo.registerRootComponent(App);
+//Expo.registerRootComponent(App);

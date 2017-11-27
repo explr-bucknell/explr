@@ -34,7 +34,7 @@ export default class Buttons extends Component {
 
 const styles = StyleSheet.create({
 	container: {
-		marginTop: SKIP,
+		flex: 3,
 		alignItems: 'center',
 		justifyContent: 'center',
 	},

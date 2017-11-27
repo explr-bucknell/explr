@@ -9,72 +9,34 @@ import {
   Easing // eslint-disable-line no-unused-vars
 } from 'react-native'
 import MapView from 'react-native-maps' // eslint-disable-line no-unused-vars
-import Sidebar from '../components/Sidebar' // eslint-disable-line no-unused-vars
-import Toolbar from '../components/Toolbar' // eslint-disable-line no-unused-vars
 import MapMarkerCallout from '../components/MapMarkerCallout'
 import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete'
 import Modal from 'react-native-modalbox'
+import { getLocations } from '../network/Requests'
+//import Toolbar from '../components/Toolbar'
 
 export default class MapPage extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
       modalVisible: false,
-      sideBarShowing: false,
       region: {
         latitude: 40.9549774,
         longitude: -76.8813942,
         latitudeDelta: 0.0922,
         longitudeDelta: 0.0421,
       },
-      markers: [
-        Bald_Eagle = {
-          latlng: {
-            latitude: 41.0328,
-            longitude: -77.6499,
-          },
-          title: 'Bald Eagle',
-          description: 'Lovely state park',
-          image: 'https://www.naturallyamazing.com/americasparks/490.jpg'
-        },
-        Milton = {
-          latlng: {
-            latitude: 41.0182,
-            longitude: -76.8612
-          },
-          title: 'Milton',
-          description: 'Beautiful state park',
-          image: 'https://farm5.staticflickr.com/4243/34457148450_9b1b0dcdbf.jpg'
-        },
-        Hawk_Mountain = {
-          latlng: {
-            latitude: 40.6456,
-            longitude: -75.9799
-          },
-          title: 'Hawk Mountain',
-          description: 'Gorgeous state park',
-          image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Hawk_Mountain_Stannik.jpg/1200px-Hawk_Mountain_Stannik.jpg'
-        },
-        Hershey_Park = {
-          latlng: {
-            latitude: 40.2888,
-            longitude: -76.6547
-          },
-          title: 'Hershey Park',
-          description: 'Rowdy state park',
-          image: 'https://upload.wikimedia.org/wikipedia/en/d/df/Hershey_Park_-_The_Boardwalk.JPG'
-        },
-        RBWinter_Park = {
-          latlng: {
-            latitude: 40.9912,
-            longitude: -77.1920
-          },
-          title: 'R.B. Winter State Park',
-          description: 'Weird state park',
-          image: 'https://media-cdn.tripadvisor.com/media/photo-s/07/cb/66/ad/the-dam-at-rb-winter.jpg'
-        },
+      locations: {},
+      locationsLoaded: false,
+      locationTypes: [
+        'national_monuments',
+        'national_parks'
       ]
     }
+  }
+
+  onRegionChange (region) {
+    this.setState({ region })
   }
 
   setModalVisible(visible) {
@@ -85,30 +47,25 @@ export default class MapPage extends React.Component {
     this.setState({ region })
   }
 
-  toggleSideBar () {
-    if (!this.state.sideBarShowing) {
-      this.sidebar.displaySelf()
-    } else {
-      this.sidebar.hideSelf()
-    }
+  componentDidMount () {
+    let locations = this.state.locations
+    this.state.locationTypes.forEach((locationType) => (
+      getLocations (locationType)
+        .then((data) => {
+          locations[locationType] = data
+          this.setState({
+            locations: locations
+          })
+        })
+    ))
+
     this.setState({
-      sideBarShowing: !this.state.sideBarShowing
+      locationsLoaded: true
     })
   }
 
-  hideBarElements () {
-    if (this.state.sideBarShowing) {
-      this.setState({
-        sideBarShowing: false
-      })
-      this.sidebar.hideSelf()
-    }
-    if (this.toolbar.state.searchBarShowing) {
-      this.toolbar.hideSearchBar()
-    }
-  }
-
   render() {
+    let locations = this.state.locations
     return (
       <View style={styles.container}>
         <Modal position={"bottom"} isOpen={this.state.modalVisible} onClosed={() => this.setState({modalVisible: false})} style={styles.googleSearch}>
@@ -160,32 +117,31 @@ export default class MapPage extends React.Component {
           style={styles.map}
           initialRegion={this.state.region}
           onRegionChange={this.onRegionChange.bind(this)}
-          onPress={this.hideBarElements.bind(this)}
           onLongPress={e => this.setModalVisible(true)}
         >
-          { this.state.markers.map((marker, index) => (
-            <MapView.Marker
-              key={index}
-              coordinate={marker.latlng}
-              pinColor='green'
-            >
-              <MapView.Callout>
-                <MapMarkerCallout
-                  title={marker.title}
-                  description={marker.description}
-                  imageUrl={marker.image}
-                />
-              </MapView.Callout>
-            </MapView.Marker>
-          )) }
+          { Object.keys(locations).length > 0 &&
+            Object.keys(locations).map((locationType) =>
+              Object.keys(locations[locationType]).map((locationName, index) =>
+                <MapView.Marker
+                  key={index}
+                  coordinate={{
+                    latitude: locations[locationType][locationName].lat,
+                    longitude: locations[locationType][locationName].long
+                  }}
+                  pinColor={locationType === 'national_parks' ? 'green' : 'blue'}
+                >
+                  <MapView.Callout>
+                    <MapMarkerCallout
+                      title={locations[locationType][locationName].name}
+                      description='asdfasdf'
+                      imageUrl='https://www.naturallyamazing.com/americasparks/490.jpg'
+                    />
+                  </MapView.Callout>
+                </MapView.Marker>
+              )
+            )
+          }
         </MapView>
-        <Toolbar
-          toggleNav={this.toggleSideBar.bind(this)}
-          ref={instance => { this.toolbar = instance }}
-        />
-        <Sidebar
-          ref={instance => { this.sidebar = instance }}
-        />
       </View>
     )
   }
@@ -200,7 +156,7 @@ const styles = StyleSheet.create({
   },
   map: {
     position: 'absolute',
-    top: 20,
+    top: 0,
     left: 0,
     right: 0,
     bottom: 0
