@@ -13,7 +13,6 @@ import MapMarkerCallout from '../components/MapMarkerCallout'
 import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete'
 import Modal from 'react-native-modalbox'
 import { getLocations } from '../network/Requests'
-//import Toolbar from '../components/Toolbar'
 
 export default class MapPage extends React.Component {
   constructor (props) {
