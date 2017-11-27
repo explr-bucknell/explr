@@ -16,7 +16,7 @@ import MapMarkerCallout from '../components/MapMarkerCallout'
 import Profile from '../ProfilePage'
 import NatParkProf from '../LocationPages/NationalParkProfile'
 
-export default class MapPage extends React.Component {
+class MapPage extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
