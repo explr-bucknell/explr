@@ -8,10 +8,13 @@ import {
   Animated, // eslint-disable-line no-unused-vars
   Easing // eslint-disable-line no-unused-vars
 } from 'react-native'
+import { StackNavigator, headerMode, navigationOptions } from 'react-navigation';
 import MapView from 'react-native-maps' // eslint-disable-line no-unused-vars
 import Sidebar from '../components/Sidebar' // eslint-disable-line no-unused-vars
 import Toolbar from '../components/Toolbar' // eslint-disable-line no-unused-vars
 import MapMarkerCallout from '../components/MapMarkerCallout'
+import Profile from '../ProfilePage'
+import NatParkProf from '../LocationPages/NationalParkProfile'
 
 export default class MapPage extends React.Component {
   constructor (props) {
@@ -121,6 +124,7 @@ export default class MapPage extends React.Component {
                   title={marker.title}
                   description={marker.description}
                   imageUrl={marker.image}
+                  navigate={this.props.navigate}
                 />
               </MapView.Callout>
             </MapView.Marker>
@@ -132,9 +136,53 @@ export default class MapPage extends React.Component {
         />
         <Sidebar
           ref={instance => { this.sidebar = instance }}
+          navigate={this.props.navigate}
         />
       </View>
     )
+  }
+}
+
+
+const MapS = ( {navigation}) => (
+  <MapPage navigate={navigation}/>
+);
+
+const ProfileScreen = ( {navigation}) => (
+  <Profile navigate={navigation}/>
+);
+
+const NatParkProfScreen = ( {navigation}) => (
+  <NatParkProf navigate={navigation}/>
+);
+
+const AppNavigation = StackNavigator({
+    HomeScreen: {
+      screen: MapS,
+      navigationOptions: {
+        headerMode: 'screen',
+        header: null,
+      },
+    },
+    Profile: {
+      screen: ProfileScreen,
+      navigationOptions: {
+        headerMode: 'screen',
+        header: null,
+      },
+    },
+    NatParkProf: {
+      screen: NatParkProfScreen,
+      navigationOptions: {
+        headerMode: 'screen',
+        header: null,
+      },
+    },    
+  })
+
+export default class App extends React.Component{
+  render() {
+    return <AppNavigation />
   }
 }
 
