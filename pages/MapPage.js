@@ -8,13 +8,16 @@ import {
   Animated, // eslint-disable-line no-unused-vars
   Easing // eslint-disable-line no-unused-vars
 } from 'react-native'
+import { StackNavigator, headerMode, navigationOptions } from 'react-navigation';
 import MapView from 'react-native-maps' // eslint-disable-line no-unused-vars
 import Sidebar from '../components/Sidebar' // eslint-disable-line no-unused-vars
 import Toolbar from '../components/Toolbar' // eslint-disable-line no-unused-vars
 import MapMarkerCallout from '../components/MapMarkerCallout'
 import { getLocations } from '../network/Requests'
+import Profile from '../ProfilePage'
+import NatParkProf from '../LocationPages/NationalParkProfile'
 
-export default class MapPage extends React.Component {
+class MapPage extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
@@ -102,6 +105,49 @@ export default class MapPage extends React.Component {
         />
       </View>
     )
+  }
+}
+
+
+const MapS = ( {navigation}) => (
+  <MapPage navigate={navigation}/>
+);
+
+const ProfileScreen = ( {navigation}) => (
+  <Profile navigate={navigation}/>
+);
+
+const NatParkProfScreen = ( {navigation}) => (
+  <NatParkProf navigate={navigation}/>
+);
+
+const AppNavigation = StackNavigator({
+    HomeScreen: {
+      screen: MapS,
+      navigationOptions: {
+        headerMode: 'screen',
+        header: null,
+      },
+    },
+    Profile: {
+      screen: ProfileScreen,
+      navigationOptions: {
+        headerMode: 'screen',
+        header: null,
+      },
+    },
+    NatParkProf: {
+      screen: NatParkProfScreen,
+      navigationOptions: {
+        headerMode: 'screen',
+        header: null,
+      },
+    },
+  })
+
+export default class App extends React.Component{
+  render() {
+    return <AppNavigation />
   }
 }
 
