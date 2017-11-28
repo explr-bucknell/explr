@@ -14,8 +14,7 @@ import MapMarkerCallout from '../components/MapMarkerCallout'
 import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete'
 import Modal from 'react-native-modalbox'
 import { getLocations } from '../network/Requests'
-import Profile from '../ProfilePage'
-import Toolbar from '../components/Toolbar'
+import Profile from './ProfilePage'
 
 export default class MapPage extends React.Component {
   constructor (props) {

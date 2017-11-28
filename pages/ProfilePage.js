@@ -11,9 +11,9 @@ import {
   View,
 } from 'react-native';
 
-import Header 		from './components/Header';
-import Bar 			from './components/Bar';
-import ContentGrid 	from './components/ContentGrid';
+import Header 		from '../components/Header';
+import Bar 			from '../components/Bar';
+import ContentGrid 	from '../components/ContentGrid';
 
 const HEADER_MAX_HEIGHT = 300;
 const HEADER_MIN_HEIGHT = 73;
@@ -94,7 +94,7 @@ export default class ProfilePage extends Component {
 				transform: [{ translateY: imageTranslate }],
 			  },
 			]}
-			source={require("./assets/images/profileBackground.jpg")}
+			source={require("../assets/images/profileBackground.jpg")}
 		  >
 		  <Header />
 		  </Animated.Image>

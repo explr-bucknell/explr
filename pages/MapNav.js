@@ -2,11 +2,10 @@ import React from 'react'
 import { Platform } from 'react-native'
 import { TabNavigator, navigationOptions } from 'react-navigation'
 import Dimensions from 'Dimensions'
-import MapPage from './pages/MapPage'
-//import MapNav from './MapNav'
+import MapPage from './MapPage'
 import ProfilePage from './ProfilePage'
 import { FontAwesome } from '@expo/vector-icons'
-import { primary, white, gray } from './utils/colors'
+import { primary, white, gray } from '../utils/colors'
 
 const DEVICE_HEIGHT = Dimensions.get('window').height;
 
