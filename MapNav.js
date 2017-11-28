@@ -1,36 +1,73 @@
 import React from 'react'
-import {TouchableOpacity} from 'react-native'
-import { StackNavigator, navigationOptions } from 'react-navigation'
-import { FontAwesome } from '@expo/vector-icons'
+import { Platform } from 'react-native'
+import { TabNavigator, navigationOptions } from 'react-navigation'
+import Dimensions from 'Dimensions'
 import MapPage from './pages/MapPage'
-import { primary, white } from './utils/colors'
+//import MapNav from './MapNav'
+import ProfilePage from './ProfilePage'
+import { FontAwesome } from '@expo/vector-icons'
+import { primary, white, gray } from './utils/colors'
+
+const DEVICE_HEIGHT = Dimensions.get('window').height;
 
 const MapScreen = () => (
 	<MapPage />
 )
 
-const MapNavOpts = {
-	headerTitle: "EXPLR",
-	headerStyle: { 
-		backgroundColor: primary,
-		borderBottomWidth: 0,
-	},
-	headerRight: 
-		<TouchableOpacity style={{ marginRight: 10 }}>
-			<FontAwesome
-		      name='search'
-		      size={20}
-		      style={{ color: white }}
-		    />
-		</TouchableOpacity>,
-	headerTintColor: white,
-	headerBackTitle: null,
+MapScreen.navigationOptions = {
+  tabBarLabel: 'Map',
+  tabBarIcon: ({ tintColor, focused }) => (
+    <FontAwesome
+      name='map'
+      size={26}
+      style={focused ? { color: primary } : { color: gray }}
+    />
+  ),
 }
 
-const MapNav = StackNavigator({
+const ProfileScreen = () => (
+	<ProfilePage />
+)
+
+ProfileScreen.navigationOptions = {
+  tabBarLabel: 'Profile',
+  tabBarIcon: ({ tintColor, focused }) => (
+    <FontAwesome
+      name='user'
+      size={26}
+      style={focused ? { color: primary } : { color: gray }}
+    />
+  ),
+}
+
+const MapNav = TabNavigator({
 	MapPage: {
 		screen: MapScreen,
-		navigationOptions: MapNavOpts
+	},
+	ProfilePage: {
+		screen: ProfileScreen,
+	}
+}
+, {
+	animationEnabled: true,
+  tabBarPosition: "bottom",
+	tabBarOptions: {
+		activeTintColor: primary,
+    inactiveTintColor: gray,
+		showIcon: true,
+		activeBackgroundColor: white,
+		inactiveBackgroundColor: white,
+		style: {
+			height: Platform.OS === 'android' ? 60 : 50,
+      backgroundColor: white,
+      borderTopWidth: 0,
+      elevation: 5,
+      shadowOpacity: 0.2,
+      shadowColor: gray
+		},
+    indicatorStyle: {
+      display: 'none'
+    }
 	}
 })
 

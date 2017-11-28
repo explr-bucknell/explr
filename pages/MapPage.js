@@ -125,7 +125,7 @@ export default class MapPage extends React.Component {
           initialRegion={this.state.region}
           onRegionChange={this.onRegionChange.bind(this)}
           onLongPress={e => this.setModalVisible(true)}
-          onPress={this.hideSearchBar.bind(this)}
+          //onPress={this.hideSearchBar.bind(this)}
         >
           { Object.keys(locations).length > 0 &&
             Object.keys(locations).map((locationType) =>

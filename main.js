@@ -1,63 +1,87 @@
 import React from 'react'
-import { TabNavigator, navigationOptions } from 'react-navigation'
+import { TouchableOpacity, Text, TextInput, Platform } from 'react-native'
 import Dimensions from 'Dimensions'
-import MapPage from './pages/MapPage'
-import MapNav from './MapNav'
-import ProfilePage from './ProfilePage'
+import { StackNavigator, navigationOptions, NavigationActions } from 'react-navigation'
 import { FontAwesome } from '@expo/vector-icons'
-import { primary, white, gray } from './utils/colors'
+//import MapPage from './pages/MapPage'
+import MapNav from './MapNav'
+import SearchPage from './pages/SearchPage'
+import { primary, white, transparentWhite } from './utils/colors'
 
-const DEVICE_HEIGHT = Dimensions.get('window').height;
+const DEVICE_WIDTH = Dimensions.get('window').width
+
+function handleTextChange(text) {
+	console.log(text)
+	// TODO: Handle autocomplete for searching
+}
 
 const MapScreen = () => (
 	<MapNav />
 )
 
-MapScreen.navigationOptions = {
-  tabBarLabel: 'Map',
-  tabBarIcon: ({ tintColor, focused }) => (
-    <FontAwesome
-      name='map'
-      size={26}
-      style={focused ? { color: primary } : { color: gray }}
-    />
-  ),
-}
+const MapNavOpts = ({ navigation }) => ({
+	headerTitle: "EXPLR",
+	headerStyle: { 
+		backgroundColor: primary,
+		borderBottomWidth: 0,
+	},
+	headerRight: 
+		<TouchableOpacity onPress={() => navigation.navigate("SearchPage")} style={{ marginRight: 10 }}>
+			<FontAwesome
+		      name='search'
+		      size={20}
+		      style={{ color: white }}
+		    />
+		</TouchableOpacity>,
+	headerTintColor: white,
+	headerBackTitle: null,
+})
 
-const ProfileScreen = () => (
-	<ProfilePage />
+const SearchScreen = () => (
+	<SearchPage />
 )
 
-ProfileScreen.navigationOptions = {
-  tabBarLabel: 'Profile',
-  tabBarIcon: ({ tintColor, focused }) => (
-    <FontAwesome
-      name='user'
-      size={26}
-      style={focused ? { color: primary } : { color: gray }}
-    />
-  ),
-}
+const SearchNavOpts = ({ navigation }) => ({
+	headerStyle: { 
+		backgroundColor: primary,
+		borderBottomWidth: 0,
+	},
+	headerTitle:
+		<TextInput
+	        placeholder="Search for places here"
+	      	onChangeText={ (text) => handleTextChange(text) }
+	        placeholderTextColor={ transparentWhite }
+	        autoFocus={ true }
+	        selectionColor={ Platform.OS === 'android' ? transparentWhite : white }
+	        underlineColorAndroid='rgba(0,0,0,0)'
+	        style={{
+	       		width: DEVICE_WIDTH * 0.6,
+				height: 40,
+				color: white,
+				fontSize: 16,
+				borderColor: white,
+	        }}
+	    />,
+	headerLeft:
+		<FontAwesome
+			name='search'
+			size={20}
+			style={{ color: white, marginLeft: 15 }}
+	    />,
+	headerRight:
+		<TouchableOpacity onPress={() => navigation.goBack(null)} style={{ marginRight: 10 }}>
+			<Text style={{ color: white, fontSize: 18 }}>Cancel</Text>
+		</TouchableOpacity>
+})
 
-const MainNavigator = TabNavigator({
+const MainNavigator = StackNavigator({
 	MapPage: {
 		screen: MapScreen,
+		navigationOptions: MapNavOpts
 	},
-	ProfilePage: {
-		screen: ProfileScreen,
-	}
-}
-, {
-	animationEnabled: true,
-	tabBarPosition: 'bottom',
-	tabBarOptions: {
-		activeTintColor: primary,
-		showIcon: true,
-		activeBackgroundColor: white,
-		inactiveBackgroundColor: white,
-		style: {
-			height: 50,
-		}
+	SearchPage: {
+		screen: SearchScreen,
+		navigationOptions: SearchNavOpts
 	}
 })
 
