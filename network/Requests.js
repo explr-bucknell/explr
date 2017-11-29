@@ -11,10 +11,10 @@ export async function getLocations (locationType) {
     // Handle error
     console.error(error);
   }
-
+}
 
 /**
-    work in progress 
+    work in progress ... something along these lines
     function to grab all points in circular area
     center: should be in form [34.1, -34.1]
     radius: should be in form 10.5

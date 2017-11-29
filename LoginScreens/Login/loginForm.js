@@ -4,9 +4,6 @@ import Dimensions from 'Dimensions';
 import { Container, Header, Content, Form, Item, Input, Label } from 'native-base';
 import firebase from 'firebase';
 import { primary, secondary, white, gray } from '../../utils/colors';
-//testing DB interaction
-import {Location, writeLocation, readLocation} from '../../models/Location';
-//end testing import
 const DEVICE_WIDTH = Dimensions.get('window').width;
 const DEVICE_HEIGHT = Dimensions.get('window').height;
 
@@ -49,10 +46,7 @@ export default class LoginForm extends Component {
 		var navigate = this.props.nav.navigate;
 
 		firebase.auth().signInWithEmailAndPassword(email, password).then(function() {
-			///testing Db interactions
-			var newLocation = new Location("Acadia", "National Park", 0, 1, 44.3386, 68.2733, "Maine", 1); //declare object
-			writeLocation(newLocation);
-			//end testing
+
 			navigate("MainPage");
 
 		}).catch(function(error) {
