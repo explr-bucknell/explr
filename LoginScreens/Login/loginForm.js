@@ -4,7 +4,6 @@ import Dimensions from 'Dimensions';
 import { Container, Header, Content, Form, Item, Input, Label } from 'native-base';
 import firebase from 'firebase';
 import { primary, secondary, white, gray } from '../../utils/colors';
-
 const DEVICE_WIDTH = Dimensions.get('window').width;
 const DEVICE_HEIGHT = Dimensions.get('window').height;
 
@@ -47,7 +46,9 @@ export default class LoginForm extends Component {
 		var navigate = this.props.nav.navigate;
 
 		firebase.auth().signInWithEmailAndPassword(email, password).then(function() {
+
 			navigate("MainPage");
+
 		}).catch(function(error) {
 			// Handle Errors here.
 			var errorCode = error.code;
