@@ -8,12 +8,50 @@ import {
 	Dimensions,
 	ScrollView
 } from 'react-native';
+import firebase from 'firebase';
+import { primary, white } from '../utils/colors';
 
 export default class ContentGrid extends Component {
+	constructor(props) {
+		super(props)
+	}
+
+	state = {
+		names: [],
+		images: []
+	}
+
+	componentWillMount() {
+		var self = this
+	  	const url = 'users/main/' + this.props.uid
+	  	var ref = firebase.database().ref('users/main/' + this.props.uid + '/saved')
+
+	  	ref.on('value', function(snapshot) {
+	  		self.updateGrid(snapshot.val())
+	  	})
+	}
+
+	updateGrid = (snapshot) => {
+		var names = Object.keys(snapshot).map(location => snapshot[location].name)
+		var images = Object.keys(snapshot).map(location => snapshot[location].image)
+
+		this.setState({ names, images })
+	}
+
 	render() {
 		return (
 			<View>
 				<View style={styles.contentGrid}>
+					{this.state.names.map((name, i) => 
+						<View key={i} style={styles.photoWrap}>
+							<Image style={styles.photo} source={{ uri: this.state.images[i] }}>
+								<Text style={styles.title}>
+							        {name}
+							    </Text>
+							</Image>
+						</View>
+					)}
+					{/*
 					<View style={styles.photoWrap}>
 						<Image style={styles.photo} source={require('../assets/images/img1.jpg')} />
 					</View>
@@ -62,6 +100,7 @@ export default class ContentGrid extends Component {
 					<View style={styles.photoWrap}>
 						<Image style={styles.photo} source={require('../assets/images/img8.jpg')} />
 					</View>
+					*/}
 				</View>
 			</View>
 		);
@@ -86,6 +125,16 @@ const styles = StyleSheet.create({
 	photo: {
 		flex: 1,
 		width: null,
-		alignSelf: 'stretch'
+		alignSelf: 'stretch',
+		justifyContent: 'center',
+		alignItems: 'center'
+	},
+	title: {
+	    margin: 24,
+	    fontSize: 15,
+	    fontWeight: 'bold',
+	    textAlign: 'center',
+	    color: white,
+	    backgroundColor: 'transparent'
 	}
 });

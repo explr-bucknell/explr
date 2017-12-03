@@ -3,6 +3,7 @@ import { Animated, Dimensions, Image, Platform, StyleSheet, Text, TouchableOpaci
 import { Body, Header, List, ListItem as Item, ScrollableTab, Tab, TabHeading, Tabs, Title } from "native-base"
 import firebase from 'firebase'
 import { primary, white, gray, black } from '../utils/colors'
+import ContentGrid from '../components/ContentGrid'
 import SavedLocations from '../components/SavedLocations'
 import SavedChallenges from '../components/SavedChallenges'
 
@@ -131,7 +132,7 @@ export default class ProfilePage extends React.Component {
             </Animated.View>
             }>
             <Tab heading="Places">
-              <SavedLocations />
+              <ContentGrid uid={this.props.uid}/>
             </Tab>
             <Tab heading="Challenges">
               <SavedChallenges />
