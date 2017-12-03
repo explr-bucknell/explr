@@ -55,7 +55,7 @@ const PromptPwd = ( {navigation} ) => (
 const PromptHandle = ( {navigation} ) => (
 	<View style={styles.container}>
 		<Text style={styles.text}>Create an account handle</Text>
-		<Text style={[styles.text, styles.secondaryText]}>Your handle must be unique and must only contain letters, digits, or underscores.</Text>
+		<Text style={[styles.text, styles.secondaryText]}>Your handle must be unique and must only contain lowercase letters and digits.</Text>
 		<SignupHandle nav={navigation}/>
 	</View>
 );

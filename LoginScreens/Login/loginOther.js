@@ -21,6 +21,7 @@ const GOOGLE_ANDROID_ID = '866651490806-epbh45hn0peiaapgllrmv5o3l0v2jpoi.apps.go
 export default class LoginOther extends Component {
 
 	async facebookSignin() {
+		var navigate = this.props.nav.navigate;
 		var self = this;
 		const { type, token } = await Expo.Facebook.logInWithReadPermissionsAsync(FACEBOOK_APP_ID, {
 			permissions: ['email', 'public_profile'],
@@ -33,7 +34,6 @@ export default class LoginOther extends Component {
 				var uid = user.uid;
 				self.fbFetch(uid, token);
 			}).catch(function(error) {
-				console.log('error')
 				// Handle Errors here.
 				var errorCode = error.code;
 				var errorMessage = error.message;
@@ -42,6 +42,7 @@ export default class LoginOther extends Component {
 				// The firebase.auth.AuthCredential type that was used.
 				var credential = error.credential;
 				// ...
+				console.log(error.message)
 				navigate("Login");
 			});
 			/*
@@ -61,10 +62,11 @@ export default class LoginOther extends Component {
 		const response = await fetch(`https://graph.facebook.com/me?access_token=${token}&fields=${fields}`);
 		var data = await response.json();
 		
-		this.initUser(uid, data.first_name, data.last_name, data.picture);
+		this.initUser(uid, data.first_name, data.last_name, data.picture.data.url);
 	}
 
 	async googleSignin() {
+		var navigate = this.props.nav.navigate;
 		var self = this;
 		try {
 		    const result = await Expo.Google.logInAsync({
@@ -92,7 +94,7 @@ export default class LoginOther extends Component {
 					var credential = error.credential;
 					// ...
 					console.log(errorMessage);
-					//navigate("Login");
+					navigate("Login");
 				});
 		    } else {
 		    	//navigate("Login");
@@ -116,7 +118,7 @@ export default class LoginOther extends Component {
 		});
 
 		if (!userExist) {
-			var name = firstname.replace(/[^a-z]/gi, '');
+			var name = firstname.replace(/[^a-z]/gi, '').toLowerCase();
 			var handle = name;
 			var count = 0;
 			var found = false;
@@ -142,6 +144,7 @@ export default class LoginOther extends Component {
 			    handle: handle,
 			    numFollowers: 0,
 			    numFollowing: 0,
+			    imageUrl: imageUrl
 			});
 		}
 

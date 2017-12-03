@@ -6,22 +6,15 @@ import { StackNavigator, navigationOptions, NavigationActions } from 'react-navi
 import { FontAwesome } from '@expo/vector-icons'
 import MapNav from './pages/MapNav'
 import SearchPage from './pages/SearchPage'
+import ProfilePage from './pages/ProfilePage'
 import { primary, white, transparentWhite } from './utils/colors'
 
 const DEVICE_WIDTH = Dimensions.get('window').width
 var searchEntry = ""
 
-function handleTextChange(text) {
-	console.log(text)
+const handleTextChange = (text) => {
+	//console.log(text)
 	// TODO: Handle autocomplete for searching
-	searchEntry = text
-}
-
-const handleTextSubmit = () => {
-	var ref = firebase.database().ref('users/main')
-	ref.orderByChild("handle").equalTo(searchEntry).on("child_added", function(snapshot) {
-	  	console.log(snapshot.key);
-	});
 }
 
 const MapScreen = (props) => (
@@ -35,7 +28,7 @@ const MapNavOpts = ({ navigation }) => ({
 		borderBottomWidth: 0,
 	},
 	headerRight: 
-		<TouchableOpacity onPress={() => navigation.navigate("SearchPage")} style={{ marginRight: 10 }}>
+		<TouchableOpacity onPress={() => navigation.navigate("SearchPage", { handleText: handleTextChange })} style={{ marginRight: 10 }}>
 			<FontAwesome
 		      name='search'
 		      size={20}
@@ -46,8 +39,8 @@ const MapNavOpts = ({ navigation }) => ({
 	headerBackTitle: null,
 })
 
-const SearchScreen = () => (
-	<SearchPage />
+const SearchScreen = ({ navigation }) => (
+	<SearchPage nav={navigation}/>
 )
 
 const SearchNavOpts = ({ navigation }) => ({
@@ -58,8 +51,7 @@ const SearchNavOpts = ({ navigation }) => ({
 	headerTitle:
 		<TextInput
 	        placeholder="Search for places here"
-	      	onChangeText={ (text) => handleTextChange(text) }
-	      	onSubmitEditing={ handleTextSubmit }
+	      	onChangeText={ (text) => navigation.state.params.handleText(text.trim()) }
 	        placeholderTextColor={ transparentWhite }
 	        autoFocus={ true }
 	        selectionColor={ Platform.OS === 'android' ? transparentWhite : white }
@@ -84,6 +76,10 @@ const SearchNavOpts = ({ navigation }) => ({
 		</TouchableOpacity>
 })
 
+const ProfileScreen = ({ navigation }) => (
+	<ProfilePage nav={navigation}/>
+)
+
 const MainNavigator = StackNavigator({
 	MapPage: {
 		screen: props => MapScreen(props),
@@ -92,6 +88,10 @@ const MainNavigator = StackNavigator({
 	SearchPage: {
 		screen: SearchScreen,
 		navigationOptions: SearchNavOpts
+	},
+	ProfilePage: {
+		screen: ProfileScreen,
+		navigationOptions: MapNavOpts
 	}
 })
 

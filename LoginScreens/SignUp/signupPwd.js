@@ -109,7 +109,7 @@ export default class SignupPwd extends Component {
 	render() {
 		return (
 			<Container style={styles.container}>
-				<Content>
+				<Content keyboardShouldPersistTaps='always'>
 					<Form>
 						<Item stackedLabel style={styles.item}>
 							<Label style={styles.label}>PASSWORD</Label>

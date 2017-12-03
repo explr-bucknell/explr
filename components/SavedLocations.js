@@ -8,7 +8,7 @@ export default class SavedLocations extends React.Component {
 	render() {
 		return (
 			<View style={styles.container}>
-				<ContentGrid />
+				<ContentGrid uid={this.props.uid}/>
 			</View>
 		)
 	}
@@ -16,6 +16,7 @@ export default class SavedLocations extends React.Component {
 
 const styles = StyleSheet.create({
 	container: {
+		flex: 1,
 		borderWidth: 0, 
 		backgroundColor: white
 	}

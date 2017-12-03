@@ -44,7 +44,7 @@ export default class SignupPwd extends Component {
 	}
 
 	async checkHandle(handle) {
-		var allowed = (handle.length >= 5) && (handle.length <= 20) && (/^[a-zA-Z0-9_]+$/.test(handle));
+		var allowed = (handle.length >= 5) && (handle.length <= 20) && (/^[a-z0-9]+$/.test(handle));
 		var duplicate;
 
 		var handlesRef = firebase.database().ref('users/handles');
@@ -60,11 +60,15 @@ export default class SignupPwd extends Component {
 	}
 
 	async createAccount() {
+		var self = this;
 		var navigate = this.props.nav.navigate;
 		var email = this.state.email;
-		var displayName = this.state.firstName + " " + this.state.lastName;
+		var handle = this.state.handle;
+		var firstname = this.state.firstName;
+		var lastname = this.state.lastName;
+		var displayName = firstname + " " + lastname;
 
-		firebase.auth().createUserWithEmailAndPassword(this.state.email, this.state.pwd).then(function() {
+		firebase.auth().createUserWithEmailAndPassword(email, this.state.pwd).then(function() {
 
 			var user = firebase.auth().currentUser;
 
@@ -73,6 +77,7 @@ export default class SignupPwd extends Component {
 			}).then(function() {
 				user.sendEmailVerification().then(function() {
 				  	// Email sent.
+				  	self.initUser(user.uid, handle, firstname, lastname);
 				  	navigate('SignUpConfirm', {email: email});
 				}).catch(function(error) {
 				  	// An error happened.
@@ -89,14 +94,22 @@ export default class SignupPwd extends Component {
 		});
 	}
 
-	setDuplicate(dup) {
-		this.setState({duplicate: dup});
+	async initUser(uid, handle, firstname, lastname) {
+		await firebase.database().ref('users/handles/' + handle).set(uid);
+
+		await firebase.database().ref('users/main/' + uid).set({
+		    firstname: firstname,
+		    lastname: lastname,
+		    handle: handle,
+		    numFollowers: 0,
+		    numFollowing: 0,
+		});
 	}
 
 	render() {
 		return (
 			<Container style={styles.container}>
-				<Content>
+				<Content keyboardShouldPersistTaps='always'>
 					<Form>
 						<Item stackedLabel style={styles.item}>
 							<Label style={styles.label}>HANDLE</Label>

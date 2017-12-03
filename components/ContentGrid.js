@@ -9,7 +9,7 @@ import {
 	ScrollView
 } from 'react-native';
 import firebase from 'firebase';
-import { primary, white } from '../utils/colors';
+import { primary, transparentWhite, black } from '../utils/colors';
 
 export default class ContentGrid extends Component {
 	constructor(props) {
@@ -27,7 +27,9 @@ export default class ContentGrid extends Component {
 	  	var ref = firebase.database().ref('users/main/' + this.props.uid + '/saved')
 
 	  	ref.on('value', function(snapshot) {
-	  		self.updateGrid(snapshot.val())
+	  		if (snapshot.val()) {
+	  			self.updateGrid(snapshot.val())
+	  		}
 	  	})
 	}
 
@@ -42,7 +44,7 @@ export default class ContentGrid extends Component {
 		return (
 			<View>
 				<View style={styles.contentGrid}>
-					{this.state.names.map((name, i) => 
+					{this.state.names ? (this.state.names.map((name, i) => 
 						<View key={i} style={styles.photoWrap}>
 							<Image style={styles.photo} source={{ uri: this.state.images[i] }}>
 								<Text style={styles.title}>
@@ -50,7 +52,7 @@ export default class ContentGrid extends Component {
 							    </Text>
 							</Image>
 						</View>
-					)}
+					)) : (<Text style={styles.noText}>No saved locations yet</Text>)}
 					{/*
 					<View style={styles.photoWrap}>
 						<Image style={styles.photo} source={require('../assets/images/img1.jpg')} />
@@ -112,6 +114,10 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		flexWrap: 'wrap'
 	},
+	noText: {
+		fontSize: 20,
+		color: black
+	},
 	textStyle: {
 		color: '#fff',
 		fontSize: 16,
@@ -134,7 +140,7 @@ const styles = StyleSheet.create({
 	    fontSize: 15,
 	    fontWeight: 'bold',
 	    textAlign: 'center',
-	    color: white,
+	    color: transparentWhite,
 	    backgroundColor: 'transparent'
 	}
 });

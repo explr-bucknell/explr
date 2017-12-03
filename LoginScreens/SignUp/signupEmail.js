@@ -4,6 +4,7 @@ import Dimensions from 'Dimensions';
 import { FontAwesome } from '@expo/vector-icons';
 import { Container, Header, Content, Form, Item, Input, Label } from 'native-base';
 import { StackNavigator } from 'react-navigation';
+import firebase from 'firebase';
 import { primary, white, transparentWhite } from '../../utils/colors';
 
 const DEVICE_WIDTH = Dimensions.get('window').width;
@@ -25,6 +26,7 @@ export default class SignupEmail extends Component {
 		super(props);
     	this.state = {
     		disabled: true,
+    		duplicate: false,
     		firstName: this.props.nav.state.params.firstName,
     		lastName: this.props.nav.state.params.lastName,
     		email: "",
@@ -33,10 +35,23 @@ export default class SignupEmail extends Component {
 
 	checkEmail(email) {
 		format = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-		this.setState({
-			disabled: (format.test(email) ? false : true),
-			email: email,
+		var disabled = !(format.test(email));
+		this.setState({ disabled, email });
+	}
+
+	async checkDuplicate() {
+		var duplicate = false;
+		await firebase.auth().fetchProvidersForEmail(email).then(function(ids) {
+			duplicate = (ids.length > 0);
+		}).catch(function(error) {
+			if (error.code == 'auth/quota-exceeded') {
+				// not checking
+			}
 		});
+		this.setState({ duplicate });
+		if (!duplicate) {
+			this.props.nav.navigate('SignUpPwd', this.getUserData());
+		}
 	}
 
 	getUserData() {
@@ -46,14 +61,15 @@ export default class SignupEmail extends Component {
 	render() {
 		return (
 			<Container style={styles.container}>
-				<Content>
+				<Content keyboardShouldPersistTaps='always'>
 					<Form>
 						<Item stackedLabel style={styles.item}>
 							<Label style={styles.label}>EMAIL ADDRESS</Label>
 							<Input onChangeText={(text) => this.checkEmail(text)} autoCapitalize='none' autoCorrect={false} keyboardType={'email-address'} keyboardAppearance={'light'} style={styles.input}/>
 						</Item>
+						<Text style={[styles.duplicate, {display: this.state.duplicate ? 'flex' : 'none'}]}>THIS EMAIL IS ALREADY REGISTERED!</Text>
 					</Form>
-					<TouchableOpacity disabled={this.state.disabled} style={this.state.disabled ? [styles.button, styles.disabled] : styles.button} onPress={() => {this.props.nav.navigate('SignUpPwd', this.getUserData())}}>
+					<TouchableOpacity disabled={this.state.disabled} style={this.state.disabled ? [styles.button, styles.disabled] : styles.button} onPress={() => {this.checkDuplicate()}}>
 				    	<FontAwesome name="angle-right" style={styles.next}/>
 				    </TouchableOpacity>
 				</Content>
@@ -74,6 +90,11 @@ const styles = StyleSheet.create({
 		fontSize: 12,
 		fontWeight: "700",
 		marginBottom: DEVICE_HEIGHT * 0.01,
+	},
+	duplicate: {
+		color: 'red',
+		fontSize: 12,
+		marginTop: DEVICE_HEIGHT * 0.01,
 	},
 	input: {
 		height: INPUT_HEIGHT,
