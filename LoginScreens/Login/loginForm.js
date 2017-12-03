@@ -4,7 +4,6 @@ import Dimensions from 'Dimensions';
 import { Container, Header, Content, Form, Item, Input, Label } from 'native-base';
 import firebase from 'firebase';
 import { primary, black, white, gray } from '../../utils/colors';
-
 const DEVICE_WIDTH = Dimensions.get('window').width;
 const DEVICE_HEIGHT = Dimensions.get('window').height;
 

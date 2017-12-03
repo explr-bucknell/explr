@@ -1,7 +1,6 @@
 import React from 'react'
 import { StyleSheet, View, ScrollView, Text } from 'react-native'
 import ContentGrid from './ContentGrid'
-import LocationSet from './LocationSet'
 import { white } from '../utils/colors'
 
 export default class SavedLocations extends React.Component {
