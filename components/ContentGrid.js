@@ -12,7 +12,7 @@ import {
 export default class ContentGrid extends Component {
 	render() {
 		return (
-			<ScrollView>
+			<View>
 				<View style={styles.contentGrid}>
 					<View style={styles.photoWrap}>
 						<Image style={styles.photo} source={require('../assets/images/img1.jpg')} />
@@ -38,8 +38,32 @@ export default class ContentGrid extends Component {
 					<View style={styles.photoWrap}>
 						<Image style={styles.photo} source={require('../assets/images/img8.jpg')} />
 					</View>
+					<View style={styles.photoWrap}>
+						<Image style={styles.photo} source={require('../assets/images/img1.jpg')} />
+					</View>
+					<View style={styles.photoWrap}>
+						<Image style={styles.photo} source={require('../assets/images/img2.jpg')} />
+					</View>
+					<View style={styles.photoWrap}>
+						<Image style={styles.photo} source={require('../assets/images/img3.jpg')} />
+					</View>
+					<View style={styles.photoWrap}>
+						<Image style={styles.photo} source={require('../assets/images/img4.jpg')} />
+					</View>
+					<View style={styles.photoWrap}>
+						<Image style={styles.photo} source={require('../assets/images/img5.jpg')} />
+					</View>
+					<View style={styles.photoWrap}>
+						<Image style={styles.photo} source={require('../assets/images/img6.jpg')} />
+					</View>
+					<View style={styles.photoWrap}>
+						<Image style={styles.photo} source={require('../assets/images/img7.jpg')} />
+					</View>
+					<View style={styles.photoWrap}>
+						<Image style={styles.photo} source={require('../assets/images/img8.jpg')} />
+					</View>
 				</View>
-			</ScrollView>
+			</View>
 		);
 	}
 }

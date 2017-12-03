@@ -8,6 +8,7 @@ import LoginLogo from './Login/loginLogo';
 import LoginForm from './Login/loginForm';
 import LoginOther from './Login/loginOther';
 import SignupName from './SignUp/signupName';
+import SignupHandle from './SignUp/signupHandle';
 import SignupEmail from './SignUp/signupEmail';
 import SignupPwd from './SignUp/signupPwd';
 import SignupConfirm from './SignUp/signupConfirm';
@@ -51,6 +52,14 @@ const PromptPwd = ( {navigation} ) => (
 	</View>
 );
 
+const PromptHandle = ( {navigation} ) => (
+	<View style={styles.container}>
+		<Text style={styles.text}>Create an account handle</Text>
+		<Text style={[styles.text, styles.secondaryText]}>Your handle must be unique and must only contain letters, digits, or underscores.</Text>
+		<SignupHandle nav={navigation}/>
+	</View>
+);
+
 const EmailConfirmation = ( {navigation} ) => (
 	<View style={styles.container}>
 		<SignupConfirm nav={navigation}/>
@@ -71,8 +80,8 @@ const LoginScreen = ( {navigation} ) => (
 	</View>
 );
 
-const MainPage = () => (
-	<MainNavigator />
+const MainPage = ( {navigation} ) => (
+	<MainNavigator nav={navigation} screenProps={navigation.state.params}/>
 );
 
 const SignUpNavOpts = {
@@ -102,6 +111,10 @@ const LoginNavigator = StackNavigator({
 	},
 	SignUpPwd: {
 		screen: PromptPwd,
+		navigationOptions: SignUpNavOpts,
+	},
+	SignUpHandle: {
+		screen: PromptHandle,
 		navigationOptions: SignUpNavOpts,
 	},
 	SignUpConfirm: {

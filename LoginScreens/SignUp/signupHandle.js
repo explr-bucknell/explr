@@ -26,54 +26,37 @@ export default class SignupPwd extends Component {
 		super(props);
     	this.state = {
     		disabled: true,
-    		//alert: false,
+    		duplicate: false,
     		firstName: this.props.nav.state.params.firstName,
     		lastName: this.props.nav.state.params.lastName,
     		email: this.props.nav.state.params.email,
-    		pwd: "",
+    		pwd: this.props.nav.state.params.pwd,
+    		handle: "",
     	};
 	}
 
-	checkPwd(pwd) {
-		format = /(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%?!]){8,20}/;
-		allowed = /^[a-zA-Z0-9@#$%?!]+$/;
+	changeState(disabled, duplicate, handle) {
 		this.setState({
-			disabled: ((format.test(pwd) && allowed.test(pwd)) ? false : true),
-			pwd: pwd,
-		});
-		/*
-		if (format.test(pwd)) {
-			this.setState({
-				disabled: false,
-				alert: false,
-			});
-		}
-		else {
-			if (pwd.length < 8) {
-				alert = "Password must be at least 8 characters long";
-			} else if (pwd.length > 20) {
-				alert = "Password must be at most 20 characters long";
-			} else if (pwd.match(/\d+/g) == null) {
-				alert = "Password must contain at least one number";
-			} else if (pwd.match(/[a-z]/) == null) {
-				alert = "Password must contain at least one lowercase letter";
-			} else if (pwd.match(/[A-Z]/) == null) {
-				alert = "Password must contain at least one uppercase letter";
-			} else if (pwd.match(/[@#$%?!]/) == null) {
-				alert = "Password must contain at least one special character (@#$%?!)";
-			} else {
-				alert = "Password contains illegal character"
-			}
-			this.setState({
-				disabled: true,
-				alert: true,
-			});
-		}
-		*/
+			disabled: disabled,
+			duplicate: duplicate,
+			handle: handle,
+		})
 	}
 
-	getUserData() {
-		return {firstName: this.state.firstName, lastName: this.state.lastName, email: this.state.email, pwd: this.state.pwd};
+	async checkHandle(handle) {
+		var allowed = (handle.length >= 5) && (handle.length <= 20) && (/^[a-zA-Z0-9_]+$/.test(handle));
+		var duplicate;
+
+		var handlesRef = firebase.database().ref('users/handles');
+		await handlesRef.child(handle).once("value", function(snapshot) {
+		  	if (snapshot.val()) {
+		  		duplicate = true;
+		  	} else {
+		  		duplicate = false;
+		  	}
+		});
+
+		this.changeState(((allowed && !duplicate) ? false : true), duplicate, handle);
 	}
 
 	async createAccount() {
@@ -106,17 +89,22 @@ export default class SignupPwd extends Component {
 		});
 	}
 
+	setDuplicate(dup) {
+		this.setState({duplicate: dup});
+	}
+
 	render() {
 		return (
 			<Container style={styles.container}>
 				<Content>
 					<Form>
 						<Item stackedLabel style={styles.item}>
-							<Label style={styles.label}>PASSWORD</Label>
-							<Input onChangeText={(text) => this.checkPwd(text)} secureTextEntry={true} autoCapitalize='none' autoCorrect={false} keyboardAppearance={'light'} style={styles.input}/>
+							<Label style={styles.label}>HANDLE</Label>
+							<Input onChangeText={(text) => this.checkHandle(text)} autoCapitalize='none' autoCorrect={false} keyboardAppearance={'light'} style={styles.input}/>
 						</Item>
+						<Text style={[styles.duplicate, {display: this.state.duplicate ? 'flex' : 'none'}]}>This handle is already in use!</Text>
 					</Form>
-					<TouchableOpacity disabled={this.state.disabled} style={this.state.disabled ? [styles.button, styles.disabled] : styles.button} onPress={() => {this.props.nav.navigate('SignUpHandle', this.getUserData())}}>
+					<TouchableOpacity disabled={this.state.disabled} style={this.state.disabled ? [styles.button, styles.disabled] : styles.button} onPress={() => {this.createAccount()}}>
 				    	<FontAwesome name="angle-right" style={styles.next}/>
 				    </TouchableOpacity>
 				</Content>
@@ -137,6 +125,11 @@ const styles = StyleSheet.create({
 		fontSize: 12,
 		fontWeight: "700",
 		marginBottom: DEVICE_HEIGHT * 0.01,
+	},
+	duplicate: {
+		color: 'red',
+		fontSize: 12,
+		marginTop: DEVICE_HEIGHT * 0.01,
 	},
 	input: {
 		height: INPUT_HEIGHT,

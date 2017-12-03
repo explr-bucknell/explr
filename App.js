@@ -31,7 +31,7 @@ export default class App extends React.Component {
           /> 
           : null
         }
-        <MainNavigator />
+        <LoginNavigator />
       </View>
     )
   }

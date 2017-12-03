@@ -47,11 +47,14 @@ export default class LoginForm extends Component {
 		var navigate = this.props.nav.navigate;
 
 		firebase.auth().signInWithEmailAndPassword(email, password).then(function() {
-			navigate("MainPage");
+			var user = firebase.auth().currentUser;
+			var uid = user.uid;
+			navigate("MainPage", {uid: uid});
 		}).catch(function(error) {
 			// Handle Errors here.
 			var errorCode = error.code;
 			var errorMessage = error.message;
+			console.log(error.message);
 		});
 	}
 

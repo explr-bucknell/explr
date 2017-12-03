@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
+import firebase from 'firebase';
 import Dimensions from 'Dimensions';
 import { primary, white } from '../utils/colors';
 
@@ -16,11 +17,25 @@ export default class Buttons extends Component {
 
     constructor(props) {
 	    super(props);
+
+	    this.state = {
+	    	loggedIn: true,
+	    }
+	}
+
+	componentDidMount() {
+		var user = firebase.auth().currentUser;
+		if (!user) {
+			this.setState({
+				loggedIn: false,
+			})
+		}
 	}
 
 	render() {
+		console.log(this.state.loggedIn);
 		return (
-			<View style={styles.container}>
+			<View style={[styles.container, {display: this.state.loggedIn ? 'none' : 'flex'}]}>
 				<TouchableOpacity {...this.props} style={styles.signup} onPress={() => {this.props.nav.navigate('SignUpName')}}>
 			    	<Text style={styles.signupText}>SIGN UP</Text>
 			    </TouchableOpacity>

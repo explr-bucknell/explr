@@ -15,25 +15,79 @@ var db = admin.database();
 var npRef = db.ref("national_parks");
 var nmRef = db.ref("national_monuments");
 
-var startNum = 1;
+var startNum = 101;
 var stop = false;
+var url = 'https://developer.nps.gov/api/v1/parks?api_key=ixWMRYRSzcQBgLHaFf2vZwjx3SWRSGQBsiE1CRab&fields=fullName,parkCode,latLong,designation,description,images&excludeDefaultFields=1&limit=100';
 
 async.whilst(function () {
  	return !stop;
 },
 function (next) {
-	requestURL = 'https://developer.nps.gov/api/v1/parks?api_key=ixWMRYRSzcQBgLHaFf2vZwjx3SWRSGQBsiE1CRab&fields=fullName,parkCode,latLong,designation,description,images&excludeDefaultFields=1&limit=100';
-	requestURL += '&start=' + startNum.toString();
+	console.log('start');
+	requestURL = url + '&start=' + startNum.toString();
 	request(requestURL, { json: true }, function (error, response, body) {
 		if (!error && response.statusCode == 200) {
+			if (body.data == null) {
+				console.log('body');
+				console.log(body);
+			}
 			console.log(body.data.length);
 		  	if (body.data.length < 100) {
 				stop = true;
 			}
 			startNum += 100;
-			extractNPSData(body.data, npRef, nmRef);
+			async.each(
+                body.data, 
+                function(item, callback) {
+                	curr = {}
+					designation = item.designation;
+
+					myRef = null;
+					if (designation.includes("National Park")) {
+						myRef = npRef;
+						curr.id = "natpark";
+					} else if (designation.includes("National Monument")) {
+						myRef = nmRef;
+						curr.id = "natmonu";
+					}
+
+					code = item.parkCode;
+					curr.id += code;
+					curr.name = item.fullName;
+					curr.description = item.description;
+					if (item.images[0]) {
+						curr.image = item.images[0].url;
+					} else {
+						curr.image = null;
+					}
+					
+					latlong = item.latLong;
+
+					if (latlong == "") {
+						return callback(null);
+					}
+
+					latlong = extractLatLong(latlong);
+					curr.lat = latlong[0];
+					curr.long = latlong[1];
+
+					if (myRef) {
+						//console.log('saving');
+						myRef.child(code).set(curr);
+						//console.log('saved');
+					}
+
+					return callback(null);
+                },
+                function(err){
+                    //requestCount++;
+                    //firstCallback();
+                }
+            );
+			//extractNPSData(body.data, npRef, nmRef);
 		}
 		else {
+			console.log('error');
 			return;
 		}
 		next();
@@ -59,31 +113,34 @@ while (!stop) {
 }
 */
 
-function extractNPSData(rawData, npRef, nmRef) {
-	for (i = 0; i < rawData.length; i++) {
+async function extractNPSData(rawData, npRef, nmRef, callback) {
+	
 		curr = {}
-		designation = rawData[i].designation;
+		designation = rawData.designation;
 
 		myRef = null;
 		if (designation.includes("National Park")) {
 			myRef = npRef;
+			curr.id = "natpark";
 		} else if (designation.includes("National Monument")) {
 			myRef = nmRef;
+			curr.id = "natmonu";
 		}
 
-		code = rawData[i].parkCode;
-		curr.name = rawData[i].fullName;
-		curr.description = rawData[i].description;
-		if (rawData[i].images[0]) {
-			curr.image = rawData[i].images[0].url;
+		code = rawData.parkCode;
+		curr.id += code;
+		curr.name = rawData.fullName;
+		curr.description = rawData.description;
+		if (rawData.images[0]) {
+			curr.image = rawData.images[0].url;
 		} else {
 			curr.image = null;
 		}
 		
-		latlong = rawData[i].latLong;
+		latlong = rawData.latLong;
 
 		if (latlong == "") {
-			continue;
+			return callback(null);
 		}
 
 		latlong = extractLatLong(latlong);
@@ -91,10 +148,12 @@ function extractNPSData(rawData, npRef, nmRef) {
 		curr.long = latlong[1];
 
 		if (myRef) {
-			myRef.child(code).set(curr);
+			console.log('saving');
+			await myRef.child(code).set(curr);
+			console.log('saved');
 		}
-	}
-	return;
+	
+	return callback(null);
 }
 
 function extractLatLong(latlong) {

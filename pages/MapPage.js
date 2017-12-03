@@ -8,13 +8,11 @@ import {
   Animated, // eslint-disable-line no-unused-vars
   Easing // eslint-disable-line no-unused-vars
 } from 'react-native'
-import { StackNavigator, headerMode, navigationOptions } from 'react-navigation';
 import MapView from 'react-native-maps' // eslint-disable-line no-unused-vars
 import MapMarkerCallout from '../components/MapMarkerCallout'
-import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete'
+import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete'
 import Modal from 'react-native-modalbox'
 import { getLocations } from '../network/Requests'
-import Profile from './ProfilePage'
 
 export default class MapPage extends React.Component {
   constructor (props) {
@@ -60,6 +58,7 @@ export default class MapPage extends React.Component {
     this.setState({
       locationsLoaded: true
     })
+    //console.log(this.props)
   }
 
   handleSearchChange (text) {
@@ -71,6 +70,7 @@ export default class MapPage extends React.Component {
   }
 
   render() {
+
     let locations = this.state.locations
     return (
       <View style={styles.container}>
@@ -140,8 +140,10 @@ export default class MapPage extends React.Component {
                   <MapView.Callout>
                     <MapMarkerCallout
                       title={locations[locationType][locationName].name}
-                      description='asdfasdf'
-                      imageUrl='https://www.naturallyamazing.com/americasparks/490.jpg'
+                      // description='asdfasdf'
+                      imageUrl={locations[locationType][locationName].image} //'https://www.naturallyamazing.com/americasparks/490.jpg'
+                      id={locations[locationType][locationName].id}
+                      uid={this.props.uid}
                     />
                   </MapView.Callout>
                 </MapView.Marker>
@@ -157,20 +159,6 @@ export default class MapPage extends React.Component {
     )
   }
 }
-
-
-const MapS = ( {navigation}) => (
-  <MapPage navigate={navigation}/>
-);
-
-const ProfileScreen = ( {navigation}) => (
-  <Profile navigate={navigation}/>
-);
-
-const NatParkProfScreen = ( {navigation}) => (
-  <NatParkProf navigate={navigation}/>
-);
-
 
 const styles = StyleSheet.create({
   container: {
