@@ -10,13 +10,11 @@ import {
 } from 'react-native'
 import MapView from 'react-native-maps' // eslint-disable-line no-unused-vars
 import MapMarkerCallout from '../components/MapMarkerCallout'
-import { StackNavigator, headerMode, navigationOptions } from 'react-navigation';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete'
 import Modal from 'react-native-modalbox'
 import { getLocations } from '../network/Requests'
-import NatParkProf from './NationalParkProfile'
 
-class MapScreen extends React.Component {
+export default class MapPage extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
@@ -139,13 +137,7 @@ class MapScreen extends React.Component {
                   }}
                   pinColor={locationType === 'national_parks' ? 'green' : 'blue'}
                 >
-                  <MapView.Callout
-                    onPress={() => this.props.navigate.navigate('NatParkProf', 
-                    {
-                      name: locationName, //getting the name with locations[locationType][locationName].name throws an error and I've not been able to figure it out 
-                      description: 'Lovely location', 
-                      uid: this.props.uid
-                    })} >
+                  <MapView.Callout>
                     <MapMarkerCallout
                       title={locations[locationType][locationName].name}
                       // description='asdfasdf'
@@ -168,38 +160,6 @@ class MapScreen extends React.Component {
     )
   }
 }
-
-const MapS = ( {navigation}) => (
-  <MapScreen navigate={navigation}/>
-);
-
-const NatParkProfScreen = ( {navigation}) => (
-  <NatParkProf navigate={navigation}/>
-);
-
-const AppNavigation = StackNavigator({
-    HomeScreen: {
-      screen: MapS,
-      navigationOptions: {
-        headerMode: 'screen',
-        header: null,
-      },
-    },
-    NatParkProf: {
-      screen: NatParkProfScreen,
-      navigationOptions: {
-        headerMode: 'screen',
-        header: null,
-      },
-    },
-  })
-
-export default class MapPage extends React.Component{
-  render() {
-    return <AppNavigation />
-  }
-}
-
 
 const styles = StyleSheet.create({
   container: {
