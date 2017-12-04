@@ -49,7 +49,7 @@ export default class NatParkProf extends React.Component {
     })
   }
   */
-  
+
   componentDidMount() {
     var self = this
     const url = 'users/main/' + this.state.uid
