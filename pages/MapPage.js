@@ -144,6 +144,7 @@ export default class MapPage extends React.Component {
                       imageUrl={locations[locationType][locationName].image} //'https://www.naturallyamazing.com/americasparks/490.jpg'
                       id={locations[locationType][locationName].id}
                       uid={this.props.uid}
+                      navigate={this.props.navigate}
                     />
                   </MapView.Callout>
                 </MapView.Marker>

@@ -7,6 +7,7 @@ import { FontAwesome } from '@expo/vector-icons'
 import MapNav from './pages/MapNav'
 import SearchPage from './pages/SearchPage'
 import ProfilePage from './pages/ProfilePage'
+import NationalParkProfile from './pages/NationalParkProfile'
 import { primary, white, transparentWhite } from './utils/colors'
 
 const DEVICE_WIDTH = Dimensions.get('window').width
@@ -18,7 +19,7 @@ const handleTextChange = (text) => {
 }
 
 const MapScreen = (props) => (
-	<MapNav screenProps={props.screenProps}/>
+	<MapNav screenProps={Object.assign({}, props.navigation, props.screenProps)}/>
 )
 
 const MapNavOpts = ({ navigation }) => ({
@@ -80,6 +81,10 @@ const ProfileScreen = ({ navigation }) => (
 	<ProfilePage nav={navigation}/>
 )
 
+const LocationScreen = ({ navigation }) => (
+	<NationalParkProfile nav={navigation}/>
+)
+
 const MainNavigator = StackNavigator({
 	MapPage: {
 		screen: props => MapScreen(props),
@@ -91,6 +96,10 @@ const MainNavigator = StackNavigator({
 	},
 	ProfilePage: {
 		screen: ProfileScreen,
+		navigationOptions: MapNavOpts
+	},
+	LocationPage: {
+		screen: LocationScreen,
 		navigationOptions: MapNavOpts
 	}
 })

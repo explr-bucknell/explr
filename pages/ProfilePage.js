@@ -44,6 +44,7 @@ export default class ProfilePage extends React.Component {
   }
 
   componentWillMount() {
+  	console.log(this.props)
   	this.setState({
   		uid: this.props.uid ? this.props.uid : this.props.nav.state.params.uid
   	})
@@ -70,7 +71,6 @@ export default class ProfilePage extends React.Component {
   }
 	
   render() {
-  	console.log(this.state)
     return (
       	<View style={{backgroundColor: white}}>
         	<Animated.ScrollView

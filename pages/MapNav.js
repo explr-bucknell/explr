@@ -11,7 +11,7 @@ import { primary, white, gray } from '../utils/colors'
 const DEVICE_HEIGHT = Dimensions.get('window').height;
 
 const MapScreen = (props) => (
-	<MapPage {...props.screenProps} />
+	<MapPage {...props.screenProps}/>
 )
 
 const ProfileScreen = (props) => (

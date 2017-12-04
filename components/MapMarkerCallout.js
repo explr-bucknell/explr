@@ -57,9 +57,11 @@ export default class MapMarkerCallout extends Component {
       <View style={styles.callout}>
         <Image style={styles.image} source={{uri: this.props.imageUrl}} />
         <View style={styles.wrapper}>
-          <Text style={styles.title}>
-            {this.props.title}
-          </Text>
+          <TouchableOpacity style={styles.titleWrap} onPress={() => this.props.navigate('LocationPage', {name: this.props.title, description: this.props.description, imageUrl: this.props.imageUrl})}>
+            <Text style={styles.title}>
+              {this.props.title}
+            </Text>
+          </TouchableOpacity>
           <TouchableOpacity onPress={() => {this.state.liked ? this.removeLiked() : this.addLiked()}}>
             <FontAwesome name={this.state.liked ? "heart" : 'heart-o'} style={styles.icon}/>
           </TouchableOpacity>
@@ -82,8 +84,11 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row'
   },
-  title: {
+  titleWrap: {
     flex: 3,
+  },
+  title: {
+    flex: 1,
     fontSize: 20,
     marginTop: 10,
     maxWidth: 175,
