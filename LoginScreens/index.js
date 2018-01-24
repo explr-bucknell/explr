@@ -13,6 +13,8 @@ import SignupEmail from './SignUp/signupEmail';
 import SignupPwd from './SignUp/signupPwd';
 import SignupConfirm from './SignUp/signupConfirm';
 import SignupDone from './SignUp/signupDone';
+import ForgotPwd from './Login/ForgotPwd';
+import ResetPwd from './Login/ResetPwd';
 import MainNavigator from '../main.js';
 import { primary, white } from '../utils/colors';
 
@@ -80,6 +82,20 @@ const LoginScreen = ( {navigation} ) => (
 	</View>
 );
 
+const ForgotScreen = ( {navigation} ) => (
+	<View style={styles.container}>
+		<Text style={styles.text}>What's your email?</Text>
+		<ForgotPwd nav={navigation}/>
+	</View>
+);
+
+const ResetScreen = ( {navigation} ) => (
+	<View style={styles.container}>
+		<Text style={styles.text}>Create a new password:</Text>
+		<ResetPwd nav={navigation}/>
+	</View>
+);
+
 const MainPage = ( {navigation} ) => (
 	<MainNavigator nav={navigation} screenProps={navigation.state.params}/>
 );
@@ -134,6 +150,30 @@ const LoginNavigator = StackNavigator({
 			},
 			headerTintColor: primary,
     	},
+  	},
+  	ForgotPwd: {
+  		screen: ForgotScreen,
+  		navigationOptions: {
+  			headerTitle: "Forgot Password",
+			headerStyle: { 
+				backgroundColor: primary,
+				borderBottomWidth: 0,
+			},
+			headerTintColor: white,
+			headerBackTitle: null,
+  		}
+  	},
+  	ResetPwd: {
+  		screen: ResetScreen,
+  		navigationOptions: {
+  			headerTitle: "Reset Password",
+			headerStyle: { 
+				backgroundColor: primary,
+				borderBottomWidth: 0,
+			},
+			headerTintColor: white,
+			headerBackTitle: null,
+  		}
   	},
   	MainPage: {
   		screen: MainPage,

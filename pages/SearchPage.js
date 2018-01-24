@@ -4,6 +4,7 @@ import { Container, Header, Content, Tab, Tabs } from 'native-base';
 import { primary, white, black } from '../utils/colors'
 import firebase from 'firebase'
 import SearchUsers from './SearchUsers'
+import SearchPlaces from './SearchPlaces'
 
 export default class SearchPage extends React.Component {
 	constructor(props) {
@@ -30,7 +31,7 @@ export default class SearchPage extends React.Component {
 			<Container>
         <Tabs contentProps={{ keyboardShouldPersistTaps: 'always' }} initialPage={0} tabBarUnderlineStyle={{backgroundColor: primary, height: 3}}>
           <Tab heading="Places" tabStyle={{backgroundColor: white}} textStyle={{color: black, fontSize: 15}} activeTextStyle={{color: primary, fontSize: 16}}>
-            <View />
+            <SearchPlaces />
           </Tab>
           <Tab heading="Users" tabStyle={{backgroundColor: white}} textStyle={{color: black, fontSize: 15}} activeTextStyle={{color: primary, fontSize: 16}}>
             <SearchUsers nav={this.props.nav}/>

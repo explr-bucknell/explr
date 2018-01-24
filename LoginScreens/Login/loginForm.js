@@ -75,7 +75,7 @@ export default class LoginForm extends Component {
 					</Content>
 				</Container>
 				<View style={styles.container2}>
-					<TouchableOpacity><Text style={styles.text}>Forgot Password?</Text></TouchableOpacity>
+					<TouchableOpacity onPress={() => {this.props.nav.navigate('ForgotPwd')}}><Text style={styles.text}>Forgot Password?</Text></TouchableOpacity>
 					<TouchableOpacity onPress={() => {this.props.nav.navigate('SignUpName')}}><Text style={styles.text}>New Here? Sign Up</Text></TouchableOpacity>
 				</View>
 				<View style={styles.container3}>
