@@ -31,7 +31,7 @@ export default class SearchPage extends React.Component {
 			<Container>
         <Tabs contentProps={{ keyboardShouldPersistTaps: 'always' }} initialPage={0} tabBarUnderlineStyle={{backgroundColor: primary, height: 3}}>
           <Tab heading="Places" tabStyle={{backgroundColor: white}} textStyle={{color: black, fontSize: 15}} activeTextStyle={{color: primary, fontSize: 16}}>
-            <SearchPlaces />
+            <SearchPlaces nav={this.props.nav}/>
           </Tab>
           <Tab heading="Users" tabStyle={{backgroundColor: white}} textStyle={{color: black, fontSize: 15}} activeTextStyle={{color: primary, fontSize: 16}}>
             <SearchUsers nav={this.props.nav}/>

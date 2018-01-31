@@ -3,15 +3,14 @@ import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import firebase from 'firebase'
 import { primary, white, gray, black } from '../utils/colors'
 
-export default class SearchUsers extends React.Component {
+export default class SearchPlaces extends React.Component {
 	constructor(props) {
 		super(props)
 	}
 
 	state = {
-		uids: [],
+		pids: [],
 		names: [],
-		handles: [],
 		images: []
 	}
 
@@ -21,7 +20,7 @@ export default class SearchUsers extends React.Component {
 
 	handleTextChange = (text) => {
 		if (!text) {
-			this.setState({ uids:[], names: [], handles: [], images: [] })
+			this.setState({ pids:[], names: [], images: [] })
 			return
 		}
 		text = text.toLowerCase()
@@ -30,17 +29,17 @@ export default class SearchUsers extends React.Component {
 		var ref = firebase.database().ref('users/main')
 		ref.orderByChild("handle").startAt(text).endAt(text + '\uf8ff').limitToFirst(10).on("value", function(snapshot) {
 			var uids = []
-  		var names = []
-  		var handles = []
-  		var images = []
-  		snapshot.forEach(function(user) {
-  			var userVal = user.val()
-  			uids.push(user.key)
-  			names.push(userVal.firstname + " " + userVal.lastname)
-  			handles.push(userVal.handle)
-  			images.push(userVal.imageUrl)
-  		})
-	  	self.setState({ uids, names, handles, images })
+			var names = []
+			var handles = []
+			var images = []
+			snapshot.forEach(function(user) {
+				var userVal = user.val()
+				uids.push(user.key)
+				names.push(userVal.firstname + " " + userVal.lastname)
+				handles.push(userVal.handle)
+				images.push(userVal.imageUrl)
+			})
+	  		self.setState({ uids, names, handles, images })
 		})	
 	}
 
