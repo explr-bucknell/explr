@@ -97,8 +97,6 @@ export default class MapPage extends React.Component {
   }
 
   onRegionChangeComplete (region) {
-    console.log("region change", region)
-    
     this.setState({ region })
   }
 
@@ -166,9 +164,6 @@ export default class MapPage extends React.Component {
   }
 
   render() {
-
-    console.log("render", this.state.region)
-
     let locations = this.state.locations
     return (
       <View style={styles.container}>

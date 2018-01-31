@@ -68,7 +68,6 @@ export async function getPOIAutocomplete (query) {
         results.push(poiJson.predictions[i])
       }
     }
-    console.log("result", results)
     return results
   } catch (error) {
     console.error(error)
