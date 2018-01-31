@@ -51,6 +51,30 @@ export async function getPOIDetails (placeId) {
   }
 }
 
+export async function getPOIAutocomplete (query) {
+  try {
+    var results = []
+    let poi = await fetch(
+      `https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${query}&types=establishment&key=${config.apiKey}`
+    )
+    let poiJson = await poi.json()
+    for (i in poiJson.predictions) {
+      var id = poiJson.predictions[i].place_id
+      var firebaseInstance = await fetch(
+        `https://senior-design-explr.firebaseio.com/pois.json?orderBy="id"&equalTo="${id}"`
+      )
+      var firebaseJson = await firebaseInstance.json()
+      if (Object.keys(firebaseJson).length > 0) {
+        results.push(poiJson.predictions[i])
+      }
+    }
+    console.log("result", results)
+    return results
+  } catch (error) {
+    console.error(error)
+  }
+}
+
 export async function makePhotoRequest (photoReference) {
   try {
     let photoUrl = await fetch(

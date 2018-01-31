@@ -1,6 +1,6 @@
 import React from 'react'
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import firebase from 'firebase'
+import { getPOIAutocomplete } from '../network/Requests'
 import { primary, white, gray, black } from '../utils/colors'
 
 export default class SearchPlaces extends React.Component {
@@ -9,49 +9,39 @@ export default class SearchPlaces extends React.Component {
 	}
 
 	state = {
-		pids: [],
-		names: [],
-		images: []
+		ids: [],
+		names: []
 	}
 
 	componentDidMount() {
-		this.props.nav.setParams({ handleText: this.handleTextChange });
+		this.props.nav.setParams({ handleText: this.handleTextChange })
 	}
 
 	handleTextChange = (text) => {
 		if (!text) {
-			this.setState({ pids:[], names: [], images: [] })
+			this.setState({ ids:[], names:[] })
 			return
 		}
-		text = text.toLowerCase()
-		console.log(text)
-		var self = this
-		var ref = firebase.database().ref('users/main')
-		ref.orderByChild("handle").startAt(text).endAt(text + '\uf8ff').limitToFirst(10).on("value", function(snapshot) {
-			var uids = []
+		//console.log(text)
+		
+		getPOIAutocomplete(text).then((data) => {
+			var ids = []
 			var names = []
-			var handles = []
-			var images = []
-			snapshot.forEach(function(user) {
-				var userVal = user.val()
-				uids.push(user.key)
-				names.push(userVal.firstname + " " + userVal.lastname)
-				handles.push(userVal.handle)
-				images.push(userVal.imageUrl)
+			data.forEach(function(poi) {
+				ids.push(poi.place_id)
+				names.push(poi.description)
 			})
-	  		self.setState({ uids, names, handles, images })
-		})	
+			this.setState({ ids, names })
+		})
 	}
 
 	render() {
 		return (
 			<View style={styles.container}>
 				{this.state.names.map((name, i) => (
-					<TouchableOpacity key={i} style={styles.profileCard} onPress={() => this.props.nav.navigate('ProfilePage', {uid: this.state.uids[i]})}>
-						<Image style={styles.profilePic} source={ this.state.images[i] ? {uri: this.state.images[i]} : (require('../assets/images/profilePic.png')) } />
+					<TouchableOpacity key={i} style={styles.profileCard} onPress={() => this.props.nav.navigate('MapPage', { id: this.state.ids[i] })}>
 						<View style={styles.textWrapper}>
 							<Text style={styles.name}>{name}</Text>
-							<Text style={styles.handle}>{this.state.handles[i]}</Text>
 						</View>
 					</TouchableOpacity>
 				))}

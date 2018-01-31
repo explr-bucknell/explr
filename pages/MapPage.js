@@ -28,6 +28,7 @@ export default class MapPage extends React.Component {
         latitudeDelta: 0.0922,
         longitudeDelta: 0.0421,
       },
+      region_set: false,
       locations: {},
       locationsLoaded: false,
       locationTypes: {
@@ -58,6 +59,21 @@ export default class MapPage extends React.Component {
     this.setState({
       locationsLoaded: true
     })
+
+    // Center map at chosen poi if exists
+    if (this.props.state.params && this.props.state.params.id) {
+      let place_id = this.props.state.params.id
+      getLocation(place_id).then((data) => {
+        this.setState({
+          region: {
+            latitude: data.lat,
+            longitude: data.long,
+            latitudeDelta: 0.0922,
+            longitudeDelta: 0.0421,
+          }
+        })
+      })
+    }
   }
 
   dropPin (coords) {
@@ -81,6 +97,8 @@ export default class MapPage extends React.Component {
   }
 
   onRegionChangeComplete (region) {
+    console.log("region change", region)
+    
     this.setState({ region })
   }
 
@@ -149,12 +167,15 @@ export default class MapPage extends React.Component {
 
   render() {
 
+    console.log("render", this.state.region)
+
     let locations = this.state.locations
     return (
       <View style={styles.container}>
         <MapView
           style={this.state.editingCustomPin ? styles.mapSquished : styles.map}
           initialRegion={this.state.region}
+          region={this.state.region}
           onRegionChangeComplete={(region) => this.onRegionChangeComplete(region)}
           onLongPress={e => this.dropPin(e.nativeEvent.coordinate)}
           //onPress={this.hideSearchBar.bind(this)}
