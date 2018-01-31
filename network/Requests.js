@@ -2,15 +2,75 @@ import React from 'react';
 import firebase from 'firebase';
 import GeoFire from 'geofire';
 
+var config = {
+  apiKey: 'AIzaSyBztce7Z8iOrB5EgV4IE8gjlFGAy6MXSkQ'
+}
+
 export async function getLocations (locationType) {
   try {
     let locations = await fetch(`https://senior-design-explr.firebaseio.com/${locationType}.json`);
     let locationsJson = await locations.json();
     return locationsJson
-  } catch(error) {
+  } catch (error) {
     // Handle error
     console.error(error);
   }
+}
+
+export async function getLocation (locationId) {
+  try {
+    let location = await fetch (`https://senior-design-explr.firebaseio.com/pois/${locationId}.json`)
+    let locationJson = await location.json()
+    return locationJson
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+export async function getPOIFromLatLng (lat, lng, selectedFilter) {
+  try {
+    let pointsOfInterest = await fetch(
+      `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${lat},${lng}&radius=500&type=${selectedFilter}&key=${config.apiKey}`
+    )
+    let poiJson = await pointsOfInterest.json();
+    return poiJson
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+export async function getPOIDetails (placeId) {
+  try {
+    let poiDetail = await fetch(
+      `https://maps.googleapis.com/maps/api/place/details/json?placeid=${placeId}&key=${config.apiKey}`
+    )
+    let poiDetailJson = await poiDetail.json()
+    return poiDetailJson
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+export async function makePhotoRequest (photoReference) {
+  try {
+    let photoUrl = await fetch(
+      `https://maps.googleapis.com/maps/api/place/photo?&maxheight=400&photoreference=${photoReference}&key=${config.apiKey}`
+    )
+    return photoUrl
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+export async function submitPoiToFirebase (poi, photoUrl) {
+  firebase.database().ref('pois/' + poi.place_id).set({
+    name: poi.name,
+    id: poi.place_id,
+    image: photoUrl.url,
+    lat: poi.geometry.location.lat,
+    long: poi.geometry.location.lng,
+    description: poi.name // FIX THIS
+  })
 }
 
 /**
