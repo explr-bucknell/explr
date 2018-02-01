@@ -5,6 +5,16 @@ import GeoFire from 'geofire';
 var config = {
   apiKey: 'AIzaSyBztce7Z8iOrB5EgV4IE8gjlFGAy6MXSkQ'
 }
+//for geofire
+var full_config = {
+  apiKey: 'AIzaSyBztce7Z8iOrB5EgV4IE8gjlFGAy6MXSkQ',
+  authDomain: 'senior-design-explr.firebaseapp.com',
+  databaseURL: 'https://senior-design-explr.firebaseio.com',
+  projectId: 'senior-design-explr',
+  storageBucket: 'senior-design-explr.appspot.com',
+  messagingSenderId: '866651490806'
+}
+const firebaseApp = fb.initializeApp(full_config)
 
 export async function getLocations (locationType) {
   try {
@@ -94,6 +104,10 @@ export async function submitPoiToFirebase (poi, photoUrl) {
     long: poi.geometry.location.lng,
     description: poi.name // FIX THIS
   })
+  //adding to geoFire
+  var geoFireRef = fb.database().ref("geo_data/")
+  var geoFire = new GeoFire(geoFireRef)
+  geoFire.set(poi.place_id, [poi.geometry.location.lat, poi.geometry.location.lng])
 }
 
 /**
@@ -126,3 +140,32 @@ export async function getInArea(center, radius){
 });
 
   }
+
+  ///will need to be structured differently if the DB is restructured
+  /**
+  geoFireToLocation takes a geofire point and returns the corresponding full location from the database
+  **/
+export async function geoFireToLocation(g_point) {
+    //trying to get locations off of a geoFire point
+    //pois
+    let locationId = g_point.key
+    try {
+      let location = await fetch (`https://senior-design-explr.firebaseio.com/pois/${locationId}.json`)
+      let locationJson = await location.json()
+      return locationJson
+    } catch (error) {
+      try {
+        let location2 = await fetch (`https://senior-design-explr.firebaseio.com/national_parks/${locationId}.json`)
+        let locationJson2 = await location2.json()
+        return locationJson2
+      } catch (error2) {
+        try {
+          let location3 = await fetch (`https://senior-design-explr.firebaseio.com/national_monuments/${locationId}.json`)
+          let locationJson3 = await location3.json()
+          return locationJson3
+        } catch (error3) {
+      console.error(error3)
+    }
+  }
+}
+}
