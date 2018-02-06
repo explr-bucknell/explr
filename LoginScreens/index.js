@@ -34,7 +34,7 @@ const StartScreen = ( {navigation} ) => (
 
 const PromptName = ( {navigation} ) => (
 	<View style={styles.container}>
-		<Text style={styles.text}>What's you name?</Text>
+		<Text style={styles.text}>What's your name?</Text>
 		<SignupName nav={navigation}/>
 	</View>
 );
@@ -101,8 +101,8 @@ const MainPage = ( {navigation} ) => (
 );
 
 const SignUpNavOpts = {
-	headerTitle: "Creat Account",
-	headerStyle: { 
+	headerTitle: "Create Account",
+	headerStyle: {
 		backgroundColor: primary,
 		borderBottomWidth: 0,
 	},
@@ -144,7 +144,7 @@ const LoginNavigator = StackNavigator({
   	Login: {
   		screen: LoginScreen,
   		navigationOptions: {
-      		headerStyle: { 
+      		headerStyle: {
 				backgroundColor: white,
 				borderBottomWidth: 0,
 			},
@@ -155,7 +155,7 @@ const LoginNavigator = StackNavigator({
   		screen: ForgotScreen,
   		navigationOptions: {
   			headerTitle: "Forgot Password",
-			headerStyle: { 
+			headerStyle: {
 				backgroundColor: primary,
 				borderBottomWidth: 0,
 			},
@@ -167,7 +167,7 @@ const LoginNavigator = StackNavigator({
   		screen: ResetScreen,
   		navigationOptions: {
   			headerTitle: "Reset Password",
-			headerStyle: { 
+			headerStyle: {
 				backgroundColor: primary,
 				borderBottomWidth: 0,
 			},
@@ -187,7 +187,7 @@ export default LoginNavigator;
 
 const styles = StyleSheet.create({
 	container: {
-		flex: 1, 
+		flex: 1,
 		backgroundColor: primary,
 	},
 	text: {

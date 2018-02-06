@@ -6,6 +6,7 @@ import { primary, white } from './utils/colors'
 import firebase from 'firebase'
 import MainNavigator from './main'
 import MapPage from './pages/MapPage'
+import UserTrips from './components/UserTrips'
 
 const { StatusBarManager } = NativeModules
 
