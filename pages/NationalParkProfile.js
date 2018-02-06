@@ -5,7 +5,7 @@ import firebase from 'firebase'
 import { primary, white, gray, black } from '../utils/colors'
 import ContentGrid from '../components/ContentGrid'
 import SavedLocations from '../components/SavedLocations'
-import SavedChallenges from '../components/SavedChallenges'
+import UserTrips from '../components/UserTrips'
 
 const {width: SCREEN_WIDTH} = Dimensions.get("window");
 const IMAGE_HEIGHT = 150;
@@ -23,8 +23,8 @@ export default class NatParkProf extends React.Component {
     outputRange: [0, 0, 1]
   });
   headerBg = 'transparent';
-  
-  
+
+
   tabContent = (x, i) => <View>
     <List>
       {new Array(x).fill(null).map((x, i) => <Item key={i}><Text>Item {i}</Text></Item>)}
@@ -55,7 +55,7 @@ export default class NatParkProf extends React.Component {
     const url = 'users/main/' + this.state.uid
     var userRef = firebase.database().ref(url)
   }
-  
+
   render() {
     console.log(this.state)
     return (
@@ -65,7 +65,7 @@ export default class NatParkProf extends React.Component {
             showsVerticalScrollIndicator={false}
             onScroll={Animated.event([{nativeEvent: {contentOffset: {y: this.scroll}}}], {useNativeDriver: true})}
             style={{zIndex: 0}}>
-          
+
               <View style={styles.header}>
                 <View style={styles.textContainer}>
                   <View style={styles.nameContainer}>
@@ -81,18 +81,18 @@ export default class NatParkProf extends React.Component {
               </View>
 
               <Tabs
-                renderTabBar={(props) => 
+                renderTabBar={(props) =>
                   <Animated.View
                     style={{transform: [{translateY: this.tabY}], zIndex: 1, width: "100%", backgroundColor: white}}>
                     <ScrollableTab {...props}
                       style={{borderBottomWidth: 0}}
                       renderTab={(name, page, active, onPress, onLayout) => (
-                        <TouchableOpacity 
+                        <TouchableOpacity
                           key={page}
                           onPress={() => onPress(page)}
                           onLayout={onLayout}
                           activeOpacity={0.4}>
-                          <TabHeading 
+                          <TabHeading
                             scrollable
                             style={{
                               backgroundColor: "transparent",
@@ -200,4 +200,3 @@ const styles = StyleSheet.create({
     fontWeight: 'bold'
   }
 });
-
