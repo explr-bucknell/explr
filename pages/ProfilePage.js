@@ -5,7 +5,7 @@ import firebase from 'firebase'
 import { primary, white, gray, black } from '../utils/colors'
 import ContentGrid from '../components/ContentGrid'
 import SavedLocations from '../components/SavedLocations'
-import SavedChallenges from '../components/SavedChallenges'
+import UserTrips from '../components/UserTrips'
 
 const {width: SCREEN_WIDTH} = Dimensions.get("window");
 const IMAGE_HEIGHT = 150;
@@ -23,8 +23,8 @@ export default class ProfilePage extends React.Component {
     outputRange: [0, 0, 1]
   });
   headerBg = 'transparent';
-  
-  
+
+
   tabContent = (x, i) => <View>
     <List>
       {new Array(x).fill(null).map((x, i) => <Item key={i}><Text>Item {i}</Text></Item>)}
@@ -32,24 +32,22 @@ export default class ProfilePage extends React.Component {
 
   constructor(props) {
     super(props);
-  }
-
-  state = {
-  	uid: null,
-  	displayName: null,
-  	handle: null,
-  	numFollowers: null,
-  	numFollowing: null,
-  	imageUrl: null
+    this.state = {
+    	uid: null,
+    	displayName: null,
+    	handle: null,
+    	numFollowers: null,
+    	numFollowing: null,
+    	imageUrl: null
+    }
   }
 
   componentWillMount() {
-  	console.log(this.props)
   	this.setState({
   		uid: this.props.uid ? this.props.uid : this.props.nav.state.params.uid
   	})
   }
-  
+
   componentDidMount() {
   	var self = this
   	const url = 'users/main/' + this.state.uid
@@ -69,16 +67,16 @@ export default class ProfilePage extends React.Component {
       numFollowing: snapshot.numFollowing,
     })
   }
-	
+
   render() {
     return (
-      	<View style={{backgroundColor: white}}>
+      	<View style={{backgroundColor: white, height: '100%'}}>
         	<Animated.ScrollView
 						scrollEventThrottle={1}
 						showsVerticalScrollIndicator={false}
 						onScroll={Animated.event([{nativeEvent: {contentOffset: {y: this.scroll}}}], {useNativeDriver: true})}
 						style={{zIndex: 0}}>
-          
+
           		<View style={styles.header}>
 			      		<View style={styles.textContainer}>
 				      		<View style={styles.nameContainer}>
@@ -103,50 +101,48 @@ export default class ProfilePage extends React.Component {
 								</View>
 							</View>
 
-          		<Tabs
-            		renderTabBar={(props) => 
-            			<Animated.View
-			          		style={{transform: [{translateY: this.tabY}], zIndex: 1, width: "100%", backgroundColor: white}}>
-			          		<ScrollableTab {...props}
-			          			style={{borderBottomWidth: 0}}
-											renderTab={(name, page, active, onPress, onLayout) => (
-												<TouchableOpacity 
-													key={page}
-													onPress={() => onPress(page)}
-													onLayout={onLayout}
-													activeOpacity={0.4}>
-													<TabHeading 
-														scrollable
-														style={{
-															backgroundColor: "transparent",
-															width: SCREEN_WIDTH / 2,
-															borderBottomWidth: 0
-														}}
-														active={active}>
-														<Text style={{
-											      	justifyContent: 'center',
-															alignItems: 'center',
-													    fontWeight: "bold",
-															color: active ? this.textColor : gray,
-															fontSize: active ? 16 : 15
-														}}>
-															{name}
-														</Text>
-													</TabHeading>
-												</TouchableOpacity>
-											)}
-											underlineStyle={{backgroundColor: this.textColor, borderWidth: 0}}
-										/>
-			        		</Animated.View>
-            		}
+          		<Tabs renderTabBar={(props) =>
+          			<Animated.View
+		          		style={{transform: [{translateY: this.tabY}], zIndex: 1, width: "100%", backgroundColor: primary, borderBottomWidth: 2, borderColor: primary}}>
+		          		<ScrollableTab {...props}
+		          			style={{borderBottomWidth: 0}}
+										renderTab={(name, page, active, onPress, onLayout) => (
+											<TouchableOpacity
+												key={page}
+												onPress={() => onPress(page)}
+												onLayout={onLayout}
+												activeOpacity={0.4}>
+												<TabHeading
+													scrollable
+													style={{
+														backgroundColor: "transparent",
+														width: SCREEN_WIDTH / 2,
+														borderBottomWidth: 0
+													}}
+													active={active}>
+													<Text style={{
+										      	justifyContent: 'center',
+														alignItems: 'center',
+												    fontWeight: "bold",
+														color: active ? white : 'rgba(0, 0, 0, 0.5)',
+														fontSize: active ? 16 : 15
+													}}>
+														{name}
+													</Text>
+												</TabHeading>
+											</TouchableOpacity>
+										)}
+										underlineStyle={{backgroundColor: white, borderWidth: 0}}
+									/>
+		        		</Animated.View>}
             	>
-						<Tab heading="Places">
-							<SavedLocations uid={this.state.uid}/>
-						</Tab>
-	  				<Tab heading="Challenges">
-							<SavedChallenges />
-						</Tab>
-					</Tabs>
+    						<Tab heading="Places">
+    							<SavedLocations uid={this.state.uid}/>
+    						</Tab>
+    	  				<Tab heading="Trips">
+    							<UserTrips uid={this.state.uid}/>
+    						</Tab>
+					    </Tabs>
 				</Animated.ScrollView>
 			</View>
     )
@@ -223,4 +219,3 @@ const styles = StyleSheet.create({
 		fontWeight: 'bold'
 	}
 });
-
