@@ -3,8 +3,7 @@ import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 import Dimensions from 'Dimensions';
 import { Container, Header, Content, Form, Item, Input, Label } from 'native-base';
 import firebase from 'firebase';
-import { primary, secondary, white, gray } from '../../utils/colors';
-
+import { primary, black, white, gray } from '../../utils/colors';
 const DEVICE_WIDTH = Dimensions.get('window').width;
 const DEVICE_HEIGHT = Dimensions.get('window').height;
 
@@ -47,11 +46,14 @@ export default class LoginForm extends Component {
 		var navigate = this.props.nav.navigate;
 
 		firebase.auth().signInWithEmailAndPassword(email, password).then(function() {
-			navigate("MainPage");
+			var user = firebase.auth().currentUser;
+			var uid = user.uid;
+			navigate("MainPage", {uid: uid});
 		}).catch(function(error) {
 			// Handle Errors here.
 			var errorCode = error.code;
 			var errorMessage = error.message;
+			console.log(error.message);
 		});
 	}
 
@@ -73,7 +75,7 @@ export default class LoginForm extends Component {
 					</Content>
 				</Container>
 				<View style={styles.container2}>
-					<TouchableOpacity><Text style={styles.text}>Forgot Password?</Text></TouchableOpacity>
+					<TouchableOpacity onPress={() => {this.props.nav.navigate('ForgotPwd')}}><Text style={styles.text}>Forgot Password?</Text></TouchableOpacity>
 					<TouchableOpacity onPress={() => {this.props.nav.navigate('SignUpName')}}><Text style={styles.text}>New Here? Sign Up</Text></TouchableOpacity>
 				</View>
 				<View style={styles.container3}>
@@ -105,7 +107,7 @@ const styles = StyleSheet.create({
 	},
 	input: {
 		height: INPUT_HEIGHT,
-		color: secondary,
+		color: black,
 	},
 	item: {
 		marginBottom: INPUT_HEIGHT/3,

@@ -21,14 +21,12 @@ const WIDTH = DEVICE_WIDTH / 8;
 const HEIGHT = WIDTH;
 const RADIUS = WIDTH / 2;
 
-export default class SignupPwd extends Component {
+export default class ResetPwd extends Component {
 	constructor(props) {
 		super(props);
     	this.state = {
     		disabled: true,
     		//alert: false,
-    		firstName: this.props.nav.state.params.firstName,
-    		lastName: this.props.nav.state.params.lastName,
     		email: this.props.nav.state.params.email,
     		pwd: "",
     	};
@@ -73,7 +71,7 @@ export default class SignupPwd extends Component {
 	}
 
 	getUserData() {
-		return {firstName: this.state.firstName, lastName: this.state.lastName, email: this.state.email, pwd: this.state.pwd};
+		return {email: this.state.email, pwd: this.state.pwd};
 	}
 
 	async createAccount() {

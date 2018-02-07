@@ -33,7 +33,8 @@ export default class SignupDone extends Component {
 
 		if (user) {
 			// User is signed in.
-			navigate("MainPage");
+			var uid = user.uid;
+			navigate("MainPage", {uid: uid});
 		} else {
 			// No user is signed in.
 			navigate("Start");

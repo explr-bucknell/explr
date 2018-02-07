@@ -21,14 +21,12 @@ const WIDTH = DEVICE_WIDTH / 8;
 const HEIGHT = WIDTH;
 const RADIUS = WIDTH / 2;
 
-export default class SignupEmail extends Component {
+export default class ForgotPwd extends Component {
 	constructor(props) {
 		super(props);
     	this.state = {
     		disabled: true,
-    		duplicate: false,
-    		firstName: this.props.nav.state.params.firstName,
-    		lastName: this.props.nav.state.params.lastName,
+    		exsit: true,
     		email: "",
     	};
 	}
@@ -39,23 +37,55 @@ export default class SignupEmail extends Component {
 		this.setState({ disabled, email });
 	}
 
-	async checkDuplicate() {
-		var duplicate = false;
+	async checkExist() {
+		var exist = false;
 		await firebase.auth().fetchProvidersForEmail(this.state.email).then(function(ids) {
-			duplicate = (ids.length > 0);
+			exist = (ids.length > 0);
 		}).catch(function(error) {
 			if (error.code == 'auth/quota-exceeded') {
 				// not checking
+				console.log(error.code);
 			}
 		});
-		this.setState({ duplicate });
-		if (!duplicate) {
-			this.props.nav.navigate('SignUpPwd', this.getUserData());
+		this.setState({ exist });
+		console.log(exist);
+		if (exist) {
+			console.log("Sending");
+			//this.props.nav.navigate('ResetPwd', this.getUserData());
+			this.sendEmail();
 		}
 	}
 
-	getUserData() {
-		return {firstName: this.state.firstName, lastName: this.state.lastName, email: this.state.email};
+	sendEmail() {
+		var auth = firebase.auth();
+		//var user = auth.currentUser;
+		var email = this.state.email;
+		var navigate = this.props.nav.navigate;
+
+		/*
+		user.updateProfile({
+			emailVerified: false,
+		}).then(function() {
+			user.sendEmailVerification().then(function() {
+			  	// Email sent.
+			  	navigate('SignUpConfirm', {email: email, mode:'reset'});
+			}).catch(function(error) {
+			  	// An error happened.
+			  	navigate('SignUpConfirm', {email: error.message, mode:'reset'});
+			});
+		}, function(error) {
+			// An error happened.
+		});
+		*/
+		
+		auth.sendPasswordResetEmail(email).then(function() {
+		 	// Email sent.
+		 	console.log('Reset password email sent');
+		 	navigate('Login');
+		}).catch(function(error) {
+			// An error happened.
+		  	console.log("Reset password email sending failed.");
+		});
 	}
 
 	render() {
@@ -67,9 +97,9 @@ export default class SignupEmail extends Component {
 							<Label style={styles.label}>EMAIL ADDRESS</Label>
 							<Input onChangeText={(text) => this.checkEmail(text)} autoCapitalize='none' autoCorrect={false} keyboardType={'email-address'} keyboardAppearance={'light'} style={styles.input}/>
 						</Item>
-						<Text style={[styles.duplicate, {display: this.state.duplicate ? 'flex' : 'none'}]}>THIS EMAIL IS ALREADY REGISTERED!</Text>
+						<Text style={[styles.duplicate, {display: this.state.exist ? 'none' : 'flex'}]}>THIS EMAIL IS NOT REGISTERED!</Text>
 					</Form>
-					<TouchableOpacity disabled={this.state.disabled} style={this.state.disabled ? [styles.button, styles.disabled] : styles.button} onPress={() => {this.checkDuplicate()}}>
+					<TouchableOpacity disabled={this.state.disabled} style={this.state.disabled ? [styles.button, styles.disabled] : styles.button} onPress={() => {this.checkExist()}}>
 				    	<FontAwesome name="angle-right" style={styles.next}/>
 				    </TouchableOpacity>
 				</Content>

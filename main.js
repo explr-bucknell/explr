@@ -1,22 +1,25 @@
 import React from 'react'
 import { TouchableOpacity, Text, TextInput, Platform } from 'react-native'
+import firebase from 'firebase'
 import Dimensions from 'Dimensions'
 import { StackNavigator, navigationOptions, NavigationActions } from 'react-navigation'
 import { FontAwesome } from '@expo/vector-icons'
-//import MapPage from './pages/MapPage'
-import MapNav from './MapNav'
+import MapNav from './pages/MapNav'
 import SearchPage from './pages/SearchPage'
+import ProfilePage from './pages/ProfilePage'
+import NationalParkProfile from './pages/NationalParkProfile'
 import { primary, white, transparentWhite } from './utils/colors'
 
 const DEVICE_WIDTH = Dimensions.get('window').width
+var searchEntry = ""
 
-function handleTextChange(text) {
-	console.log(text)
+const handleTextChange = (text) => {
+	//console.log(text)
 	// TODO: Handle autocomplete for searching
 }
 
-const MapScreen = () => (
-	<MapNav />
+const MapScreen = (props) => (
+	<MapNav screenProps={Object.assign({}, props.navigation, props.screenProps)}/>
 )
 
 const MapNavOpts = ({ navigation }) => ({
@@ -26,7 +29,7 @@ const MapNavOpts = ({ navigation }) => ({
 		borderBottomWidth: 0,
 	},
 	headerRight: 
-		<TouchableOpacity onPress={() => navigation.navigate("SearchPage")} style={{ marginRight: 10 }}>
+		<TouchableOpacity onPress={() => navigation.navigate("SearchPage", { handleText: handleTextChange })} style={{ marginRight: 10 }}>
 			<FontAwesome
 		      name='search'
 		      size={20}
@@ -37,8 +40,8 @@ const MapNavOpts = ({ navigation }) => ({
 	headerBackTitle: null,
 })
 
-const SearchScreen = () => (
-	<SearchPage />
+const SearchScreen = ({ navigation }) => (
+	<SearchPage nav={navigation}/>
 )
 
 const SearchNavOpts = ({ navigation }) => ({
@@ -49,7 +52,7 @@ const SearchNavOpts = ({ navigation }) => ({
 	headerTitle:
 		<TextInput
 	        placeholder="Search for places here"
-	      	onChangeText={ (text) => handleTextChange(text) }
+	      	onChangeText={ (text) => navigation.state.params.handleText(text.trim()) }
 	        placeholderTextColor={ transparentWhite }
 	        autoFocus={ true }
 	        selectionColor={ Platform.OS === 'android' ? transparentWhite : white }
@@ -74,14 +77,30 @@ const SearchNavOpts = ({ navigation }) => ({
 		</TouchableOpacity>
 })
 
+const ProfileScreen = ({ navigation }) => (
+	<ProfilePage nav={navigation}/>
+)
+
+const LocationScreen = ({ navigation }) => (
+	<NationalParkProfile nav={navigation}/>
+)
+
 const MainNavigator = StackNavigator({
 	MapPage: {
-		screen: MapScreen,
+		screen: props => MapScreen(props),
 		navigationOptions: MapNavOpts
 	},
 	SearchPage: {
 		screen: SearchScreen,
 		navigationOptions: SearchNavOpts
+	},
+	ProfilePage: {
+		screen: ProfileScreen,
+		navigationOptions: MapNavOpts
+	},
+	LocationPage: {
+		screen: LocationScreen,
+		navigationOptions: MapNavOpts
 	}
 })
 

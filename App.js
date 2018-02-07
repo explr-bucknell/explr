@@ -5,6 +5,7 @@ import LoginNavigator from './LoginScreens/index'
 import { primary, white } from './utils/colors'
 import firebase from 'firebase'
 import MainNavigator from './main'
+import MapPage from './pages/MapPage'
 
 const { StatusBarManager } = NativeModules
 
@@ -28,10 +29,10 @@ export default class App extends React.Component {
               height: StatusBarManager.HEIGHT,
               backgroundColor: primary,
             }}
-          /> 
+          />
           : null
         }
-        <MainNavigator />
+        <LoginNavigator />
       </View>
     )
   }

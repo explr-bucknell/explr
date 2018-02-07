@@ -22,14 +22,17 @@ export default class LoginOther extends Component {
 
 	async facebookSignin() {
 		var navigate = this.props.nav.navigate;
+		var self = this;
 		const { type, token } = await Expo.Facebook.logInWithReadPermissionsAsync(FACEBOOK_APP_ID, {
-			permissions: ['public_profile'],
+			permissions: ['email', 'public_profile'],
 		});
 		if (type === 'success') {
 			var credential = firebase.auth.FacebookAuthProvider.credential(token);
 
 			firebase.auth().signInWithCredential(credential).then(function() {
-				navigate("MainPage");
+				var user = firebase.auth().currentUser;
+				var uid = user.uid;
+				self.fbFetch(uid, token);
 			}).catch(function(error) {
 				// Handle Errors here.
 				var errorCode = error.code;
@@ -39,6 +42,7 @@ export default class LoginOther extends Component {
 				// The firebase.auth.AuthCredential type that was used.
 				var credential = error.credential;
 				// ...
+				console.log(error.message)
 				navigate("Login");
 			});
 			/*
@@ -53,8 +57,17 @@ export default class LoginOther extends Component {
 		}
 	}
 
+	async fbFetch(uid, token) {
+		var fields = 'first_name,last_name,picture';
+		const response = await fetch(`https://graph.facebook.com/me?access_token=${token}&fields=${fields}`);
+		var data = await response.json();
+		
+		this.initUser(uid, data.first_name, data.last_name, data.picture.data.url);
+	}
+
 	async googleSignin() {
 		var navigate = this.props.nav.navigate;
+		var self = this;
 		try {
 		    const result = await Expo.Google.logInAsync({
 				androidClientId: GOOGLE_ANDROID_ID,
@@ -63,11 +76,14 @@ export default class LoginOther extends Component {
 		    });
 
 		    if (result.type === 'success') {
-		    	console.log(result);
+		    	//console.log(result);
 		    	var credential = firebase.auth.GoogleAuthProvider.credential(result.idToken);
 
 		    	firebase.auth().signInWithCredential(credential).then(function() {
-					navigate("MainPage");
+					var uid = firebase.auth().currentUser.uid;
+					console.log(result.user);
+					self.initUser(uid, result.user.givenName, result.user.familyName, result.user.photoUrl);
+					
 				}).catch(function(error) {
 					// Handle Errors here.
 					var errorCode = error.code;
@@ -78,7 +94,7 @@ export default class LoginOther extends Component {
 					var credential = error.credential;
 					// ...
 					console.log(errorMessage);
-					//navigate("Login");
+					navigate("Login");
 				});
 		    } else {
 		    	//navigate("Login");
@@ -86,6 +102,53 @@ export default class LoginOther extends Component {
 		} catch(e) {
 			//navigate("Login");
 		}
+	}
+
+	async initUser(uid, firstname, lastname, imageUrl) {
+		var navigate = this.props.nav.navigate;
+		var userExist;
+		var usersRef = firebase.database().ref('users/main');
+		var user = firebase.auth().currentUser;
+		await usersRef.child(uid).once("value", function(snapshot) {
+		  	if (snapshot.val()) {
+		  		userExist = true;
+		  	} else {
+		  		userExist = false;
+		  	}
+		});
+
+		if (!userExist) {
+			var name = firstname.replace(/[^a-z]/gi, '').toLowerCase();
+			var handle = name;
+			var count = 0;
+			var found = false;
+			while (!found) {
+				count += 1;
+				var handlesRef = firebase.database().ref('users/handles');
+				await handlesRef.child(handle).once("value", function(snapshot) {
+				  	if (snapshot.val()) {
+				  		handle = name + count.toString();
+				  	} else {
+				  		found = true;
+				  	}
+				});
+			}
+
+			console.log(handle);
+
+			await firebase.database().ref('users/handles/' + handle).set(uid);
+
+			await firebase.database().ref('users/main/' + uid).set({
+			    firstname: firstname,
+			    lastname: lastname,
+			    handle: handle,
+			    numFollowers: 0,
+			    numFollowing: 0,
+			    imageUrl: imageUrl
+			});
+		}
+
+		navigate("MainPage", {uid: uid});
 	}
 
  	render() {

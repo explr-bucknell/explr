@@ -1,11 +1,17 @@
-import React from 'react'
+import React from 'react';
+import firebase from 'firebase';
+import GeoFire from 'geofire';
+
+var config = {
+  apiKey: 'AIzaSyBztce7Z8iOrB5EgV4IE8gjlFGAy6MXSkQ'
+}
 
 export async function getLocations (locationType) {
   try {
     let locations = await fetch(`https://senior-design-explr.firebaseio.com/${locationType}.json`);
     let locationsJson = await locations.json();
     return locationsJson
-  } catch(error) {
+  } catch (error) {
     // Handle error
     console.error(error);
   }
@@ -118,5 +124,4 @@ export async function getInArea(center, radius){
       console.log("type of key: " + key.type);
       console.log("latitude  of location: " + location[0]);
     });
-
   }

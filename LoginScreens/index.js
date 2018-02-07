@@ -8,10 +8,13 @@ import LoginLogo from './Login/loginLogo';
 import LoginForm from './Login/loginForm';
 import LoginOther from './Login/loginOther';
 import SignupName from './SignUp/signupName';
+import SignupHandle from './SignUp/signupHandle';
 import SignupEmail from './SignUp/signupEmail';
 import SignupPwd from './SignUp/signupPwd';
 import SignupConfirm from './SignUp/signupConfirm';
 import SignupDone from './SignUp/signupDone';
+import ForgotPwd from './Login/ForgotPwd';
+import ResetPwd from './Login/ResetPwd';
 import MainNavigator from '../main.js';
 import { primary, white } from '../utils/colors';
 
@@ -51,6 +54,14 @@ const PromptPwd = ( {navigation} ) => (
 	</View>
 );
 
+const PromptHandle = ( {navigation} ) => (
+	<View style={styles.container}>
+		<Text style={styles.text}>Create an account handle</Text>
+		<Text style={[styles.text, styles.secondaryText]}>Your handle must be unique and must only contain lowercase letters and digits.</Text>
+		<SignupHandle nav={navigation}/>
+	</View>
+);
+
 const EmailConfirmation = ( {navigation} ) => (
 	<View style={styles.container}>
 		<SignupConfirm nav={navigation}/>
@@ -71,8 +82,22 @@ const LoginScreen = ( {navigation} ) => (
 	</View>
 );
 
-const MainPage = () => (
-	<MainNavigator />
+const ForgotScreen = ( {navigation} ) => (
+	<View style={styles.container}>
+		<Text style={styles.text}>What's your email?</Text>
+		<ForgotPwd nav={navigation}/>
+	</View>
+);
+
+const ResetScreen = ( {navigation} ) => (
+	<View style={styles.container}>
+		<Text style={styles.text}>Create a new password:</Text>
+		<ResetPwd nav={navigation}/>
+	</View>
+);
+
+const MainPage = ( {navigation} ) => (
+	<MainNavigator nav={navigation} screenProps={navigation.state.params}/>
 );
 
 const SignUpNavOpts = {
@@ -104,6 +129,10 @@ const LoginNavigator = StackNavigator({
 		screen: PromptPwd,
 		navigationOptions: SignUpNavOpts,
 	},
+	SignUpHandle: {
+		screen: PromptHandle,
+		navigationOptions: SignUpNavOpts,
+	},
 	SignUpConfirm: {
 		screen: EmailConfirmation,
 		navigationOptions: SignUpNavOpts,
@@ -121,6 +150,30 @@ const LoginNavigator = StackNavigator({
 			},
 			headerTintColor: primary,
     	},
+  	},
+  	ForgotPwd: {
+  		screen: ForgotScreen,
+  		navigationOptions: {
+  			headerTitle: "Forgot Password",
+			headerStyle: { 
+				backgroundColor: primary,
+				borderBottomWidth: 0,
+			},
+			headerTintColor: white,
+			headerBackTitle: null,
+  		}
+  	},
+  	ResetPwd: {
+  		screen: ResetScreen,
+  		navigationOptions: {
+  			headerTitle: "Reset Password",
+			headerStyle: { 
+				backgroundColor: primary,
+				borderBottomWidth: 0,
+			},
+			headerTintColor: white,
+			headerBackTitle: null,
+  		}
   	},
   	MainPage: {
   		screen: MainPage,
