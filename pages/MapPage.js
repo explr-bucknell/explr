@@ -69,10 +69,6 @@ export default class MapPage extends React.Component {
     //  var fullLocation = geoFireToLocation(key)
     //  this.state.locations['pois'].push(fullLocation) //I think this line is giving me troubles.
 
-
-
-
-    })
     this.setState({
       locationsLoaded: true
     })
