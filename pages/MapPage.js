@@ -32,8 +32,8 @@ export default class MapPage extends React.Component {
       locations: {},
       locationsLoaded: false,
       locationTypes: {
-        //national_monuments: 'blue',
-        //national_parks: 'green',
+        national_monuments: 'blue',
+        national_parks: 'green',
         pois: 'red'
       },
       searching: false,
@@ -47,7 +47,7 @@ export default class MapPage extends React.Component {
 
   componentDidMount () {
     //OLD CODE
-    /**
+
     let locations = this.state.locations
     Object.keys(this.state.locationTypes).forEach((locationType) => (
       getLocations (locationType)
@@ -58,16 +58,16 @@ export default class MapPage extends React.Component {
           })
         })
     ))
-    **/
-    //NEW code
-    var firebaseRef = firebase.database().ref('geo_data/')
+
+    //NEW code should be something like this
+    //var firebaseRef = firebase.database().ref('geo_data/')
     // Create a GeoFire index
-    var geoFire = new GeoFire(firebaseRef)
-    var geoQuery  = geoFire.query({center: [40.9549774, -76.8813942], radius: 0.0922})
-    var onKeyEnteredRegistration = geoQuery.on("key_entered", function(key, location) {
-      console.log('key' + key + '\n')
-      var fullLocation = geoFireToLocation(key)
-      this.state.locations['pois'].push(fullLocation)
+    //var geoFire = new GeoFire(firebaseRef)
+    //var geoQuery  = geoFire.query({center: [40.9549774, -76.8813942], radius: 0.0922})
+    //var onKeyEnteredRegistration = geoQuery.on("key_entered", function(key, location) {
+    //  console.log('key' + key + '\n')
+    //  var fullLocation = geoFireToLocation(key)
+    //  this.state.locations['pois'].push(fullLocation) //I think this line is giving me troubles.
 
 
 

@@ -111,7 +111,7 @@ export async function geoFireToLocation(g_point) {
       let locationJson = await location.json()
       return locationJson
     } catch (error) {
-      /** try {
+      try {
         let location2 = await fetch (`https://senior-design-explr.firebaseio.com/national_parks/${locationId}.json`)
         let locationJson2 = await location2.json()
         return locationJson2
@@ -122,9 +122,9 @@ export async function geoFireToLocation(g_point) {
           return locationJson3
         } catch (error3) {
       console.error(error3)
-    } **/
-    console.error(error)
+    }
   }
+}
 }
 
 //want a key entered and a ready
