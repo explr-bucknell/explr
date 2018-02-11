@@ -162,9 +162,8 @@ export async function getInArea(center, radius){
     var geoFire = new GeoFire(firebaseRef);
     var geoQuery  = geoFire.query(center: center, radius: radius);
     var  onKeyEnteredRegistration = geoQuery.on("key_entered", function(key, location) {
-  console.log("the key: " + key + "\n the location: " + location);
-  console.log("type of key: " + key.type);
-  console.log("latitude  of location: " + location[0]);
-});
-
+      console.log("the key: " + key + "\n the location: " + location);
+      console.log("type of key: " + key.type);
+      console.log("latitude  of location: " + location[0]);
+    });
   }
