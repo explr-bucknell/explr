@@ -128,6 +128,7 @@ export async function geoFireToLocation(g_point) {
 }
 
 //want a key entered and a ready
+/**
 export async function geoFireQuery(center, radius){
     var firebaseRef = firebase.database().ref('geo_data/')
     // Create a GeoFire index
@@ -144,3 +145,4 @@ export async function geoFireQuery(center, radius){
   //}
   //return onKeyEnteredRegistration
 }
+**/
