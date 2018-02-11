@@ -6,6 +6,47 @@ var config = {
   apiKey: 'AIzaSyBztce7Z8iOrB5EgV4IE8gjlFGAy6MXSkQ'
 }
 
+export async function createTrip(uid, tripName) {
+  console.log('creating trip')
+  var tripId = firebase.database().ref(`users/main/${uid}/trips/`).push().key
+  await firebase.database().ref(`users/main/${uid}/trips/${tripId}`).update({
+    name: tripName,
+    numLocs: 0,
+    creator: uid,
+    locations: {}
+  })
+}
+
+//Add a new location to a trip
+export async function addLocation(uid, tripId, locationId) {
+  await firebase.database().ref(`users/main/${uid}/trips/${tripId}/${locationId}`).set({
+    visited: false
+  });
+
+  var numLocations;
+  firebase.database().ref(`users/main/${uid}/trips/${tripID}`).once('value').then(function(snapshot) {
+    console.log(snapshot)
+    //numLocations = (snapshot.val() && snapshot.val().numLocs) || 'Failed';
+    console.log(numLocations);
+  });
+
+  // await firebase.database().ref('trips/' + this.props.uid + '/' + 'tripID').update({
+  //   numLocs: numLocations + 1
+  // });
+}
+
+export async function getTrips(uid) {
+  try {
+    let trips = await fetch(`https://senior-design-explr.firebaseio.com/users/main/${uid}/trips.json`)
+    let tripsJson = await trips.json()
+    console.log(tripsJson)
+    return tripsJson
+  } catch (error) {
+    console.error(error)
+    return null
+  }
+}
+
 export async function getLocations (locationType) {
   try {
     let locations = await fetch(`https://senior-design-explr.firebaseio.com/${locationType}.json`);
@@ -52,10 +93,11 @@ export async function getPOIDetails (placeId) {
 }
 
 export async function getPOIAutocomplete (query) {
+  console.log(query)
   try {
     var results = []
     let poi = await fetch(
-      `https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${query}&types=establishment&key=${config.apiKey}`
+      `https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${query}&key=${config.apiKey}`
     )
     let poiJson = await poi.json()
     for (i in poiJson.predictions) {
