@@ -18,29 +18,36 @@ export async function createTrip(uid, tripName) {
 }
 
 //Add a new location to a trip
-export async function addLocation(uid, tripId, locationId) {
-  await firebase.database().ref(`users/main/${uid}/trips/${tripId}/${locationId}`).set({
-    visited: false
+export async function addLocationToTrip(uid, tripId, locationId, locationName) {
+  await firebase.database().ref(`users/main/${uid}/trips/${tripId}/locations/${locationId}`).set({
+    visited: false,
+    name: locationName
   });
 
-  var numLocations;
-  firebase.database().ref(`users/main/${uid}/trips/${tripID}`).once('value').then(function(snapshot) {
-    console.log(snapshot)
-    //numLocations = (snapshot.val() && snapshot.val().numLocs) || 'Failed';
-    console.log(numLocations);
+  firebase.database().ref(`users/main/${uid}/trips/${tripId}`).once('value').then(function(snapshot) {
+    var numLocations = snapshot.val().numLocs
+    firebase.database().ref(`users/main/${uid}/trips/${tripId}`).update({
+      numLocs: numLocations + 1
+    });
   });
-
-  // await firebase.database().ref('trips/' + this.props.uid + '/' + 'tripID').update({
-  //   numLocs: numLocations + 1
-  // });
 }
 
 export async function getTrips(uid) {
   try {
     let trips = await fetch(`https://senior-design-explr.firebaseio.com/users/main/${uid}/trips.json`)
     let tripsJson = await trips.json()
-    console.log(tripsJson)
     return tripsJson
+  } catch (error) {
+    console.error(error)
+    return null
+  }
+}
+
+export async function getTrip (uid, tripId) {
+  try {
+    let trip = await fetch(`https://senior-design-explr.firebaseio.com/users/main/${uid}/trips/${tripId}.json`)
+    let tripJson = await trip.json()
+    return tripJson
   } catch (error) {
     console.error(error)
     return null
@@ -93,7 +100,6 @@ export async function getPOIDetails (placeId) {
 }
 
 export async function getPOIAutocomplete (query) {
-  console.log(query)
   try {
     var results = []
     let poi = await fetch(

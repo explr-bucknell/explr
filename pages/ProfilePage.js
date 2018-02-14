@@ -140,7 +140,7 @@ export default class ProfilePage extends React.Component {
     							<SavedLocations uid={this.state.uid}/>
     						</Tab>
     	  				<Tab heading="Trips">
-    							<UserTrips uid={this.state.uid}/>
+    							<UserTrips uid={this.state.uid} navigate={this.props.navigate}/>
     						</Tab>
 					    </Tabs>
 				</Animated.ScrollView>

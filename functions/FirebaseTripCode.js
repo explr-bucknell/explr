@@ -11,6 +11,16 @@
     });
   }
 
+  async createTrip() {
+    console.log('creating trip')
+    var tripId = firebase.database().ref('users/main/' + this.props.uid + '/trips/').push().key
+    await firebase.database().ref('users/main/' + this.props.uid + '/trips/' + trip).update({
+      numLocs: 1,
+      creator: this.props.uid,
+      locations: {}
+    })
+  }
+
   //Delete a trip
   async removeTrip() {
     console.log('removing location from trip');
@@ -96,5 +106,5 @@
         newRef.set( snap.val(), function(error) {
              if( error && typeof(console) !== 'undefined' && console.error ) {  console.error(error); }
         });
-    });   
+    });
   }
