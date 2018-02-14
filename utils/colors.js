@@ -1,6 +1,6 @@
 // utils/colors.js
 
-export const primary = 'lightskyblue';
+export const primary = '#87cefa';
 export const secondary = '#512500';
 export const white = '#FDFDFD';
 export const transparentWhite = '#FDFDFD80';

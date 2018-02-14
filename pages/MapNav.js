@@ -5,6 +5,7 @@ import Dimensions from 'Dimensions'
 import MapPage from './MapPage'
 import ProfilePage from './ProfilePage'
 import SettingsPage from './SettingsPage'
+import TripPage from './TripPage'
 import { FontAwesome } from '@expo/vector-icons'
 import { primary, white, gray } from '../utils/colors'
 
