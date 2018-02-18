@@ -123,6 +123,7 @@ const styles = StyleSheet.create({
 		flex: 1,
 		backgroundColor: white,
 		alignItems: 'center',
+		height: 350,
 	},
 	createTripContainer: {
 		height: 60,

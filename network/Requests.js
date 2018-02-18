@@ -7,7 +7,6 @@ var config = {
 }
 
 export async function createTrip(uid, tripName) {
-  console.log('creating trip')
   var tripId = firebase.database().ref(`users/main/${uid}/trips/`).push().key
   await firebase.database().ref(`users/main/${uid}/trips/${tripId}`).update({
     name: tripName,

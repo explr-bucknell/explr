@@ -9,6 +9,7 @@ import SearchPage from './pages/SearchPage'
 import ProfilePage from './pages/ProfilePage'
 import NationalParkProfile from './pages/NationalParkProfile'
 import TripPage from './pages/TripPage'
+import TripMapPage from './pages/TripMapPage'
 import { primary, white, transparentWhite } from './utils/colors'
 
 const DEVICE_WIDTH = Dimensions.get('window').width
@@ -47,10 +48,37 @@ const TripPageOpts = ({ navigation }) => ({
 		<TouchableOpacity onPress={() => navigation.goBack(null)} style={{ marginLeft: 10 }}>
 			<FontAwesome
 		      name='angle-left'
-		      size={25}
+		      size={35}
 		      style={{ color: white }}
 		    />
-		</TouchableOpacity>
+		</TouchableOpacity>,
+	headerRight:
+	<TouchableOpacity onPress={
+		() => navigation.navigate('TripMapPage',
+			{trip: navigation.state.params.trip, uid: navigation.state.params.uid})} style={{ marginRight: 10 }}>
+		<FontAwesome
+				name='map'
+				size={25}
+				style={{ color: white }}
+			/>
+	</TouchableOpacity>
+})
+
+const TripMapPageOpts = ({ navigation }) => ({
+	headerTitle: "EXPLR",
+	headerStyle: {
+		backgroundColor: primary,
+		borderBottomWidth: 0,
+	},
+	headerTintColor: white,
+	headerLeft:
+		<TouchableOpacity onPress={() => navigation.goBack(null)} style={{ marginLeft: 10 }}>
+			<FontAwesome
+		      name='angle-left'
+		      size={35}
+		      style={{ color: white }}
+		    />
+		</TouchableOpacity>,
 })
 
 const SearchScreen = ({ navigation }) => (
@@ -102,6 +130,10 @@ const TripScreen = ({ navigation }) => (
 	<TripPage nav={navigation} />
 )
 
+const TripMapScreen = ({ navigation }) => (
+	<TripMapPage nav={navigation} />
+)
+
 const MainNavigator = StackNavigator({
 	MapPage: {
 		screen: props => MapScreen(props),
@@ -118,6 +150,10 @@ const MainNavigator = StackNavigator({
 	TripPage: {
 		screen: TripScreen,
 		navigationOptions: TripPageOpts
+	},
+	TripMapPage: {
+		screen: TripMapScreen,
+		navigationOptions: TripMapPageOpts
 	},
 	LocationPage: {
 		screen: LocationScreen,

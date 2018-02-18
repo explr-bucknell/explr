@@ -118,13 +118,17 @@ export default class extends Component {
             />
           </TouchableOpacity>
           <ScrollView style={styles.tripLocationsContainer}>
-          {Object.keys(trip.locations).map((locationId, index) =>
+          {trip.locations &&
+            Object.keys(trip.locations).map((locationId, index) =>
             <View key={index} style={styles.tripLocation}>
               <Text style={{fontSize: 16}}>
                 {trip.locations[locationId].name.split(',')[0]}
               </Text>
             </View>
           )}
+          {!trip.locations &&
+            <Text>You haven't added any trips yet!</Text>
+          }
           </ScrollView>
         </View>
       </View>
