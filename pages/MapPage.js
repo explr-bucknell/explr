@@ -99,7 +99,7 @@ export default class MapPage extends React.Component {
     let region = this.state.region
     let postKey = this.state.geoQueryKey
     let center = [region.latitude, region.longitude]
-    let radius = this.latlongToDistance(region.latitude, region.longitude, region.latitude + region.latitudeDelta, region.longitude + region.longitudeDelta)
+    //let radius = this.latlongToDistance(region.latitude, region.longitude, region.latitude + region.latitudeDelta, region.longitude + region.longitudeDelta)
 
     /*
     geoQuery2(center, 10, postKey).then((data) => {
