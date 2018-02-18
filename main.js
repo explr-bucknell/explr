@@ -25,7 +25,7 @@ const MapNavOpts = ({ navigation }) => ({
 		borderBottomWidth: 0,
 	},
 	headerRight:
-		<TouchableOpacity onPress={() => navigation.navigate("SearchPage", { handleText: handleTextChange })} style={{ marginRight: 10 }}>
+		<TouchableOpacity onPress={() => navigation.navigate("SearchPage")} style={{ marginRight: 10 }}>
 			<FontAwesome
 		      name='search'
 		      size={20}

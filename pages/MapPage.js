@@ -23,27 +23,24 @@ export default class MapPage extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
-      geoQueryKey: null,
       region: {
         latitude: 40.9549774,
         longitude: -76.8813942,
         latitudeDelta: 0.0922,
         longitudeDelta: 0.0421,
       },
-      region_set: false,
       locations: {},
-      locationsLoaded: false,
       /*locationTypes: {
         national_monuments: 'blue',
         national_parks: 'green',
         pois: 'red'
       },*/
-      searching: false,
       customPinSearchCoords: {},
       editingCustomPin: false,
       customPinSearchResults: [],
       selectedFilter: 'park',
-      selectedPOI: {}
+      selectedPOI: {},
+      centerChosenPOI: false
     }
   }
 
@@ -51,7 +48,28 @@ export default class MapPage extends React.Component {
     console.log("Get locations")
     let locations = this.state.locations
 
-    this.runGeoQuery()
+    // Center map at chosen poi if exists
+    if (this.props.state.params && this.props.state.params.id) {
+      let place_id = this.props.state.params.id
+      getLocation(place_id).then((data) => {
+        var locations = {}
+        locations[data.id] = data
+        this.setState({
+          centerChosenPOI: true,
+          region: {
+            latitude: data.lat,
+            longitude: data.long,
+            latitudeDelta: 0.0922,
+            longitudeDelta: 0.0421,
+          },
+          locations: locations
+        })
+      })
+    }
+
+    else {
+      this.runGeoQuery()
+    }
     
     /*
     getLocations("pois").then((data) => {
@@ -72,29 +90,10 @@ export default class MapPage extends React.Component {
         })
     ))
     */
-
-    // Center map at chosen poi if exists
-    if (this.props.state.params && this.props.state.params.id) {
-      let place_id = this.props.state.params.id
-      getLocation(place_id).then((data) => {
-        this.setState({
-          region: {
-            latitude: data.lat,
-            longitude: data.long,
-            latitudeDelta: 0.0922,
-            longitudeDelta: 0.0421,
-          }
-        })
-      })
-    }
-
-    console.log('map page: ', this.props.navigate)
   }
 
   runGeoQuery() {
     let region = this.state.region
-    let postKey = this.state.geoQueryKey
-    let center = [region.latitude, region.longitude]
 
     var ref = firebase.database().ref('pois/')
     var locations = {}
@@ -103,7 +102,6 @@ export default class MapPage extends React.Component {
       if (querySnapshot.numChildren()) {
         querySnapshot.forEach(function(poiSnapshot) {
           if ((region.longitude - region.longitudeDelta/2) <= poiSnapshot.val().long && poiSnapshot.val().long <= (region.longitude + region.longitudeDelta/2)) {
-            console.log(poiSnapshot)
             locations[poiSnapshot.key] = poiSnapshot.val()
           }
         });
@@ -135,8 +133,13 @@ export default class MapPage extends React.Component {
   }
 
   onRegionChangeComplete (region) {
-    this.setState({ region })
-    this.runGeoQuery();
+    if (this.state.centerChosenPOI) {
+      this.setState({ centerChosenPOI: false })
+    }
+    else {
+      this.setState({ region })
+      this.runGeoQuery();
+    }
   }
 
   handleSearchChange (text) {
