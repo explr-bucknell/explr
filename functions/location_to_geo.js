@@ -21,28 +21,12 @@ var config = {
 
 const firebaseApp = fb.initializeApp(config);
 //instantiation of db
-var ref = fb.database().ref("national_monuments/");
-var ref2 = fb.database().ref("national_parks/");
+var ref = fb.database().ref("pois/");
 //instantiation of geofire DB
 var geoFireRef = fb.database().ref("geo_data/");
 var geoFire = new GeoFire(geoFireRef);
 
 ref.on("value", function(snapshot) {
-	//console.log(snapshot.val());
-  var temp = snapshot.val();
-  //code to write to database
-  for (var key in temp) {
-    if (temp.hasOwnProperty(key)) {
-	geoFire.set(key, [temp[key].lat, temp[key].long]);
-    }
-}
-
-
-}, function (errorObject) {
-  console.log("The read failed: " + errorObject.code);
-});
-
-ref2.on("value", function(snapshot) {
 	//console.log(snapshot.val());
   var temp = snapshot.val();
   //code to write to database

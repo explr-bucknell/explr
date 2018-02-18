@@ -96,32 +96,47 @@ export async function submitPoiToFirebase (poi, photoUrl) {
   })
 }
 
+export async function geoQuery(lat, long, latDelta, longDelta) {
+	console.log("geoQuery", lat, long, latDelta, longDelta)
+	var ref = firebase.database().ref('pois/')
+	var res = {}
+	ref.orderByChild("lat").startAt(lat - latDelta/2).endAt(lat + latDelta/2).on("value", function(querySnapshot) {
+    if (querySnapshot.numChildren()) {
+      querySnapshot.forEach(function(poiSnapshot) {
+        if ((long - longDelta/2) <= poiSnapshot.val().long && poiSnapshot.val().long <= (long + longDelta/2)) {
+      		res[poiSnapshot.key] = poiSnapshot.val()
+        }
+      });
+      console.log("res", res)
+      return res
+    } else {
+      console.log("no poi in this area")
+    }
+  })
+}
+
 /**
     work in progress ... something along these lines
     function to grab all points in circular area
     center: should be in form [34.1, -34.1]
     radius: should be in form 10.5
   **/
-export async function getInArea(center, radius){
-    /** should we export this somewhere?
-    configs and such for firebase .. .  here for now.. should only be max 1 place.
-    **/
-    var config = {
-      apiKey: 'AIzaSyBztce7Z8iOrB5EgV4IE8gjlFGAy6MXSkQ',
-      authDomain: 'senior-design-explr.firebaseapp.com',
-      databaseURL: 'https://senior-design-explr.firebaseio.com',
-      projectId: 'senior-design-explr',
-      storageBucket: 'senior-design-explr.appspot.com',
-      messagingSenderId: '866651490806'
-    }
-    const firebaseApp = firebase.initializeApp(config);
-    var firebaseRef = firebase.database().ref('geo_data/');
-    // Create a GeoFire index
-    var geoFire = new GeoFire(firebaseRef);
-    var geoQuery  = geoFire.query(center: center, radius: radius);
-    var  onKeyEnteredRegistration = geoQuery.on("key_entered", function(key, location) {
-      console.log("the key: " + key + "\n the location: " + location);
-      console.log("type of key: " + key.type);
-      console.log("latitude  of location: " + location[0]);
-    });
-  }
+export async function geoQuery2(center, radius, postKey) {
+	var geoQueryRef = firebase.database().ref('geoquery/')
+	var newPostKey = postKey ? postKey : geoQueryRef.push().key
+
+  var firebaseRef = firebase.database().ref('geo_data/')
+  // Create a GeoFire index
+  var geoFire = new GeoFire(firebaseRef)
+  var geoQuery  = geoFire.query({center, radius})
+  geoQuery.on("key_entered", function(key, location) {
+    getLocation(key).then((data) => {
+    	//console.log("the key: " + key + "\n the location: " + location)
+    	//console.log(data)
+    	var updates = {}
+			updates[key] = " "
+			geoQueryRef.child(newPostKey).update(updates)
+    })
+  });
+  return newPostKey
+}

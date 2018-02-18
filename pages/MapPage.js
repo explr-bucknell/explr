@@ -11,6 +11,7 @@ import {
   ScrollView,
   TouchableOpacity
 } from 'react-native'
+import firebase from 'firebase'
 import MapView from 'react-native-maps' // eslint-disable-line no-unused-vars
 import MapMarkerCallout from '../components/MapMarkerCallout'
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete'
@@ -22,6 +23,7 @@ export default class MapPage extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
+      geoQueryKey: null,
       region: {
         latitude: 40.9549774,
         longitude: -76.8813942,
@@ -46,19 +48,23 @@ export default class MapPage extends React.Component {
   }
 
   componentDidMount () {
+    console.log("Get locations")
     let locations = this.state.locations
-    Object.keys(this.state.locationTypes).forEach((locationType) => (
-      getLocations (locationType)
-        .then((data) => {
-          locations[locationType] = data
-          this.setState({
-            locations: locations
-          })
-        })
-    ))
+
+    this.runGeoQuery()
+    
+    /*
+    getLocations("pois").then((data) => {
+      locations = data
+      this.setState({
+        locations: locations
+      })
+    })
+    
     this.setState({
       locationsLoaded: true
     })
+    */
 
     // Center map at chosen poi if exists
     if (this.props.state.params && this.props.state.params.id) {
@@ -74,6 +80,79 @@ export default class MapPage extends React.Component {
         })
       })
     }
+  }
+
+  componentWillUnmount() {
+    console.log("component unmount")
+    var geoQueryKey = this.state.geoQueryKey
+    firebase.database().ref('geoquery/').child(geoQueryKey).remove()
+  }
+
+  runGeoQuery() {
+    let region = this.state.region
+    let postKey = this.state.geoQueryKey
+    let center = [region.latitude, region.longitude]
+    let radius = this.latlongToDistance(region.latitude, region.longitude, region.latitude + region.latitudeDelta, region.longitude + region.longitudeDelta)
+
+    /*
+    geoQuery2(center, 10, postKey).then((data) => {
+      //console.log("key", data)
+      this.setState({ geoQueryKey: data })
+      var self = this
+      var geoQueryRef = firebase.database().ref('geoquery/')
+      geoQueryRef.child(data).on('value', function(snapshot) {
+        //console.log("snapshot", snapshot.val())
+        self.updateGeoState(snapshot.val())
+      })
+    })
+
+    geoQuery(region.latitude, region.longitude, region.latitudeDelta, region.longitudeDelta).then((locations) => {
+      console.log("points", locations)
+      this.setState({ locations })
+    })
+    */
+
+    var ref = firebase.database().ref('pois/')
+    var locations = {}
+    var self = this
+    ref.orderByChild("lat").startAt(region.latitude - region.latitudeDelta/2).endAt(region.latitude + region.latitudeDelta/2).on("value", function(querySnapshot) {
+      if (querySnapshot.numChildren()) {
+        querySnapshot.forEach(function(poiSnapshot) {
+          if ((region.longitude - region.longitudeDelta/2) <= poiSnapshot.val().long && poiSnapshot.val().long <= (region.longitude + region.longitudeDelta/2)) {
+            console.log(poiSnapshot)
+            locations[poiSnapshot.key] = poiSnapshot.val()
+          }
+        });
+        console.log("res", locations)
+        self.setState({ locations })
+      } else {
+        console.log("no poi in this area")
+      }
+    })
+  }
+
+  updateGeoState(results) {
+    var locations = {}
+    var self = this
+    results && Object.keys(results).map(function(key, index) {
+      getLocation(key).then((data) => {
+        locations[key] = data
+        if (index == Object.keys(results).length - 1) {
+          console.log("set state")
+          self.setState({ locations })
+        }
+      })
+    })
+  }
+
+  latlongToDistance(lat1, lon1, lat2, lon2){
+    var R = 6378.137; // Radius of earth in KM
+    var dLat = lat2 * Math.PI / 180 - lat1 * Math.PI / 180;
+    var dLon = lon2 * Math.PI / 180 - lon1 * Math.PI / 180;
+    var a = Math.sin(dLat/2) * Math.sin(dLat/2) + Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(dLon/2) * Math.sin(dLon/2);
+    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    var d = R * c;
+    return d; // kilometers
   }
 
   dropPin (coords) {
@@ -98,6 +177,7 @@ export default class MapPage extends React.Component {
 
   onRegionChangeComplete (region) {
     this.setState({ region })
+    this.runGeoQuery();
   }
 
   handleSearchChange (text) {
@@ -140,11 +220,8 @@ export default class MapPage extends React.Component {
 
   updateLocations (id) {
     let locations = this.state.locations
-    let pois = locations.pois
-    getLocation (id)
-    .then((locationData) => {
-      pois[id] = locationData
-      locations.pois = pois
+    getLocation(id).then((locationData) => {
+      locations[id] = locationData
       this.setState({
         locations,
         editingCustomPin: false,
@@ -176,28 +253,26 @@ export default class MapPage extends React.Component {
           //onPress={this.hideSearchBar.bind(this)}
         >
           { Object.keys(locations).length > 0 &&
-            Object.keys(locations).map((locationType) =>
-              Object.keys(locations[locationType]).map((locationName, index) =>
-                <MapView.Marker
-                  key={index}
-                  coordinate={{
-                    latitude: locations[locationType][locationName].lat,
-                    longitude: locations[locationType][locationName].long
-                  }}
-                  pinColor={this.state.locationTypes[locationType]}
-                >
-                  <MapView.Callout>
-                    <MapMarkerCallout
-                      title={locations[locationType][locationName].name}
-                      // description='asdfasdf'
-                      imageUrl={locations[locationType][locationName].image}
-                      id={locations[locationType][locationName].id}
-                      uid={this.props.uid}
-                      navigate={this.props.navigate}
-                    />
-                  </MapView.Callout>
-                </MapView.Marker>
-              )
+            Object.keys(locations).map((locationName, index) =>
+              <MapView.Marker
+                key={index}
+                coordinate={{
+                  latitude: locations[locationName].lat,
+                  longitude: locations[locationName].long
+                }}
+                pinColor={this.state.locationTypes["pois"]}
+              >
+                <MapView.Callout>
+                  <MapMarkerCallout
+                    title={locations[locationName].name}
+                    // description='asdfasdf'
+                    imageUrl={locations[locationName].image}
+                    id={locations[locationName].id}
+                    uid={this.props.uid}
+                    navigate={this.props.navigate}
+                  />
+                </MapView.Callout>
+              </MapView.Marker>
             )
           }
           { this.state.editingCustomPin &&
