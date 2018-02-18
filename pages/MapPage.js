@@ -74,7 +74,7 @@ export default class MapPage extends Component {
       })
     }
     else {
-      this.runGeoQuery()
+      this.runGeoQuery(this.state.region)
     }
     
     /*
@@ -98,9 +98,7 @@ export default class MapPage extends Component {
     */
   }
 
-  runGeoQuery() {
-    let region = this.state.region
-
+  runGeoQuery(region) {
     var ref = firebase.database().ref('pois/')
     var locations = {}
     var self = this
@@ -139,12 +137,13 @@ export default class MapPage extends Component {
   }
 
   onRegionChangeComplete (region) {
+    console.log("region changed")
     if (this.state.centerChosenPOI) {
       this.setState({ centerChosenPOI: false })
     }
     else {
       this.setState({ region })
-      this.runGeoQuery();
+      this.runGeoQuery(region);
     }
   }
 
@@ -201,6 +200,7 @@ export default class MapPage extends Component {
   }
 
   render() {
+    console.log("rerender")
     let locations = this.state.locations
     return (
       <View style={styles.container}>
