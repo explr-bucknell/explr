@@ -33,11 +33,11 @@ export default class MapPage extends React.Component {
       region_set: false,
       locations: {},
       locationsLoaded: false,
-      locationTypes: {
+      /*locationTypes: {
         national_monuments: 'blue',
         national_parks: 'green',
         pois: 'red'
-      },
+      },*/
       searching: false,
       customPinSearchCoords: {},
       editingCustomPin: false,
@@ -91,35 +91,10 @@ export default class MapPage extends React.Component {
     console.log('map page: ', this.props.navigate)
   }
 
-  componentWillUnmount() {
-    console.log("component unmount")
-    var geoQueryKey = this.state.geoQueryKey
-    firebase.database().ref('geoquery/').child(geoQueryKey).remove()
-  }
-
   runGeoQuery() {
     let region = this.state.region
     let postKey = this.state.geoQueryKey
     let center = [region.latitude, region.longitude]
-    //let radius = this.latlongToDistance(region.latitude, region.longitude, region.latitude + region.latitudeDelta, region.longitude + region.longitudeDelta)
-
-    /*
-    geoQuery2(center, 10, postKey).then((data) => {
-      //console.log("key", data)
-      this.setState({ geoQueryKey: data })
-      var self = this
-      var geoQueryRef = firebase.database().ref('geoquery/')
-      geoQueryRef.child(data).on('value', function(snapshot) {
-        //console.log("snapshot", snapshot.val())
-        self.updateGeoState(snapshot.val())
-      })
-    })
-
-    geoQuery(region.latitude, region.longitude, region.latitudeDelta, region.longitudeDelta).then((locations) => {
-      console.log("points", locations)
-      this.setState({ locations })
-    })
-    */
 
     var ref = firebase.database().ref('pois/')
     var locations = {}
@@ -132,40 +107,12 @@ export default class MapPage extends React.Component {
             locations[poiSnapshot.key] = poiSnapshot.val()
           }
         });
-        console.log("res", locations)
         self.setState({ locations })
       } else {
         console.log("no poi in this area")
       }
     })
   }
-
-  /*
-  updateGeoState(results) {
-    var locations = {}
-    var self = this
-    results && Object.keys(results).map(function(key, index) {
-      getLocation(key).then((data) => {
-        locations[key] = data
-        if (index == Object.keys(results).length - 1) {
-          console.log("set state")
-          self.setState({ locations })
-        }
-      })
-    })
-  }
-
-
-  latlongToDistance(lat1, lon1, lat2, lon2){
-    var R = 6378.137; // Radius of earth in KM
-    var dLat = lat2 * Math.PI / 180 - lat1 * Math.PI / 180;
-    var dLon = lon2 * Math.PI / 180 - lon1 * Math.PI / 180;
-    var a = Math.sin(dLat/2) * Math.sin(dLat/2) + Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(dLon/2) * Math.sin(dLon/2);
-    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-    var d = R * c;
-    return d; // kilometers
-  }
-  */
 
   dropPin (coords) {
     if (!this.state.editingCustomPin) {
@@ -272,7 +219,7 @@ export default class MapPage extends React.Component {
                   latitude: locations[locationName].lat,
                   longitude: locations[locationName].long
                 }}
-                pinColor={this.state.locationTypes["pois"]}
+                pinColor={"red"}
               >
                 <MapView.Callout>
                   <MapMarkerCallout
