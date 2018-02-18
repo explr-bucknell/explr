@@ -11,6 +11,7 @@ import {
   ScrollView,
   TouchableOpacity
 } from 'react-native'
+import firebase from 'firebase'
 import MapView from 'react-native-maps' // eslint-disable-line no-unused-vars
 import MapMarkerCallout from '../components/MapMarkerCallout'
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete'
@@ -35,24 +36,55 @@ export default class MapPage extends Component {
         latitudeDelta: 0.0922,
         longitudeDelta: 0.0421,
       },
-      region_set: false,
       locations: {},
-      locationsLoaded: false,
-      locationTypes: {
+      /*locationTypes: {
         national_monuments: 'blue',
         national_parks: 'green',
         pois: 'red'
-      },
-      searching: false,
+      },*/
       customPinSearchCoords: {},
       editingCustomPin: false,
       customPinSearchResults: [],
       selectedFilter: 'park',
-      selectedPOI: {}
+      selectedPOI: {},
+      centerChosenPOI: false
     }
   }
 
   componentDidMount () {
+    console.log("Get locations")
+    let locations = this.state.locations
+
+    // Center map at chosen poi if exists
+    if (this.props.state.params && this.props.state.params.id) {
+      let place_id = this.props.state.params.id
+      getLocation(place_id).then((data) => {
+        var locations = {}
+        locations[data.id] = data
+        this.setState({
+          centerChosenPOI: true,
+          region: {
+            latitude: data.lat,
+            longitude: data.long,
+            latitudeDelta: 0.0922,
+            longitudeDelta: 0.0421,
+          },
+          locations: locations
+        })
+      })
+    }
+    else {
+      this.runGeoQuery()
+    }
+    
+    /*
+    getLocations("pois").then((data) => {
+      locations = data
+      this.setState({
+        locations: locations
+      })
+    })
+    
     let locations = this.state.locations
     Object.keys(this.state.locationTypes).forEach((locationType) => (
       getLocations (locationType)
@@ -63,24 +95,27 @@ export default class MapPage extends Component {
           })
         })
     ))
-    this.setState({
-      locationsLoaded: true
-    })
+    */
+  }
 
-    // Center map at chosen poi if exists
-    if (this.props.state.params && this.props.state.params.id) {
-      let place_id = this.props.state.params.id
-      getLocation(place_id).then((data) => {
-        this.setState({
-          region: {
-            latitude: data.lat,
-            longitude: data.long,
-            latitudeDelta: 0.0922,
-            longitudeDelta: 0.0421,
+  runGeoQuery() {
+    let region = this.state.region
+
+    var ref = firebase.database().ref('pois/')
+    var locations = {}
+    var self = this
+    ref.orderByChild("lat").startAt(region.latitude - region.latitudeDelta/2).endAt(region.latitude + region.latitudeDelta/2).on("value", function(querySnapshot) {
+      if (querySnapshot.numChildren()) {
+        querySnapshot.forEach(function(poiSnapshot) {
+          if ((region.longitude - region.longitudeDelta/2) <= poiSnapshot.val().long && poiSnapshot.val().long <= (region.longitude + region.longitudeDelta/2)) {
+            locations[poiSnapshot.key] = poiSnapshot.val()
           }
-        })
-      })
-    }
+        });
+        self.setState({ locations })
+      } else {
+        console.log("no poi in this area")
+      }
+    })
   }
 
   dropPin (coords) {
@@ -104,7 +139,13 @@ export default class MapPage extends Component {
   }
 
   onRegionChangeComplete (region) {
-    this.setState({ region })
+    if (this.state.centerChosenPOI) {
+      this.setState({ centerChosenPOI: false })
+    }
+    else {
+      this.setState({ region })
+      this.runGeoQuery();
+    }
   }
 
   handleFilterPress (filterName) {
@@ -139,11 +180,8 @@ export default class MapPage extends Component {
 
   updateLocations (id) {
     let locations = this.state.locations
-    let pois = locations.pois
-    getLocation (id)
-    .then((locationData) => {
-      pois[id] = locationData
-      locations.pois = pois
+    getLocation(id).then((locationData) => {
+      locations[id] = locationData
       this.setState({
         locations,
         editingCustomPin: false,
@@ -174,28 +212,26 @@ export default class MapPage extends Component {
           onLongPress={e => this.dropPin(e.nativeEvent.coordinate)}
         >
           { Object.keys(locations).length > 0 &&
-            Object.keys(locations).map((locationType) =>
-              Object.keys(locations[locationType]).map((locationName, index) =>
-                <MapView.Marker
-                  key={index}
-                  coordinate={{
-                    latitude: locations[locationType][locationName].lat,
-                    longitude: locations[locationType][locationName].long
-                  }}
-                  pinColor={this.state.locationTypes[locationType]}
-                >
-                  <MapView.Callout>
-                    <MapMarkerCallout
-                      title={locations[locationType][locationName].name}
-                      // description='asdfasdf'
-                      imageUrl={locations[locationType][locationName].image}
-                      id={locations[locationType][locationName].id}
-                      uid={this.props.uid}
-                      navigate={this.props.navigate}
-                    />
-                  </MapView.Callout>
-                </MapView.Marker>
-              )
+            Object.keys(locations).map((locationName, index) =>
+              <MapView.Marker
+                key={index}
+                coordinate={{
+                  latitude: locations[locationName].lat,
+                  longitude: locations[locationName].long
+                }}
+                pinColor={"red"}
+              >
+                <MapView.Callout>
+                  <MapMarkerCallout
+                    title={locations[locationName].name}
+                    // description='asdfasdf'
+                    imageUrl={locations[locationName].image}
+                    id={locations[locationName].id}
+                    uid={this.props.uid}
+                    navigate={this.props.navigate}
+                  />
+                </MapView.Callout>
+              </MapView.Marker>
             )
           }
           { this.state.editingCustomPin &&
