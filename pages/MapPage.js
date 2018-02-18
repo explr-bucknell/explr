@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Component } from 'react'
 import {
   StyleSheet,
   Text, // eslint-disable-line no-unused-vars
@@ -15,11 +15,18 @@ import firebase from 'firebase'
 import MapView from 'react-native-maps' // eslint-disable-line no-unused-vars
 import MapMarkerCallout from '../components/MapMarkerCallout'
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete'
-import { getLocations, getLocation, getPOIFromLatLng, getPOIDetails, makePhotoRequest, submitPoiToFirebase, geoFireToLocation } from '../network/Requests'
+import {
+  getLocations,
+  getLocation,
+  getPOIFromLatLng,
+  getPOIDetails,
+  makePhotoRequest,
+  submitPoiToFirebase
+} from '../network/Requests'
 import SearchFilterOption from '../components/SearchFilterOption'
 import CustomPinSearch from '../components/CustomPinSearch'
 
-export default class MapPage extends React.Component {
+export default class MapPage extends Component {
   constructor (props) {
     super(props)
     this.state = {
@@ -66,7 +73,6 @@ export default class MapPage extends React.Component {
         })
       })
     }
-
     else {
       this.runGeoQuery()
     }
@@ -142,14 +148,6 @@ export default class MapPage extends React.Component {
     }
   }
 
-  handleSearchChange (text) {
-    console.log(text)
-  }
-
-  hideSearchBar () {
-    this.toolbar.hideSearchBar()
-  }
-
   handleFilterPress (filterName) {
     this.setState({
       selectedFilter: filterName
@@ -212,7 +210,6 @@ export default class MapPage extends React.Component {
           region={this.state.region}
           onRegionChangeComplete={(region) => this.onRegionChangeComplete(region)}
           onLongPress={e => this.dropPin(e.nativeEvent.coordinate)}
-          //onPress={this.hideSearchBar.bind(this)}
         >
           { Object.keys(locations).length > 0 &&
             Object.keys(locations).map((locationName, index) =>
@@ -245,10 +242,6 @@ export default class MapPage extends React.Component {
             />
           }
         </MapView>
-        {/*<Toolbar
-          searchChange={(text) => this.handleSearchChange(text)}
-          ref={(instance) => this.toolbar = instance}
-        />*/}
         { this.state.editingCustomPin &&
           <CustomPinSearch
             handleFilterPress={(categoryName) => this.handleFilterPress(categoryName)}
