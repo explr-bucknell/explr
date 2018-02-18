@@ -6,6 +6,7 @@ var config = {
   apiKey: 'AIzaSyBztce7Z8iOrB5EgV4IE8gjlFGAy6MXSkQ'
 }
 
+
 export async function getLocations (locationType) {
   try {
     let locations = await fetch(`https://senior-design-explr.firebaseio.com/${locationType}.json`);
@@ -94,6 +95,9 @@ export async function submitPoiToFirebase (poi, photoUrl) {
     long: poi.geometry.location.lng,
     description: poi.name // FIX THIS
   })
+    //adding to geoFire
+    var geoFire = new GeoFire(firebase.database().ref('geo_data/'))
+    geoFire.set(poi.place_id, [poi.geometry.location.lat, poi.geometry.location.lng])
 }
 
 export async function geoQuery(lat, long, latDelta, longDelta) {

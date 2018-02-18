@@ -15,7 +15,7 @@ import firebase from 'firebase'
 import MapView from 'react-native-maps' // eslint-disable-line no-unused-vars
 import MapMarkerCallout from '../components/MapMarkerCallout'
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete'
-import { getLocations, getLocation, getPOIFromLatLng, getPOIDetails, makePhotoRequest, submitPoiToFirebase } from '../network/Requests'
+import { getLocations, getLocation, getPOIFromLatLng, getPOIDetails, makePhotoRequest, submitPoiToFirebase, geoFireToLocation } from '../network/Requests'
 import SearchFilterOption from '../components/SearchFilterOption'
 import CustomPinSearch from '../components/CustomPinSearch'
 
@@ -61,9 +61,16 @@ export default class MapPage extends React.Component {
       })
     })
     
-    this.setState({
-      locationsLoaded: true
-    })
+    let locations = this.state.locations
+    Object.keys(this.state.locationTypes).forEach((locationType) => (
+      getLocations (locationType)
+        .then((data) => {
+          locations[locationType] = data
+          this.setState({
+            locations: locations
+          })
+        })
+    ))
     */
 
     // Center map at chosen poi if exists
@@ -131,6 +138,7 @@ export default class MapPage extends React.Component {
     })
   }
 
+  /*
   updateGeoState(results) {
     var locations = {}
     var self = this
@@ -145,6 +153,7 @@ export default class MapPage extends React.Component {
     })
   }
 
+
   latlongToDistance(lat1, lon1, lat2, lon2){
     var R = 6378.137; // Radius of earth in KM
     var dLat = lat2 * Math.PI / 180 - lat1 * Math.PI / 180;
@@ -154,6 +163,7 @@ export default class MapPage extends React.Component {
     var d = R * c;
     return d; // kilometers
   }
+  */
 
   dropPin (coords) {
     if (!this.state.editingCustomPin) {

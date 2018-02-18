@@ -1,4 +1,6 @@
-/// To grab from DB and turn into geofire
+/// To grab from DB and turn into geofire points
+// to run: 'npm install' within this folder...
+// then type 'node location_to_geo.js' in cmd line
 const fb = require("firebase");
 const GeoFire = require("geofire");
 
@@ -22,6 +24,7 @@ var config = {
 const firebaseApp = fb.initializeApp(config);
 //instantiation of db
 var ref = fb.database().ref("pois/");
+
 //instantiation of geofire DB
 var geoFireRef = fb.database().ref("geo_data/");
 var geoFire = new GeoFire(geoFireRef);
@@ -32,7 +35,7 @@ ref.on("value", function(snapshot) {
   //code to write to database
   for (var key in temp) {
     if (temp.hasOwnProperty(key)) {
-	geoFire.set(key, [temp[key].lat, temp[key].long]);
+	geoFire.set(temp[key].id, [temp[key].lat, temp[key].long]);
     }
 }
 
