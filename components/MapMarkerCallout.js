@@ -30,21 +30,17 @@ export default class MapMarkerCallout extends Component {
   }
 
   async addLiked() {
-    console.log('y')
-    
     this.setState({
       liked: true
     })
-    
+
     await firebase.database().ref('users/main/' + this.props.uid + '/saved/' + this.props.id).set({
       name: this.props.title,
       image: this.props.imageUrl
     })
   }
 
-  async removeLiked() {
-    console.log('n')
-    
+  async removeLiked() {    
     this.setState({
       liked: false
     })

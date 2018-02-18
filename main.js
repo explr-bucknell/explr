@@ -8,15 +8,11 @@ import MapNav from './pages/MapNav'
 import SearchPage from './pages/SearchPage'
 import ProfilePage from './pages/ProfilePage'
 import NationalParkProfile from './pages/NationalParkProfile'
+import TripPage from './pages/TripPage'
 import { primary, white, transparentWhite } from './utils/colors'
 
 const DEVICE_WIDTH = Dimensions.get('window').width
 var searchEntry = ""
-
-const handleTextChange = (text) => {
-	//console.log(text)
-	// TODO: Handle autocomplete for searching
-}
 
 const MapScreen = (props) => (
 	<MapNav screenProps={Object.assign({}, props.navigation, props.screenProps)}/>
@@ -24,11 +20,11 @@ const MapScreen = (props) => (
 
 const MapNavOpts = ({ navigation }) => ({
 	headerTitle: "EXPLR",
-	headerStyle: { 
+	headerStyle: {
 		backgroundColor: primary,
 		borderBottomWidth: 0,
 	},
-	headerRight: 
+	headerRight:
 		<TouchableOpacity onPress={() => navigation.navigate("SearchPage", { handleText: handleTextChange })} style={{ marginRight: 10 }}>
 			<FontAwesome
 		      name='search'
@@ -40,12 +36,29 @@ const MapNavOpts = ({ navigation }) => ({
 	headerBackTitle: null,
 })
 
+const TripPageOpts = ({ navigation }) => ({
+	headerTitle: "EXPLR",
+	headerStyle: {
+		backgroundColor: primary,
+		borderBottomWidth: 0,
+	},
+	headerTintColor: white,
+	headerLeft:
+		<TouchableOpacity onPress={() => navigation.goBack(null)} style={{ marginLeft: 10 }}>
+			<FontAwesome
+		      name='angle-left'
+		      size={25}
+		      style={{ color: white }}
+		    />
+		</TouchableOpacity>
+})
+
 const SearchScreen = ({ navigation }) => (
 	<SearchPage nav={navigation}/>
 )
 
 const SearchNavOpts = ({ navigation }) => ({
-	headerStyle: { 
+	headerStyle: {
 		backgroundColor: primary,
 		borderBottomWidth: 0,
 	},
@@ -68,9 +81,9 @@ const SearchNavOpts = ({ navigation }) => ({
 	headerLeft:
 		<FontAwesome
 			name='search'
-			size={20}
+			size={30}
 			style={{ color: white, marginLeft: 15 }}
-	    />,
+	   />,
 	headerRight:
 		<TouchableOpacity onPress={() => navigation.goBack(null)} style={{ marginRight: 10 }}>
 			<Text style={{ color: white, fontSize: 18 }}>Cancel</Text>
@@ -85,6 +98,10 @@ const LocationScreen = ({ navigation }) => (
 	<NationalParkProfile nav={navigation}/>
 )
 
+const TripScreen = ({ navigation }) => (
+	<TripPage nav={navigation} />
+)
+
 const MainNavigator = StackNavigator({
 	MapPage: {
 		screen: props => MapScreen(props),
@@ -97,6 +114,10 @@ const MainNavigator = StackNavigator({
 	ProfilePage: {
 		screen: ProfileScreen,
 		navigationOptions: MapNavOpts
+	},
+	TripPage: {
+		screen: TripScreen,
+		navigationOptions: TripPageOpts
 	},
 	LocationPage: {
 		screen: LocationScreen,

@@ -87,6 +87,8 @@ export default class MapPage extends React.Component {
         })
       })
     }
+
+    console.log('map page: ', this.props.navigate)
   }
 
   componentWillUnmount() {
