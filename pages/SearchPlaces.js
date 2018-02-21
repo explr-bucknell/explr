@@ -14,10 +14,11 @@ export default class SearchPlaces extends React.Component {
 	}
 
 	componentDidMount() {
-		this.props.nav.setParams({ handleText: this.handleTextChange })
+		this.props.nav.setParams({ handlePlaceSearch: this.handleTextChange })
 	}
 
 	handleTextChange = (text) => {
+		console.log("Search places", text)
 		if (!text) {
 			this.setState({ ids:[], names:[] })
 			return

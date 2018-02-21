@@ -2,43 +2,34 @@ import React from "react";
 import { Animated, Dimensions, Image, Platform, StyleSheet, Text, TouchableOpacity, View } from "react-native"
 import { Body, Header, List, ListItem as Item, ScrollableTab, Tab, TabHeading, Tabs, Title } from "native-base"
 import firebase from 'firebase'
-import { primary, white, gray, black } from '../utils/colors'
+import { FontAwesome } from '@expo/vector-icons'
+import { primary, white, gray, black, transparentWhite } from '../utils/colors'
 import ContentGrid from '../components/ContentGrid'
 import SavedLocations from '../components/SavedLocations'
 import UserTrips from '../components/UserTrips'
 
 const {width: SCREEN_WIDTH} = Dimensions.get("window");
-const IMAGE_HEIGHT = 150;
-const HEADER_HEIGHT = 50;
-const SCROLL_HEIGHT = IMAGE_HEIGHT;
-const THEME_COLOR = "rgba(85,186,255, 1)";
-const FADED_THEME_COLOR = "rgba(85,186,255, 0.8)";
+const HEADER_HEIGHT = 150;
+const TAB_HEIGHT = 50;
+const SCROLL_HEIGHT = HEADER_HEIGHT + TAB_HEIGHT;
 
 export default class ProfilePage extends React.Component {
   scroll = new Animated.Value(0);
-  textColor = primary;
-  tabBg = white;
   tabY = this.scroll.interpolate({
-    inputRange: [0, SCROLL_HEIGHT, SCROLL_HEIGHT + 1],
-    outputRange: [0, 0, 1]
+    inputRange: [0, SCROLL_HEIGHT, SCROLL_HEIGHT + TAB_HEIGHT, SCROLL_HEIGHT + TAB_HEIGHT + 1],
+    outputRange: [0, 0, 2 * TAB_HEIGHT, 2 * TAB_HEIGHT + 1]
   });
-  headerBg = 'transparent';
-
-
-  tabContent = (x, i) => <View>
-    <List>
-      {new Array(x).fill(null).map((x, i) => <Item key={i}><Text>Item {i}</Text></Item>)}
-    </List></View>;
 
   constructor(props) {
     super(props);
     this.state = {
     	uid: null,
-    	displayName: null,
-    	handle: null,
+    	displayName: "",
+    	handle: "",
     	numFollowers: null,
     	numFollowing: null,
-    	imageUrl: null
+    	imageUrl: null,
+    	isMyProfile: null
     }
   }
 
@@ -49,6 +40,13 @@ export default class ProfilePage extends React.Component {
   }
 
   componentDidMount() {
+  	var currUser = firebase.auth().currentUser
+  	if (currUser && currUser.uid == this.state.uid) {
+  		this.setState({ isMyProfile: true })
+  	} else {
+  		this.setState({ isMyProfile: false })
+  	}
+
   	var self = this
   	const url = 'users/main/' + this.state.uid
   	var userRef = firebase.database().ref(url)
@@ -80,7 +78,12 @@ export default class ProfilePage extends React.Component {
           		<View style={styles.header}>
 			      		<View style={styles.textContainer}>
 				      		<View style={styles.nameContainer}>
-				      			<Text style={styles.name}>{this.state.displayName}</Text>
+				      			<View style={{flexDirection: 'row'}}>
+				      				<Text style={styles.name}>{ this.state.displayName.length < 16 ? this.state.displayName: (this.state.displayName.slice(0,13) + "...") }</Text>
+				      				<TouchableOpacity onPress={() => {}}>
+						            <FontAwesome name={this.state.isMyProfile ? "edit" : 'user-plus'} style={styles.icon}/>
+						          </TouchableOpacity>
+						        </View>
 				      			<Text style={styles.handle}>{this.state.handle}</Text>
 				      		</View>
 				      		<View style={styles.followContainer}>
@@ -103,9 +106,9 @@ export default class ProfilePage extends React.Component {
 
           		<Tabs renderTabBar={(props) =>
           			<Animated.View
-		          		style={{transform: [{translateY: this.tabY}], zIndex: 1, width: "100%", backgroundColor: primary, borderBottomWidth: 2, borderColor: primary}}>
+		          		style={{transform: [{translateY: this.tabY}], zIndex: 1, width: "100%", backgroundColor: white, borderBottomWidth: 2, borderColor: white}}>
 		          		<ScrollableTab {...props}
-		          			style={{borderBottomWidth: 0}}
+		          			style={{borderBottomWidth: 0, height: 50}}
 										renderTab={(name, page, active, onPress, onLayout) => (
 											<TouchableOpacity
 												key={page}
@@ -124,7 +127,7 @@ export default class ProfilePage extends React.Component {
 										      	justifyContent: 'center',
 														alignItems: 'center',
 												    fontWeight: "bold",
-														color: active ? white : 'rgba(0, 0, 0, 0.5)',
+														color: active ? primary : gray,
 														fontSize: active ? 16 : 15
 													}}>
 														{name}
@@ -132,7 +135,7 @@ export default class ProfilePage extends React.Component {
 												</TabHeading>
 											</TouchableOpacity>
 										)}
-										underlineStyle={{backgroundColor: white, borderWidth: 0}}
+										underlineStyle={{backgroundColor: primary, borderWidth: 0}}
 									/>
 		        		</Animated.View>}
             	>
@@ -157,7 +160,8 @@ const styles = StyleSheet.create({
 		justifyContent: 'center',
 		padding: 20,
 		paddingBottom: 0,
-		backgroundColor: white
+		backgroundColor: white,
+		height: 150
 	},
 	profileContainer: {
 		flex: 1,
@@ -189,6 +193,12 @@ const styles = StyleSheet.create({
 		color: black,
 		fontWeight: 'bold'
 	},
+	icon: {
+		marginTop: 8,
+		marginLeft: 8,
+    fontSize: 20,
+    color: gray
+  },
 	handle: {
 		marginTop: 10,
 		fontSize: 15,

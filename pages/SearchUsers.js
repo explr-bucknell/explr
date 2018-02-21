@@ -16,16 +16,16 @@ export default class SearchUsers extends React.Component {
 	}
 
 	componentDidMount() {
-		this.props.nav.setParams({ handleText: this.handleTextChange });
+		this.props.nav.setParams({ handleUserSearch: this.handleTextChange });
 	}
 
 	handleTextChange = (text) => {
+		console.log("Search users", text)
 		if (!text) {
 			this.setState({ uids:[], names: [], handles: [], images: [] })
 			return
 		}
 		text = text.toLowerCase()
-		console.log(text)
 		var self = this
 		var ref = firebase.database().ref('users/main')
 		ref.orderByChild("handle").startAt(text).endAt(text + '\uf8ff').limitToFirst(10).on("value", function(snapshot) {

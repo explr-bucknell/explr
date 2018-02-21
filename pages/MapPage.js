@@ -12,9 +12,10 @@ import {
   TouchableOpacity
 } from 'react-native'
 import firebase from 'firebase'
+import { FontAwesome } from '@expo/vector-icons'
+import { Location, Permissions } from 'expo'
 import MapView from 'react-native-maps' // eslint-disable-line no-unused-vars
 import MapMarkerCallout from '../components/MapMarkerCallout'
-import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete'
 import {
   getLocations,
   getLocation,
@@ -25,6 +26,7 @@ import {
 } from '../network/Requests'
 import SearchFilterOption from '../components/SearchFilterOption'
 import CustomPinSearch from '../components/CustomPinSearch'
+import { primary, white, gray, compass } from '../utils/colors'
 
 export default class MapPage extends Component {
   constructor (props) {
@@ -47,11 +49,13 @@ export default class MapPage extends Component {
       customPinSearchResults: [],
       selectedFilter: 'park',
       selectedPOI: {},
-      centerChosenPOI: false
+      centerChosenPOI: false,
+      atCurrentLocation: false
     }
   }
 
   componentDidMount () {
+    this.getCurrentLocation()
     console.log("Get locations")
     let locations = this.state.locations
 
@@ -74,7 +78,7 @@ export default class MapPage extends Component {
       })
     }
     else {
-      this.runGeoQuery(this.state.region)
+      //this.runGeoQuery(this.state.region)
     }
     
     /*
@@ -96,6 +100,27 @@ export default class MapPage extends Component {
         })
     ))
     */
+  }
+
+  async getCurrentLocation() {
+    //const { Location, Permissions } = Expo;
+    const { status } = await Permissions.askAsync(Permissions.LOCATION)
+    if (status === 'granted') {
+      let location = await Location.getCurrentPositionAsync({})
+      if (location.coords) {
+        var region = {}
+        region.latitude = location.coords.latitude
+        region.longitude = location.coords.longitude
+        region.latitudeDelta = 0.0922
+        region.longitudeDelta = 0.0421
+        this.setState({ region, atCurrentLocation: true })
+      }
+      else {
+        this.runGeoQuery(this.state.region)
+      }
+    } else {
+      console.log("Permission denied")
+    }
   }
 
   runGeoQuery(region) {
@@ -251,6 +276,9 @@ export default class MapPage extends Component {
             poiSubmit={() => this.submitPoi()}
           />
         }
+        <TouchableOpacity style={styles.compassWrapper} onPress={() => { this.getCurrentLocation() }}>
+          <FontAwesome name='dot-circle-o' style={styles.compass}/>
+        </TouchableOpacity>
       </View>
     )
   }
@@ -307,5 +335,25 @@ const styles = StyleSheet.create({
     height: 50,
     position: 'absolute',
     bottom: 250
+  },
+  compass: {
+    fontSize: 20,
+    color: gray
+  },
+  compassWrapper: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: white,
+    position: 'absolute',
+    right: 15,
+    bottom: 15,
+    shadowColor: gray,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.8,
+    shadowRadius: 2,
+    elevation: 1
   }
 })

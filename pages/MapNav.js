@@ -5,6 +5,7 @@ import Dimensions from 'Dimensions'
 import MapPage from './MapPage'
 import ProfilePage from './ProfilePage'
 import SettingsPage from './SettingsPage'
+import NotificationPage from './NotificationPage'
 import TripPage from './TripPage'
 import { FontAwesome } from '@expo/vector-icons'
 import { primary, white, gray } from '../utils/colors'
@@ -21,6 +22,10 @@ const ProfileScreen = (props) => (
 
 const SettingsScreen = (props) => (
   <SettingsPage {...props.screenProps} />
+)
+
+const NotificationScreen = (props) => (
+  <NotificationPage {...props.screenProps} />
 )
 
 navOpts = (labelName, iconName) => ({
@@ -43,6 +48,10 @@ const MapNav = TabNavigator({
 		screen: props => ProfileScreen(props),
     navigationOptions: navOpts('Profile', 'user')
 	},
+  NotificationPage: {
+    screen: props => NotificationScreen(props),
+    navigationOptions: navOpts('Notifications', 'bell')
+  },
   SettingsPage: {
     screen: props => SettingsScreen(props),
     navigationOptions: navOpts('Settings', 'cogs')

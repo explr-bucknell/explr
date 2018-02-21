@@ -53,15 +53,15 @@ const TripPageOpts = ({ navigation }) => ({
 		    />
 		</TouchableOpacity>,
 	headerRight:
-	<TouchableOpacity onPress={
-		() => navigation.navigate('TripMapPage',
+		<TouchableOpacity onPress={
+			() => navigation.navigate('TripMapPage',
 			{trip: navigation.state.params.trip, uid: navigation.state.params.uid})} style={{ marginRight: 10 }}>
-		<FontAwesome
-				name='map'
-				size={25}
-				style={{ color: white }}
-			/>
-	</TouchableOpacity>
+			<FontAwesome
+					name='map'
+					size={25}
+					style={{ color: white }}
+				/>
+		</TouchableOpacity>
 })
 
 const TripMapPageOpts = ({ navigation }) => ({
@@ -92,26 +92,29 @@ const SearchNavOpts = ({ navigation }) => ({
 	},
 	headerTitle:
 		<TextInput
-	        placeholder="Search for places here"
-	      	onChangeText={ (text) => navigation.state.params.handleText(text.trim()) }
-	        placeholderTextColor={ transparentWhite }
-	        autoFocus={ true }
-	        selectionColor={ Platform.OS === 'android' ? transparentWhite : white }
-	        underlineColorAndroid='rgba(0,0,0,0)'
-	        style={{
-	       		width: DEVICE_WIDTH * 0.6,
-				height: 40,
-				color: white,
-				fontSize: 16,
-				borderColor: white,
-	        }}
+        placeholder="Search for places here"
+      	onChangeText={ (text) => {
+      		navigation.state.params.handlePlaceSearch && navigation.state.params.handlePlaceSearch(text.trim())
+      		navigation.state.params.handleUserSearch && navigation.state.params.handleUserSearch(text.trim())
+      	}}
+        placeholderTextColor={ transparentWhite }
+        autoFocus={ true }
+        selectionColor={ Platform.OS === 'android' ? transparentWhite : white }
+        underlineColorAndroid='rgba(0,0,0,0)'
+        style={{
+       		width: DEVICE_WIDTH * 0.6,
+					height: 40,
+					color: white,
+					fontSize: 16,
+					borderColor: white,
+	       }}
 	    />,
 	headerLeft:
 		<FontAwesome
-			name='search'
-			size={30}
-			style={{ color: white, marginLeft: 15 }}
-	   />,
+				name='search'
+				size={25}
+				style={{ color: white, marginLeft: 15 }}
+	  	/>,
 	headerRight:
 		<TouchableOpacity onPress={() => navigation.goBack(null)} style={{ marginRight: 10 }}>
 			<Text style={{ color: white, fontSize: 18 }}>Cancel</Text>
