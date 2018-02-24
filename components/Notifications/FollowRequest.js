@@ -2,21 +2,15 @@ import React from 'react'
 import { View, Image, Text, TouchableOpacity, StyleSheet } from 'react-native'
 import firebase from 'firebase'
 import { Ionicons } from '@expo/vector-icons'
-import { primary, white, gray, black } from '../utils/colors'
+import { primary, white, gray, black } from '../../utils/colors'
 
-/* sender is an object with the following attributes:
- * uid: unique id of sender
- * name: first + last name
- * handle
- * imageUrl: null or url for profile image
- *
- * nav is the main navigator
-*/
 export default class FollowRequest extends React.Component {
 	constructor(props) {
 		// props.uid
 		// props.nav
 		// props.notificationId
+		// props.data
+		// props.complete
 		super(props)
 	}
 
@@ -26,7 +20,6 @@ export default class FollowRequest extends React.Component {
 	}
 
 	componentWillMount() {
-		console.log("props", this.props)
 		var senderId = this.props.data.sender
 		var senderRef = firebase.database().ref("users/main/" + senderId)
 		var self = this
@@ -63,28 +56,46 @@ export default class FollowRequest extends React.Component {
 		followerUpdates["/following/" + this.props.uid] = timestamp
 		ref.update(updates).then(function() {
 			followerRef.update(followerUpdates).then(function() {
+				self.sendApprovalNotification()
 				self.props.complete(self.props.notificationId)
 			})
 		})
+	}
+
+	denyRequest = () => {
+		this.props.complete(this.props.notificationId)
+	}
+
+	sendApprovalNotification = () => {
+		var uid = this.state.sender.uid
+  	var ref = firebase.database().ref('users/notifications/')
+  	var newKey = ref.child(uid).push().key
+  	var newApproval = {}
+  	newApproval[newKey + '/data/approver'] = this.props.uid
+  	newApproval[newKey + '/time'] = (new Date).getTime()
+  	newApproval[newKey + '/type'] = 'FOLLOW_APPROVAL'
+  	ref.child(uid).update(newApproval).then(function() {
+  		console.log("follow approval sent")
+  	})
 	}
 
 	render() {
 		var sender = this.state.sender
 		return (
 			<TouchableOpacity style={styles.container}>
-				<View style={styles.flex_1}>
-					<Image style={styles.profilePic} source={ sender.imageUrl ? {uri: sender.imageUrl} : (require('../assets/images/profilePic.png')) } />
+				<View style={styles.imgWrapper}>
+					<Image style={styles.profilePic} source={ sender.imageUrl ? {uri: sender.imageUrl} : (require('../../assets/images/profilePic.png')) } />
 				</View>
-				<Text style={ [styles.textWrapper, styles.flex_3] }>
+				<Text style={styles.textWrapper}>
 					<Text style={styles.name}>{ sender.name }</Text>
 					<Text style={styles.handle}>{ " (@" + sender.handle + ") " }</Text>
 					<Text style={styles.message}>has requested to follow you.</Text>
 				</Text>
-				<View style={ [styles.buttonWrapper, styles.flex_2] }>
+				<View style={styles.buttonWrapper}>
 					<TouchableOpacity style={styles.approve} onPress={() => this.approveRequest()}>
 						<Ionicons name='ios-checkmark' style={styles.approveIcon}/>
 					</TouchableOpacity>
-					<TouchableOpacity style={styles.deny}>
+					<TouchableOpacity style={styles.deny} onPress={() => this.denyRequest()}>
 						<Ionicons name='ios-close' style={styles.denyIcon}/>
 					</TouchableOpacity>
 				</View>
@@ -94,20 +105,14 @@ export default class FollowRequest extends React.Component {
 }
 
 const styles = StyleSheet.create({
-	flex_1: {
-		flex: 1
-	},
-	flex_2: {
-		flex: 2
-	},
-	flex_3: {
-		flex: 3
-	},
 	container: {
 		flexDirection: 'row',
 		backgroundColor: white,
 		justifyContent: 'center',
 		alignItems: 'center'
+	},
+	imgWrapper: {
+		flex: 1
 	},
 	profilePic: {
 		width: 50,
@@ -118,6 +123,7 @@ const styles = StyleSheet.create({
 		borderWidth: 1
 	},
 	textWrapper: {
+		flex: 3,
 		margin: 10
 	},
 	name: {
@@ -137,6 +143,7 @@ const styles = StyleSheet.create({
 		fontSize: 14
 	},
 	buttonWrapper: {
+		flex: 2,
 		flexDirection: 'row'
 	},
 	approve: {

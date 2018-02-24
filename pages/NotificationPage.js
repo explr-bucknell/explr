@@ -1,7 +1,8 @@
 import React from 'react'
 import { View, StyleSheet } from 'react-native'
 import firebase from 'firebase'
-import FollowRequest from '../components/FollowRequest'
+import FollowRequest from '../components/Notifications/FollowRequest'
+import FollowApproval from '../components/Notifications/FollowApproval'
 import { white } from '../utils/colors'
 
 export default class NotificationPage extends React.Component {
@@ -27,9 +28,9 @@ export default class NotificationPage extends React.Component {
   }
 
   loadNotifications = (uid, nav) => {
-  	var ref = firebase.database().ref("users/notifications/" + uid)
+  	var ref = firebase.database().ref('users/notifications/' + uid)
   	var self = this
-  	ref.on("value", function(snapshot) {
+  	ref.on('value', function(snapshot) {
   		self.setState({
 				data: snapshot.val() ? snapshot.val() : []
 			})
@@ -37,7 +38,7 @@ export default class NotificationPage extends React.Component {
   }
 
   removeNotification = (notificationId) => {
-  	var ref = firebase.database().ref("users/notifications/" + this.state.uid + "/" + notificationId)
+  	var ref = firebase.database().ref('users/notifications/' + this.state.uid + '/' + notificationId)
   	ref.remove()
   	var data = Object.assign({}, this.state.data)
   	delete data[notificationId]
@@ -50,14 +51,18 @@ export default class NotificationPage extends React.Component {
 		return (
 			<View style={styles.container}>
 				{Object.keys(notifications).map((id, i) => (
-					notifications[id].type == "FOLLOW_REQUEST" && <FollowRequest 
+					(notifications[id].type == 'FOLLOW_REQUEST' && <FollowRequest 
 						key={i} 
 						notificationId={id} 
 						data={notifications[id].data} 
 						uid={uid} 
 						nav={nav} 
 						complete={this.removeNotification}
-					/>
+					/>) ||
+					(notifications[id].type == 'FOLLOW_APPROVAL' && <FollowApproval
+						key={i}
+						data={notifications[id].data}
+					/>)
 				))}
 				{ /*followRequest({ name: "Jingya Wu", handle: "jw057" }, this.state.nav)*/ }
 			</View>
