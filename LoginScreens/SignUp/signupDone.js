@@ -22,9 +22,9 @@ const RADIUS = HEIGHT / 2;
 export default class SignupDone extends Component {
 	constructor(props) {
 		super(props);
-    	this.state = {
-    		disabled: false,
-    	};
+  	this.state = {
+  		disabled: false,
+  	};
 	}
 
 	signedUp() {
@@ -52,8 +52,8 @@ export default class SignupDone extends Component {
 				<View style={styles.buttonWrapper}>
 					<TouchableOpacity disabled={this.state.disabled} onPress={() => this.signedUp()} style={styles.button}>
 						<Text style={styles.buttonText}>Start your journey!</Text>
-				    </TouchableOpacity>
-			    </View>
+			    </TouchableOpacity>
+		    </View>
 			</View>
 		);
 	}

@@ -23,13 +23,13 @@ const RADIUS = WIDTH / 2;
 export default class SignupName extends Component {
 	constructor(props) {
 		super(props);
-    	this.state = {
-    		firstNameValid: false,
-    		lastNameValid: false,
-    		disabled: true,
-    		firstName: "",
-    		lastName: "",
-    	};
+  	this.state = {
+  		firstNameValid: false,
+  		lastNameValid: false,
+  		disabled: true,
+  		firstName: "",
+  		lastName: "",
+  	};
 	}
 
 	checkFirstName(firstName) {
@@ -86,8 +86,8 @@ export default class SignupName extends Component {
 						</Item>
 					</Form>
 					<TouchableOpacity disabled={this.state.disabled} style={this.state.disabled ? [styles.button, styles.disabled] : styles.button} onPress={() => {this.props.nav.navigate('SignUpEmail', this.getUserData())}}>
-				    	<FontAwesome name="angle-right" style={styles.next}/>
-				    </TouchableOpacity>
+			    	<FontAwesome name="angle-right" style={styles.next}/>
+			    </TouchableOpacity>
 				</Content>
 			</Container>
 		);

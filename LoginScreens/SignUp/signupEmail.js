@@ -24,13 +24,13 @@ const RADIUS = WIDTH / 2;
 export default class SignupEmail extends Component {
 	constructor(props) {
 		super(props);
-    	this.state = {
-    		disabled: true,
-    		duplicate: false,
-    		firstName: this.props.nav.state.params.firstName,
-    		lastName: this.props.nav.state.params.lastName,
-    		email: "",
-    	};
+  	this.state = {
+  		disabled: true,
+  		duplicate: false,
+  		firstName: this.props.nav.state.params.firstName,
+  		lastName: this.props.nav.state.params.lastName,
+  		email: "",
+  	};
 	}
 
 	checkEmail(email) {

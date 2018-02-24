@@ -17,27 +17,27 @@ const SKIP = DEVICE_HEIGHT / 10;
 export default class SignupConfirm extends Component {
 	constructor(props) {
 		super(props);
-    	this.state = {
-    		disabled: false,
-    		email: this.props.nav.state.params.email,
-    	};
+  	this.state = {
+  		disabled: false,
+  		email: this.props.nav.state.params.email,
+  	};
 	}
 
 	componentDidMount() {
-        var navigate = this.props.nav.navigate;
-        var intervalID = setInterval(function(){
-        	var user = firebase.auth().currentUser;
-        	if (!user) {
-                navigate('Start');
-            } else {
-            	user.reload();
-            	if (user.emailVerified) {
-    				clearInterval(intervalID);
-					navigate("SignUpDone", {uid: user.uid});
-				}
-            }
-        }, 2000);
-    }
+    var navigate = this.props.nav.navigate;
+    var intervalID = setInterval(function(){
+    	var user = firebase.auth().currentUser;
+    	if (!user) {
+            navigate('Start');
+        } else {
+        	user.reload();
+        	if (user.emailVerified) {
+				clearInterval(intervalID);
+			navigate("SignUpDone", {uid: user.uid});
+		}
+        }
+    }, 2000);
+  }
 
 	render() {
 		return (
@@ -50,7 +50,7 @@ export default class SignupConfirm extends Component {
 				<View style={styles.bottom}>
 					<TouchableOpacity disabled={this.state.disabled} onPress={() => {null}}>
 						<Text style={styles.resendText}>Resend email</Text>
-			    	</TouchableOpacity>
+		    	</TouchableOpacity>
 				</View>
 			</View>
 		);

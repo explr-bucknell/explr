@@ -24,12 +24,12 @@ const RADIUS = WIDTH / 2;
 export default class ResetPwd extends Component {
 	constructor(props) {
 		super(props);
-    	this.state = {
-    		disabled: true,
-    		//alert: false,
-    		email: this.props.nav.state.params.email,
-    		pwd: "",
-    	};
+  	this.state = {
+  		disabled: true,
+  		//alert: false,
+  		email: this.props.nav.state.params.email,
+  		pwd: "",
+  	};
 	}
 
 	checkPwd(pwd) {

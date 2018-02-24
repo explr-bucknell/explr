@@ -111,15 +111,15 @@ const SignUpNavOpts = {
 }
 
 const LoginNavigator = StackNavigator({
-  	Start: {
-    	screen: StartScreen,
-    	navigationOptions: {
-      		header: null,
-    	},
+	Start: {
+  	screen: StartScreen,
+  	navigationOptions: {
+    		header: null,
   	},
-  	SignUpName: {
-    	screen: PromptName,
-    	navigationOptions: SignUpNavOpts,
+	},
+	SignUpName: {
+  	screen: PromptName,
+  	navigationOptions: SignUpNavOpts,
 	},
 	SignUpEmail: {
 		screen: PromptEmail,
@@ -141,46 +141,46 @@ const LoginNavigator = StackNavigator({
 		screen: SignUpComplete,
 		navigationOptions: SignUpNavOpts,
 	},
-  	Login: {
-  		screen: LoginScreen,
-  		navigationOptions: {
-      		headerStyle: {
-				backgroundColor: white,
-				borderBottomWidth: 0,
-			},
-			headerTintColor: primary,
-    	},
+	Login: {
+		screen: LoginScreen,
+		navigationOptions: {
+    		headerStyle: {
+			backgroundColor: white,
+			borderBottomWidth: 0,
+		},
+		headerTintColor: primary,
   	},
-  	ForgotPwd: {
-  		screen: ForgotScreen,
-  		navigationOptions: {
-  			headerTitle: "Forgot Password",
-			headerStyle: {
-				backgroundColor: primary,
-				borderBottomWidth: 0,
-			},
-			headerTintColor: white,
-			headerBackTitle: null,
-  		}
+	},
+	ForgotPwd: {
+		screen: ForgotScreen,
+		navigationOptions: {
+			headerTitle: "Forgot Password",
+		headerStyle: {
+			backgroundColor: primary,
+			borderBottomWidth: 0,
+		},
+		headerTintColor: white,
+		headerBackTitle: null,
+		}
+	},
+	ResetPwd: {
+		screen: ResetScreen,
+		navigationOptions: {
+			headerTitle: "Reset Password",
+		headerStyle: {
+			backgroundColor: primary,
+			borderBottomWidth: 0,
+		},
+		headerTintColor: white,
+		headerBackTitle: null,
+		}
+	},
+	MainPage: {
+		screen: MainPage,
+		navigationOptions: {
+    		header: null,
   	},
-  	ResetPwd: {
-  		screen: ResetScreen,
-  		navigationOptions: {
-  			headerTitle: "Reset Password",
-			headerStyle: {
-				backgroundColor: primary,
-				borderBottomWidth: 0,
-			},
-			headerTintColor: white,
-			headerBackTitle: null,
-  		}
-  	},
-  	MainPage: {
-  		screen: MainPage,
-  		navigationOptions: {
-      		header: null,
-    	},
-  	}
+	}
 }, );
 
 export default LoginNavigator;

@@ -10,6 +10,7 @@ import ProfilePage from './pages/ProfilePage'
 import NationalParkProfile from './pages/NationalParkProfile'
 import TripPage from './pages/TripPage'
 import TripMapPage from './pages/TripMapPage'
+import ConnectionsPage from './pages/ConnectionsPage'
 import { primary, white, transparentWhite } from './utils/colors'
 
 const DEVICE_WIDTH = Dimensions.get('window').width
@@ -121,6 +122,32 @@ const SearchNavOpts = ({ navigation }) => ({
 		</TouchableOpacity>
 })
 
+const FollowersScreen = ({ navigation }) => (
+	<ConnectionsPage nav={navigation}/>
+)
+
+const FollowersNavOpts = ({ navigation }) => ({ 
+	headerTitle: "Followers",
+	headerStyle: {
+		backgroundColor: primary,
+		borderBottomWidth: 0,
+	},
+	headerTintColor: white
+})
+
+const FollowingScreen = ({ navigation }) => (
+	<ConnectionsPage nav={navigation}/>
+)
+
+const FollowingNavOpts = ({ navigation }) => ({ 
+	headerTitle: "Following",
+	headerStyle: {
+		backgroundColor: primary,
+		borderBottomWidth: 0,
+	},
+	headerTintColor: white
+})
+
 const ProfileScreen = ({ navigation }) => (
 	<ProfilePage nav={navigation}/>
 )
@@ -149,6 +176,14 @@ const MainNavigator = StackNavigator({
 	ProfilePage: {
 		screen: ProfileScreen,
 		navigationOptions: MapNavOpts
+	},
+	FollowersPage: {
+		screen: FollowersScreen,
+		navigationOptions: FollowersNavOpts
+	},
+	FollowingPage: {
+		screen: FollowingScreen,
+		navigationOptions: FollowingNavOpts
 	},
 	TripPage: {
 		screen: TripScreen,

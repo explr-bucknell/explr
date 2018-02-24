@@ -24,14 +24,14 @@ const RADIUS = WIDTH / 2;
 export default class SignupPwd extends Component {
 	constructor(props) {
 		super(props);
-    	this.state = {
-    		disabled: true,
-    		//alert: false,
-    		firstName: this.props.nav.state.params.firstName,
-    		lastName: this.props.nav.state.params.lastName,
-    		email: this.props.nav.state.params.email,
-    		pwd: "",
-    	};
+  	this.state = {
+  		disabled: true,
+  		//alert: false,
+  		firstName: this.props.nav.state.params.firstName,
+  		lastName: this.props.nav.state.params.lastName,
+  		email: this.props.nav.state.params.email,
+  		pwd: "",
+  	};
 	}
 
 	checkPwd(pwd) {
@@ -117,8 +117,8 @@ export default class SignupPwd extends Component {
 						</Item>
 					</Form>
 					<TouchableOpacity disabled={this.state.disabled} style={this.state.disabled ? [styles.button, styles.disabled] : styles.button} onPress={() => {this.props.nav.navigate('SignUpHandle', this.getUserData())}}>
-				    	<FontAwesome name="angle-right" style={styles.next}/>
-				    </TouchableOpacity>
+			    	<FontAwesome name="angle-right" style={styles.next}/>
+			    </TouchableOpacity>
 				</Content>
 			</Container>
 		);

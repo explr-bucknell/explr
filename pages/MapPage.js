@@ -277,7 +277,7 @@ export default class MapPage extends Component {
           />
         }
         <TouchableOpacity style={styles.compassWrapper} onPress={() => { this.getCurrentLocation() }}>
-          <FontAwesome name='dot-circle-o' style={styles.compass}/>
+          <FontAwesome name='location-arrow' style={styles.compass}/>
         </TouchableOpacity>
       </View>
     )

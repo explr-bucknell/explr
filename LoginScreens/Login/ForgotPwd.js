@@ -24,11 +24,11 @@ const RADIUS = WIDTH / 2;
 export default class ForgotPwd extends Component {
 	constructor(props) {
 		super(props);
-    	this.state = {
-    		disabled: true,
-    		exsit: true,
-    		email: "",
-    	};
+  	this.state = {
+  		disabled: true,
+  		exsit: true,
+  		email: "",
+  	};
 	}
 
 	checkEmail(email) {
@@ -84,7 +84,7 @@ export default class ForgotPwd extends Component {
 		 	navigate('Login');
 		}).catch(function(error) {
 			// An error happened.
-		  	console.log("Reset password email sending failed.");
+		  console.log("Reset password email sending failed.");
 		});
 	}
 

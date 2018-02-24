@@ -15,12 +15,12 @@ const SKIP = DEVICE_HEIGHT / 4;
 
 export default class Buttons extends Component {
 
-    constructor(props) {
-	    super(props);
+  constructor(props) {
+    super(props);
 
-	    this.state = {
-	    	loggedIn: true,
-	    }
+    this.state = {
+    	loggedIn: true,
+    }
 	}
 
 	componentDidMount() {
@@ -37,11 +37,11 @@ export default class Buttons extends Component {
 		return (
 			<View style={[styles.container, {display: this.state.loggedIn ? 'none' : 'flex'}]}>
 				<TouchableOpacity {...this.props} style={styles.signup} onPress={() => {this.props.nav.navigate('SignUpName')}}>
-			    	<Text style={styles.signupText}>SIGN UP</Text>
-			    </TouchableOpacity>
-			    <TouchableOpacity {...this.props} style={styles.login} onPress={() => {this.props.nav.navigate('Login')}}>
-			    	<Text style={styles.loginText}>LOGIN</Text>
-			    </TouchableOpacity>
+		    	<Text style={styles.signupText}>SIGN UP</Text>
+		    </TouchableOpacity>
+		    <TouchableOpacity {...this.props} style={styles.login} onPress={() => {this.props.nav.navigate('Login')}}>
+		    	<Text style={styles.loginText}>LOGIN</Text>
+		    </TouchableOpacity>
 			</View>
 		);
 	}

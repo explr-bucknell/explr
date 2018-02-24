@@ -69,36 +69,36 @@ export default class LoginOther extends Component {
 		var navigate = this.props.nav.navigate;
 		var self = this;
 		try {
-		    const result = await Expo.Google.logInAsync({
-				androidClientId: GOOGLE_ANDROID_ID,
-				iosClientId: GOOGLE_IOS_ID,
-				scopes: ['profile', 'email'],
-		    });
+	    const result = await Expo.Google.logInAsync({
+			androidClientId: GOOGLE_ANDROID_ID,
+			iosClientId: GOOGLE_IOS_ID,
+			scopes: ['profile', 'email'],
+	    });
 
-		    if (result.type === 'success') {
-		    	//console.log(result);
-		    	var credential = firebase.auth.GoogleAuthProvider.credential(result.idToken);
+	    if (result.type === 'success') {
+	    	//console.log(result);
+	    	var credential = firebase.auth.GoogleAuthProvider.credential(result.idToken);
 
-		    	firebase.auth().signInWithCredential(credential).then(function() {
-					var uid = firebase.auth().currentUser.uid;
-					console.log(result.user);
-					self.initUser(uid, result.user.givenName, result.user.familyName, result.user.photoUrl);
-					
-				}).catch(function(error) {
-					// Handle Errors here.
-					var errorCode = error.code;
-					var errorMessage = error.message;
-					// The email of the user's account used.
-					var email = error.email;
-					// The firebase.auth.AuthCredential type that was used.
-					var credential = error.credential;
-					// ...
-					console.log(errorMessage);
-					navigate("Login");
-				});
-		    } else {
-		    	//navigate("Login");
-		    }
+	    	firebase.auth().signInWithCredential(credential).then(function() {
+				var uid = firebase.auth().currentUser.uid;
+				console.log(result.user);
+				self.initUser(uid, result.user.givenName, result.user.familyName, result.user.photoUrl);
+				
+			}).catch(function(error) {
+				// Handle Errors here.
+				var errorCode = error.code;
+				var errorMessage = error.message;
+				// The email of the user's account used.
+				var email = error.email;
+				// The firebase.auth.AuthCredential type that was used.
+				var credential = error.credential;
+				// ...
+				console.log(errorMessage);
+				navigate("Login");
+			});
+	    } else {
+	    	//navigate("Login");
+	    }
 		} catch(e) {
 			//navigate("Login");
 		}
@@ -110,11 +110,11 @@ export default class LoginOther extends Component {
 		var usersRef = firebase.database().ref('users/main');
 		var user = firebase.auth().currentUser;
 		await usersRef.child(uid).once("value", function(snapshot) {
-		  	if (snapshot.val()) {
-		  		userExist = true;
-		  	} else {
-		  		userExist = false;
-		  	}
+	  	if (snapshot.val()) {
+	  		userExist = true;
+	  	} else {
+	  		userExist = false;
+	  	}
 		});
 
 		if (!userExist) {
@@ -126,11 +126,11 @@ export default class LoginOther extends Component {
 				count += 1;
 				var handlesRef = firebase.database().ref('users/handles');
 				await handlesRef.child(handle).once("value", function(snapshot) {
-				  	if (snapshot.val()) {
-				  		handle = name + count.toString();
-				  	} else {
-				  		found = true;
-				  	}
+			  	if (snapshot.val()) {
+			  		handle = name + count.toString();
+			  	} else {
+			  		found = true;
+			  	}
 				});
 			}
 
@@ -139,12 +139,12 @@ export default class LoginOther extends Component {
 			await firebase.database().ref('users/handles/' + handle).set(uid);
 
 			await firebase.database().ref('users/main/' + uid).set({
-			    firstname: firstname,
-			    lastname: lastname,
-			    handle: handle,
-			    numFollowers: 0,
-			    numFollowing: 0,
-			    imageUrl: imageUrl
+		    firstname: firstname,
+		    lastname: lastname,
+		    handle: handle,
+		    numFollowers: 0,
+		    numFollowing: 0,
+		    imageUrl: imageUrl
 			});
 		}
 

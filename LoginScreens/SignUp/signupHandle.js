@@ -24,15 +24,15 @@ const RADIUS = WIDTH / 2;
 export default class SignupPwd extends Component {
 	constructor(props) {
 		super(props);
-    	this.state = {
-    		disabled: true,
-    		duplicate: false,
-    		firstName: this.props.nav.state.params.firstName,
-    		lastName: this.props.nav.state.params.lastName,
-    		email: this.props.nav.state.params.email,
-    		pwd: this.props.nav.state.params.pwd,
-    		handle: "",
-    	};
+  	this.state = {
+  		disabled: true,
+  		duplicate: false,
+  		firstName: this.props.nav.state.params.firstName,
+  		lastName: this.props.nav.state.params.lastName,
+  		email: this.props.nav.state.params.email,
+  		pwd: this.props.nav.state.params.pwd,
+  		handle: "",
+  	};
 	}
 
 	changeState(disabled, duplicate, handle) {
@@ -49,11 +49,11 @@ export default class SignupPwd extends Component {
 
 		var handlesRef = firebase.database().ref('users/handles');
 		await handlesRef.child(handle).once("value", function(snapshot) {
-		  	if (snapshot.val()) {
-		  		duplicate = true;
-		  	} else {
-		  		duplicate = false;
-		  	}
+	  	if (snapshot.val()) {
+	  		duplicate = true;
+	  	} else {
+	  		duplicate = false;
+	  	}
 		});
 
 		this.changeState(((allowed && !duplicate) ? false : true), duplicate, handle);
@@ -76,12 +76,12 @@ export default class SignupPwd extends Component {
 				displayName: displayName,
 			}).then(function() {
 				user.sendEmailVerification().then(function() {
-				  	// Email sent.
-				  	self.initUser(user.uid, handle, firstname, lastname);
-				  	navigate('SignUpConfirm', {email: email});
+			  	// Email sent.
+			  	self.initUser(user.uid, handle, firstname, lastname);
+			  	navigate('SignUpConfirm', {email: email});
 				}).catch(function(error) {
-				  	// An error happened.
-				  	navigate('SignUpConfirm', {email: error.message});
+			  	// An error happened.
+			  	navigate('SignUpConfirm', {email: error.message});
 				});
 			}, function(error) {
 				// An error happened.
@@ -98,11 +98,11 @@ export default class SignupPwd extends Component {
 		await firebase.database().ref('users/handles/' + handle).set(uid);
 
 		await firebase.database().ref('users/main/' + uid).set({
-		    firstname: firstname,
-		    lastname: lastname,
-		    handle: handle,
-		    numFollowers: 0,
-		    numFollowing: 0,
+	    firstname: firstname,
+	    lastname: lastname,
+	    handle: handle,
+	    numFollowers: 0,
+	    numFollowing: 0,
 		});
 	}
 
@@ -118,8 +118,8 @@ export default class SignupPwd extends Component {
 						<Text style={[styles.duplicate, {display: this.state.duplicate ? 'flex' : 'none'}]}>This handle is already in use!</Text>
 					</Form>
 					<TouchableOpacity disabled={this.state.disabled} style={this.state.disabled ? [styles.button, styles.disabled] : styles.button} onPress={() => {this.createAccount()}}>
-				    	<FontAwesome name="angle-right" style={styles.next}/>
-				    </TouchableOpacity>
+			    	<FontAwesome name="angle-right" style={styles.next}/>
+			    </TouchableOpacity>
 				</Content>
 			</Container>
 		);

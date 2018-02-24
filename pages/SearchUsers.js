@@ -30,17 +30,17 @@ export default class SearchUsers extends React.Component {
 		var ref = firebase.database().ref('users/main')
 		ref.orderByChild("handle").startAt(text).endAt(text + '\uf8ff').limitToFirst(10).on("value", function(snapshot) {
 			var uids = []
-	  		var names = []
-	  		var handles = []
-	  		var images = []
-	  		snapshot.forEach(function(user) {
-	  			var userVal = user.val()
-	  			uids.push(user.key)
-	  			names.push(userVal.firstname + " " + userVal.lastname)
-	  			handles.push(userVal.handle)
-	  			images.push(userVal.imageUrl)
-	  		})
-		  	self.setState({ uids, names, handles, images })
+  		var names = []
+  		var handles = []
+  		var images = []
+  		snapshot.forEach(function(user) {
+  			var userVal = user.val()
+  			uids.push(user.key)
+  			names.push(userVal.firstname + " " + userVal.lastname)
+  			handles.push(userVal.handle)
+  			images.push(userVal.imageUrl)
+  		})
+	  	self.setState({ uids, names, handles, images })
 		})	
 	}
 
