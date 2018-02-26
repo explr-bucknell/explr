@@ -33,7 +33,7 @@ export default class extends Component {
 				data.forEach((poi) => {
 					locations.push({
 						place_id: poi.place_id,
-						name: poi.description.split(',')[0]
+						name: poi.name
 					})
 				})
 				this.setState({ locations })
