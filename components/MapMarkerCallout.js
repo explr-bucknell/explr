@@ -40,7 +40,7 @@ export default class MapMarkerCallout extends Component {
     })
   }
 
-  async removeLiked() {    
+  async removeLiked() {
     this.setState({
       liked: false
     })
@@ -53,7 +53,7 @@ export default class MapMarkerCallout extends Component {
       <View style={styles.callout}>
         <Image style={styles.image} source={{uri: this.props.imageUrl}} />
         <View style={styles.wrapper}>
-          <TouchableOpacity style={styles.titleWrap} onPress={() => this.props.navigate('LocationPage', {name: this.props.title, description: this.props.description, imageUrl: this.props.imageUrl})}>
+          <TouchableOpacity style={styles.titleWrap} onPress={() => this.props.navigate('LocationPage', {location: this.props})}>
             <Text style={styles.title}>
               {this.props.title}
             </Text>
