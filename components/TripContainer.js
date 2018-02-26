@@ -9,14 +9,26 @@ export default class TripContainer extends Component {
 		let trip = this.props.trip
 		return (
 			<TouchableOpacity
-				onPress={() => this.props.navigate('TripPage', {trip: trip, uid: this.props.uid})}
+				onPress={
+					this.props.adding ? () => this.props.selectLocation() :
+					() => this.props.navigate('TripPage', {trip: trip, uid: this.props.uid})
+				}
 				style={styles.tripContainer}>
 				<Text style={{fontSize: 18, color: 'black'}}>{trip.name} (0/{trip.numLocs} completed)</Text>
-				<Ionicons
-					name='ios-arrow-dropright'
-					size={25}
-					style={{ color: primary }}
-				/>
+				{!this.props.adding &&
+					<Ionicons
+						name='ios-arrow-dropright'
+						size={25}
+						style={{ color: primary }}
+					/>
+				}
+				{this.props.adding &&
+					<Ionicons
+						name='ios-add-circle-outline'
+						size={25}
+						style={{ color: primary }}
+					/>
+				}
 			</TouchableOpacity>
 		)
 	}

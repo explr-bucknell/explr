@@ -76,7 +76,7 @@ export default class MapPage extends Component {
     else {
       this.runGeoQuery(this.state.region)
     }
-    
+
     /*
     getLocations("pois").then((data) => {
       locations = data
@@ -84,7 +84,7 @@ export default class MapPage extends Component {
         locations: locations
       })
     })
-    
+
     let locations = this.state.locations
     Object.keys(this.state.locationTypes).forEach((locationType) => (
       getLocations (locationType)
@@ -137,7 +137,6 @@ export default class MapPage extends Component {
   }
 
   onRegionChangeComplete (region) {
-    console.log("region changed")
     if (this.state.centerChosenPOI) {
       this.setState({ centerChosenPOI: false })
     }
@@ -200,7 +199,6 @@ export default class MapPage extends Component {
   }
 
   render() {
-    console.log("rerender")
     let locations = this.state.locations
     return (
       <View style={styles.container}>
