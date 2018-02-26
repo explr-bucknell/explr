@@ -83,12 +83,12 @@ export default class FollowRequest extends React.Component {
 		var sender = this.state.sender
 		return (
 			<TouchableOpacity style={styles.container}>
-				<View style={styles.imgWrapper}>
+				<TouchableOpacity onPress={() => this.props.nav('ProfilePage', {uid: this.state.sender.uid})} style={styles.imgWrapper}>
 					<Image style={styles.profilePic} source={ sender.imageUrl ? {uri: sender.imageUrl} : (require('../../assets/images/profilePic.png')) } />
-				</View>
+				</TouchableOpacity>
 				<Text style={styles.textWrapper}>
 					<Text style={styles.name}>{ sender.name }</Text>
-					<Text style={styles.handle}>{ " (@" + sender.handle + ") " }</Text>
+					<Text style={styles.handle}>{ ' (@' + sender.handle + ') ' }</Text>
 					<Text style={styles.message}>has requested to follow you.</Text>
 				</Text>
 				<View style={styles.buttonWrapper}>

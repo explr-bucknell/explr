@@ -6,7 +6,6 @@ import { primary, white, gray, black } from '../../utils/colors'
 
 export default class FollowRequest extends React.Component {
 	constructor(props) {
-		// props.uid
 		// props.nav
 		// props.notificationId
 		// props.data
@@ -37,16 +36,16 @@ export default class FollowRequest extends React.Component {
 		var approver = this.state.approver
 		return (
 			<TouchableOpacity style={styles.container}>
-				<View style={styles.imgWrapper}>
+				<TouchableOpacity onPress={() => this.props.nav('ProfilePage', {uid: this.state.approver.uid})} style={styles.imgWrapper}>
 					<Image style={styles.profilePic} source={ approver.imageUrl ? {uri: approver.imageUrl} : (require('../../assets/images/profilePic.png')) } />
-				</View>
+				</TouchableOpacity>
 				<Text style={styles.textWrapper}>
 					<Text style={styles.name}>{ approver.name }</Text>
 					<Text style={styles.handle}>{ " (@" + approver.handle + ") " }</Text>
 					<Text style={styles.message}>has approved your follow request.</Text>
 				</Text>
 				<View style={styles.buttonWrapper}>
-					<TouchableOpacity style={styles.delete} onPress={() => null}>
+					<TouchableOpacity style={styles.delete} onPress={() => this.props.complete(this.props.notificationId)}>
 						<Ionicons name='ios-close' style={styles.deleteIcon}/>
 					</TouchableOpacity>
 				</View>

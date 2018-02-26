@@ -40,21 +40,21 @@ function (next) {
 			}
 			startNum += 100;
 			async.each(
-                body.data, 
-                function(item, callback) {
-                	var curr = {}
-                	designation = item.designation;
-                	var select = false;
+        body.data, 
+        function(item, callback) {
+        	var curr = {}
+        	designation = item.designation;
+        	var select = false;
 
-                	if (designation.includes("National Park")) {
-                		select = true;
-                		curr.type = "National Park";
-                	} else if (designation.includes("National Monument")) {
-                		select = true;
-                		curr.type = "National Monument";
-                	}
+        	if (designation.includes("National Park")) {
+        		select = true;
+        		curr.type = "National Park";
+        	} else if (designation.includes("National Monument")) {
+        		select = true;
+        		curr.type = "National Monument";
+        	}
 
-                	if (select) {
+        	if (select) {
 						curr.name = item.fullName;
 						curr.description = item.description;
 						if (item.images[0]) {
@@ -74,26 +74,26 @@ function (next) {
 						curr.long = latlong[1];
 
 						var results = []
-						var googlePlacesUrl = `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${curr.lat},${curr.long}&radius=50000&keyword=${curr.name}&key=${config.apiKey}`;
-					    request(googlePlacesUrl, { json: true }, function (error, response, body) {
-					    	console.log(curr.name);
-					    	if (!error && response.statusCode == 200) {
-					    		if (body.results.length > 0) {
-						    		curr.id = body.results[0].place_id;
-						    		ref.child(curr.id).set(curr);
-						    	}
+						var googlePlacesUrl = `https://maps.googleapis.com/maps/api/place/textsearch/json?query=${curr.name}&key=${config.apiKey}`;
+				    request(googlePlacesUrl, { json: true }, function (error, response, body) {
+				    	console.log(curr.name);
+				    	if (!error && response.statusCode == 200) {
+				    		if (body.results.length > 0) {
+					    		curr.id = body.results[0].place_id;
+					    		ref.child(curr.id).set(curr);
 					    	}
-					    	else {
-					    		console.error(error);
-					    	}
-					    })
+				    	}
+				    	else {
+				    		console.error(error);
+				    	}
+				    })
 					}
 					return callback(null);
-                },
-                function(err){
-                	//console.error("err");
-                }
-            );
+				},
+        function(err){
+        	//console.error("err");
+        }
+      );
 		}
 		else {
 			console.log('error');

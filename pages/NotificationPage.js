@@ -61,7 +61,10 @@ export default class NotificationPage extends React.Component {
 					/>) ||
 					(notifications[id].type == 'FOLLOW_APPROVAL' && <FollowApproval
 						key={i}
+						notificationId={id}
 						data={notifications[id].data}
+						nav={nav}
+						complete={this.removeNotification}
 					/>)
 				))}
 				{ /*followRequest({ name: "Jingya Wu", handle: "jw057" }, this.state.nav)*/ }

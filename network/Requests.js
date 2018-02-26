@@ -1,6 +1,5 @@
 import React from 'react';
 import firebase from 'firebase';
-import GeoFire from 'geofire';
 
 var config = {
   apiKey: 'AIzaSyBztce7Z8iOrB5EgV4IE8gjlFGAy6MXSkQ'
@@ -99,27 +98,49 @@ export async function getPOIDetails (placeId) {
 }
 
 export async function getPOIAutocomplete (query) {
+  const BONSAI_URL = 'https://explrelasticsearch.herokuapp.com'
+  let resp = await fetch(
+    `${BONSAI_URL}/search_places?q=${query}`
+  )
+  let data = JSON.parse(resp._bodyText).hits.hits
+  var results = []
+  data.forEach(function(poi) {
+    results.push(poi._source)
+  })
+  return results
+}
+
+/*
+// This is the old version of autocomplete using Google Places API
+export async function getPOIAutocomplete (query) {
   try {
     var results = []
     let poi = await fetch(
-      `https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${query}&key=${config.apiKey}`
+      `https://maps.googleapis.com/maps/api/place/textsearch/json?query=${query}&key=${config.apiKey}`
     )
     let poiJson = await poi.json()
-    for (i in poiJson.predictions) {
-      var id = poiJson.predictions[i].place_id
+    for (i in poiJson.results) {
+      var id = poiJson.results[i].place_id
+      //console.log("id", id)
       var firebaseInstance = await fetch(
         `https://senior-design-explr.firebaseio.com/pois.json?orderBy="id"&equalTo="${id}"`
       )
       var firebaseJson = await firebaseInstance.json()
+      //console.log(firebaseJson)
       if (Object.keys(firebaseJson).length > 0) {
-        results.push(poiJson.predictions[i])
+        results.push({
+          name: poiJson.results[i].name,
+          placeId: poiJson.results[i].place_id
+        })
       }
     }
+    //console.log("results", results)
     return results
   } catch (error) {
     console.error(error)
   }
 }
+*/
 
 export async function makePhotoRequest (photoReference) {
   try {
@@ -141,7 +162,4 @@ export async function submitPoiToFirebase (poi, photoUrl) {
     long: poi.geometry.location.lng,
     description: poi.name // FIX THIS
   })
-    //adding to geoFire
-    var geoFire = new GeoFire(firebase.database().ref('geo_data/'))
-    geoFire.set(poi.place_id, [poi.geometry.location.lat, poi.geometry.location.lng])
 }

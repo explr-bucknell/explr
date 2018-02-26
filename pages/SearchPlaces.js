@@ -1,5 +1,5 @@
 import React from 'react'
-import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { Image, StyleSheet, Text, TouchableOpacity, View, ScrollView } from 'react-native'
 import { getPOIAutocomplete } from '../network/Requests'
 import { primary, white, gray, black } from '../utils/colors'
 
@@ -29,8 +29,8 @@ export default class SearchPlaces extends React.Component {
 			var ids = []
 			var names = []
 			data.forEach(function(poi) {
-				ids.push(poi.place_id)
-				names.push(poi.description)
+				ids.push(poi.placeId)
+				names.push(poi.name)
 			})
 			this.setState({ ids, names })
 		})
@@ -38,7 +38,7 @@ export default class SearchPlaces extends React.Component {
 
 	render() {
 		return (
-			<View style={styles.container}>
+			<ScrollView style={styles.container}>
 				{this.state.names.map((name, i) => (
 					<TouchableOpacity key={i} style={styles.profileCard} onPress={() => this.props.nav.navigate('MapPage', { id: this.state.ids[i] })}>
 						<View style={styles.textWrapper}>
@@ -46,7 +46,7 @@ export default class SearchPlaces extends React.Component {
 						</View>
 					</TouchableOpacity>
 				))}
-			</View>
+			</ScrollView>
 		)
 	}
 }

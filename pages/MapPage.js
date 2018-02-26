@@ -167,6 +167,7 @@ export default class MapPage extends Component {
       this.setState({ centerChosenPOI: false })
     }
     else {
+      console.log("rungeoquery")
       this.setState({ region })
       this.runGeoQuery(region);
     }
@@ -226,7 +227,7 @@ export default class MapPage extends Component {
 
   render() {
     console.log("rerender")
-    let locations = this.state.locations
+    var locations = this.state.locations
     return (
       <View style={styles.container}>
         <MapView

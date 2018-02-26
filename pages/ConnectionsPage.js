@@ -53,6 +53,7 @@ export default class ConnectionsPage extends React.Component {
 		  	if (snapshot.val()) {
 		  		var userData = snapshot.val()
 		  		var profile = {}
+		  		profile.uid = id
 		  		profile.name = userData.firstname + " " + userData.lastname
 		  		profile.handle = userData.handle
 		  		if (userData.imageUrl) {
@@ -93,6 +94,7 @@ export default class ConnectionsPage extends React.Component {
 	            subtitle={item.handle}
 	            avatar={ item.imageUrl ? { uri: item.imageUrl } : (require('../assets/images/profilePic.png')) }
 	            containerStyle={{ borderBottomWidth: 0 }}
+	            onPress={() => this.props.nav.navigate('ProfilePage', {uid: item.uid})}
 	          />
 	        )}
 	        ItemSeparatorComponent={this.renderSeparator}
