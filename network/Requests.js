@@ -16,6 +16,21 @@ export async function createTrip(uid, tripName) {
   })
 }
 
+export async function createTripWithLocation(uid, tripName, locationId, locationName) {
+  var tripId = firebase.database().ref(`users/main/${uid}/trips/`).push().key
+  await firebase.database().ref(`users/main/${uid}/trips/${tripId}`).update({
+    name: tripName,
+    numLocs: 1,
+    creator: uid,
+    locations: {
+      [locationId]: {
+        visited: false,
+        name: locationName
+      }
+    }
+  })
+}
+
 //Add a new location to a trip
 export async function addLocationToTrip(uid, tripId, locationId, locationName) {
   await firebase.database().ref(`users/main/${uid}/trips/${tripId}/locations/${locationId}`).set({

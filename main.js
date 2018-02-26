@@ -7,7 +7,7 @@ import { FontAwesome } from '@expo/vector-icons'
 import MapNav from './pages/MapNav'
 import SearchPage from './pages/SearchPage'
 import ProfilePage from './pages/ProfilePage'
-import NationalParkProfile from './pages/NationalParkProfile'
+import LocationProfile from './pages/LocationProfile'
 import TripPage from './pages/TripPage'
 import TripMapPage from './pages/TripMapPage'
 import { primary, white, transparentWhite } from './utils/colors'
@@ -35,6 +35,23 @@ const MapNavOpts = ({ navigation }) => ({
 		</TouchableOpacity>,
 	headerTintColor: white,
 	headerBackTitle: null,
+})
+
+const LocationPageOpts = ({ navigation }) => ({
+	headerTitle: "EXPLR",
+	headerStyle: {
+		backgroundColor: primary,
+		borderBottomWidth: 0,
+	},
+	headerLeft:
+		<TouchableOpacity onPress={() => navigation.goBack(null)} style={{ marginLeft: 10 }}>
+			<FontAwesome
+					name='angle-left'
+					size={35}
+					style={{ color: white }}
+				/>
+		</TouchableOpacity>,
+	headerTintColor: white,
 })
 
 const TripPageOpts = ({ navigation }) => ({
@@ -123,7 +140,7 @@ const ProfileScreen = ({ navigation }) => (
 )
 
 const LocationScreen = ({ navigation }) => (
-	<NationalParkProfile nav={navigation}/>
+	<LocationProfile nav={navigation}/>
 )
 
 const TripScreen = ({ navigation }) => (
@@ -157,7 +174,7 @@ const MainNavigator = StackNavigator({
 	},
 	LocationPage: {
 		screen: LocationScreen,
-		navigationOptions: MapNavOpts
+		navigationOptions: LocationPageOpts
 	}
 })
 

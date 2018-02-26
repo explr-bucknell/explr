@@ -34,7 +34,6 @@ export default class TripMapPage extends Component {
 
   normalizeLocations (locations) {
     var self = this
-    //console.log(locations)
     Object.keys(locations).map((locationId) =>
       getLocation(locationId)
       .then((databaseLocation) => {
@@ -51,7 +50,9 @@ export default class TripMapPage extends Component {
   componentWillMount () {
     getTrip(this.props.nav.state.params.uid, this.props.nav.state.params.trip.tripId)
     .then((trip) =>
-      this.normalizeLocations(trip.locations)
+      {trip.locations && Object.keys(trip.locations).length > 0 &&
+        this.normalizeLocations(trip.locations)
+      }
     )
   }
 

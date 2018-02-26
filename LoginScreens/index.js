@@ -111,15 +111,15 @@ const SignUpNavOpts = {
 }
 
 const LoginNavigator = StackNavigator({
-  	Start: {
-    	screen: StartScreen,
-    	navigationOptions: {
-      		header: null,
-    	},
+	Start: {
+  	screen: StartScreen,
+  	navigationOptions: {
+    		header: null,
   	},
-  	SignUpName: {
-    	screen: PromptName,
-    	navigationOptions: SignUpNavOpts,
+	},
+	SignUpName: {
+  	screen: PromptName,
+  	navigationOptions: SignUpNavOpts,
 	},
 	SignUpEmail: {
 		screen: PromptEmail,
