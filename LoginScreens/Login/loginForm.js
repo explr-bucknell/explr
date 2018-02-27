@@ -4,6 +4,7 @@ import Dimensions from 'Dimensions';
 import { Container, Header, Content, Form, Item, Input, Label } from 'native-base';
 import firebase from 'firebase';
 import { primary, black, white, gray } from '../../utils/colors';
+import { registerForPushNotificationsAsyc } from '../../functions/push_code'; 
 const DEVICE_WIDTH = Dimensions.get('window').width;
 const DEVICE_HEIGHT = Dimensions.get('window').height;
 
@@ -48,6 +49,7 @@ export default class LoginForm extends Component {
 		firebase.auth().signInWithEmailAndPassword(email, password).then(function() {
 			var user = firebase.auth().currentUser;
 			var uid = user.uid;
+			registerForPushNotificationsAsyc(uid);
 			navigate("MainPage", {uid: uid});
 		}).catch(function(error) {
 			// Handle Errors here.

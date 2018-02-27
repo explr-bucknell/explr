@@ -12,7 +12,7 @@ const {width: SCREEN_WIDTH} = Dimensions.get("window");
 const HEADER_HEIGHT = 150;
 const TAB_HEIGHT = 50;
 const SCROLL_HEIGHT = HEADER_HEIGHT + TAB_HEIGHT;
-
+const FOLLOW_ENDPOINT = 'https:///us-central1-senior-design-explr.cloudfunctions.net/sendFollowNotification/';
 export default class ProfilePage extends React.Component {
   scroll = new Animated.Value(0);
   tabY = this.scroll.interpolate({
@@ -31,7 +31,7 @@ export default class ProfilePage extends React.Component {
     	numFollowing: null,
     	imageUrl: null,
     	currUid: null,
-    	isMyProfile: null, 
+    	isMyProfile: null,
     	isFollowing: null
     }
   }
@@ -48,7 +48,7 @@ export default class ProfilePage extends React.Component {
   	var uid = this.state.uid
   	var currUser = firebase.auth().currentUser
   	if (currUser && currUser.uid == uid) {
-  		this.setState({ 
+  		this.setState({
   			isMyProfile: true,
   			currUid: currUser.uid
   		})
@@ -111,6 +111,17 @@ export default class ProfilePage extends React.Component {
   	ref.child(uid).update(newRequest).then(function() {
   		console.log("follow request sent")
   	})
+    fetch(FOLLOW_ENDPOINT, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body:JSON.stringify({
+        requester:this.state.currUid, //sending the follow request
+        requestee:this.state.uid //who the request is being sent to
+      }),
+    })
   }
 
   stopFollowing = () => {
@@ -143,9 +154,9 @@ export default class ProfilePage extends React.Component {
 		      			<View style={{flexDirection: 'row'}}>
 		      				<Text style={styles.name}>{ this.state.displayName.length < 16 ? this.state.displayName: (this.state.displayName.slice(0,13) + "...") }</Text>
 		      				<TouchableOpacity onPress={() => {}}>
-				            <FontAwesome 
-				            	onPress={() => (this.state.isMyProfile ? null : (this.state.isFollowing ? this.stopFollowing() : this.sendFollowRequest()))} 
-				            	name={this.state.isMyProfile ? "edit" : 'user-plus'} 
+				            <FontAwesome
+				            	onPress={() => (this.state.isMyProfile ? null : (this.state.isFollowing ? this.stopFollowing() : this.sendFollowRequest()))}
+				            	name={this.state.isMyProfile ? "edit" : 'user-plus'}
 				            	style={this.state.isFollowing ? styles.iconFollowing : styles.icon}
 				            />
 				          </TouchableOpacity>
