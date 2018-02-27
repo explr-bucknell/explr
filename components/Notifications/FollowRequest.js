@@ -36,7 +36,7 @@ export default class FollowRequest extends React.Component {
 
 		var userRef = firebase.database().ref("users/main/" + this.props.uid)
 		userRef.on("value", function(snapshot) {
-			self.setState({ 
+			self.setState({
 				numFollowers: snapshot.val().numFollowers
 			})
 		})
