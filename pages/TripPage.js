@@ -122,8 +122,8 @@ export default class extends Component {
       console.log('submitting') // call to update db here
     }
     this.setState({
-      oldTripLocations: this.state.tripLocations
-      editing: !this.state.editing,
+      oldTripLocations: this.state.tripLocations,
+      editing: !this.state.editing
     })
   }
 
