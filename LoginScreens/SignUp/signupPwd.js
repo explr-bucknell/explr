@@ -35,7 +35,7 @@ export default class SignupPwd extends Component {
 	}
 
 	checkPwd(pwd) {
-		format = /(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%?!]){8,20}/;
+		format = /(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%?!*+"'*+,-./:;<=>^_~`]){8,20}/;
 		allowed = /^[a-zA-Z0-9@#$%?!]+$/;
 		this.setState({
 			disabled: ((format.test(pwd) && allowed.test(pwd)) ? false : true),
