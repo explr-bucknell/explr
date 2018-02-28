@@ -153,9 +153,8 @@ export default class ProfilePage extends React.Component {
 		      		<View style={styles.nameContainer}>
 		      			<View style={{flexDirection: 'row'}}>
 		      				<Text style={styles.name}>{ this.state.displayName.length < 16 ? this.state.displayName: (this.state.displayName.slice(0,13) + "...") }</Text>
-		      				<TouchableOpacity onPress={() => {}}>
+		      				<TouchableOpacity onPress={() => (this.state.isMyProfile ? null : (this.state.isFollowing ? this.stopFollowing() : this.sendFollowRequest()))}>
 				            <FontAwesome
-				            	onPress={() => (this.state.isMyProfile ? null : (this.state.isFollowing ? this.stopFollowing() : this.sendFollowRequest()))}
 				            	name={this.state.isMyProfile ? "edit" : 'user-plus'}
 				            	style={this.state.isFollowing ? styles.iconFollowing : styles.icon}
 				            />
