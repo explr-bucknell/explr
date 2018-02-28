@@ -63,7 +63,7 @@ const TripPageOpts = ({ navigation }) => ({
 	},
 	headerTintColor: white,
 	headerLeft:
-		<TouchableOpacity onPress={() => navigation.goBack(null)} style={{ marginLeft: 10 }}>
+		<TouchableOpacity onPress={() => navigation.goBack(null)} style={{ paddingLeft: 10, paddingRight: 10 }}>
 			<FontAwesome
 		      name='angle-left'
 		      size={35}
@@ -90,7 +90,7 @@ const TripMapPageOpts = ({ navigation }) => ({
 	},
 	headerTintColor: white,
 	headerLeft:
-		<TouchableOpacity onPress={() => navigation.goBack(null)} style={{ marginLeft: 10 }}>
+		<TouchableOpacity onPress={() => navigation.goBack(null)} style={{ paddingLeft: 10, paddingRight: 10 }}>
 			<FontAwesome
 		      name='angle-left'
 		      size={35}

@@ -24,7 +24,8 @@ export async function createTripWithLocation(uid, tripName, locationId, location
     locations: {
       [locationId]: {
         visited: false,
-        name: locationName
+        name: locationName,
+        index: 0
       }
     }
   })
@@ -34,7 +35,7 @@ export async function createTripWithLocation(uid, tripName, locationId, location
 export async function addLocationToTrip(uid, tripId, locationId, locationName) {
   await firebase.database().ref(`users/main/${uid}/trips/${tripId}/locations/${locationId}`).set({
     visited: false,
-    name: locationName
+    name: locationName,
   });
 
   firebase.database().ref(`users/main/${uid}/trips/${tripId}`).once('value').then(function(snapshot) {

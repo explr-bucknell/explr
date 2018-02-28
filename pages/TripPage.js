@@ -11,16 +11,26 @@ export default class extends Component {
     super(props)
     this.state = {
       trip: {},
+      tripLocations: [],
+      oldTripLocations: [],
       addingLocation: false,
       locations: [],
-      uid: ''
+      uid: '',
+      editing: false
     }
   }
 
   componentWillMount () {
+    let locs = this.props.nav.state.params.trip.locations
+    var tripLocations = Object.keys(locs).map(
+      function(locId) {
+        locs[locId].locId = locId
+        return locs[locId] }
+    )
     this.setState({
       trip: this.props.nav.state.params.trip,
-      uid: this.props.nav.state.params.uid
+      uid: this.props.nav.state.params.uid,
+      tripLocations: tripLocations
     })
   }
 
@@ -62,8 +72,63 @@ export default class extends Component {
 		})
 	}
 
+  deleteLocation (index) {
+    let {tripLocations} = this.state
+    let updatedLocations = tripLocations.slice(0, index).concat(tripLocations.slice(index + 1))
+    let newLocations = []
+    for (i = 0; i < updatedLocations.length; i++) {
+      newLocations[i] = Object.assign({}, updatedLocations[i], {index: i})
+    }
+    this.setState({ tripLocations: newLocations })
+  }
+
+  increaseIndex(index) {
+    let {tripLocations} = this.state
+    let maxIndex = tripLocations.length - 1
+    let newLocations = []
+    if (index < maxIndex) {
+      let updatedLocations =
+        tripLocations.slice(0, index)
+        .concat(tripLocations[index + 1])
+        .concat(tripLocations[index])
+        .concat(tripLocations.slice(index + 2))
+      for (i = 0; i < updatedLocations.length; i++) {
+        newLocations[i] = Object.assign({}, updatedLocations[i], {index: i})
+      }
+      this.setState({ tripLocations: newLocations })
+    }
+  }
+
+  decreaseIndex(index) {
+    let {tripLocations} = this.state
+    let newLocations = []
+    if (index > 0) {
+      let updatedLocations =
+        tripLocations.slice(0, index - 1)
+        .concat(tripLocations[index])
+        .concat(tripLocations[index - 1])
+        .concat(tripLocations.slice(index + 1))
+      for (i = 0; i < updatedLocations.length; i++) {
+        newLocations[i] = Object.assign({}, updatedLocations[i], {index: i})
+      }
+      this.setState({ tripLocations: newLocations })
+    }
+  }
+
+  editOrSubmit () {
+    if (!this.state.editing) {
+      console.log('editing')
+    } else {
+      console.log('submitting') // call to update db here
+    }
+    this.setState({
+      oldTripLocations: this.state.tripLocations
+      editing: !this.state.editing,
+    })
+  }
+
   render () {
-    let {trip} = this.state
+    let {trip, tripLocations} = this.state
     return (
       <View style={{backgroundColor: white, height: '100%'}}>
         <Modal
@@ -103,7 +168,24 @@ export default class extends Component {
           </View>
         </Modal>
         <View style={styles.tripNameContainer}>
+          {this.state.editing &&
+            <View style={{position: 'absolute', left: 0}}>
+              <Button title='cancel'
+                onPress={() => this.setState({
+                  tripLocations: this.state.oldTripLocations,
+                  editing: !this.state.editing
+                })}
+                color={primary}
+              />
+            </View>
+          }
           <Text style={{fontSize: 20}}>{trip.name}</Text>
+          <View style={{position: 'absolute', right: 0}}>
+            <Button title={this.state.editing ? 'submit' : 'edit'}
+              onPress={() => this.editOrSubmit()}
+              color={primary}
+            />
+          </View>
         </View>
         <View>
           <TouchableOpacity
@@ -118,12 +200,39 @@ export default class extends Component {
             />
           </TouchableOpacity>
           <ScrollView style={styles.tripLocationsContainer}>
-          {trip.locations &&
-            Object.keys(trip.locations).map((locationId, index) =>
-            <View key={index} style={styles.tripLocation}>
-              <Text style={{fontSize: 16}}>
-                {trip.locations[locationId].name.split(',')[0]}
-              </Text>
+          {tripLocations &&
+            tripLocations.map((location) =>
+            <View key={location.index} style={styles.tripLocation}>
+              {this.state.editing &&
+                <TouchableOpacity style={{marginRight: 10}} onPress={() => this.deleteLocation(location.index)}>
+                  <Text style={{color: 'red'}}>Delete</Text>
+                </TouchableOpacity>
+              }
+              <View style={{flex: 3, justifyContent: 'center', alignItems: 'flex-start'}}>
+                <Text style={{fontSize: 16}}>
+                  {location.name.split(',')[0]}
+                </Text>
+              </View>
+              {this.state.editing &&
+                <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
+                  <TouchableOpacity style={[{marginRight: 10}, styles.moveTrip]}
+                    onPress={() => this.increaseIndex(location.index)}>
+                    <Ionicons
+                        name='ios-arrow-round-down'
+                        size={35}
+                        style={{ color: primary, borderRadius: 50 }}
+                    />
+                  </TouchableOpacity>
+                  <TouchableOpacity style={[{marginLeft: 10}, styles.moveTrip]}
+                    onPress={() => this.decreaseIndex(location.index)}>
+                    <Ionicons
+                        name='ios-arrow-round-up'
+                        size={35}
+                        style={{ color: primary }}
+                    />
+                  </TouchableOpacity>
+                </View>
+              }
             </View>
           )}
           {!trip.locations &&
@@ -153,7 +262,16 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderColor: 'gray',
     padding: 15,
-    paddingLeft: 10
+    paddingLeft: 10,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center'
+  },
+  moveTrip: {
+    padding: 5,
+    borderWidth: 1,
+    borderColor: primary,
+    borderRadius: 50
   },
   addLocationContainer: {
 		height: 60,
