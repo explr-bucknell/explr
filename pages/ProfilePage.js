@@ -1,4 +1,4 @@
-import React from "react";
+import React from "react"
 import { Animated, Dimensions, Image, Platform, StyleSheet, Text, TouchableOpacity, View } from "react-native"
 import { Body, Header, List, ListItem as Item, ScrollableTab, Tab, TabHeading, Tabs, Title } from "native-base"
 import firebase from 'firebase'
@@ -8,20 +8,20 @@ import ContentGrid from '../components/ContentGrid'
 import SavedLocations from '../components/SavedLocations'
 import UserTrips from '../components/UserTrips'
 
-const {width: SCREEN_WIDTH} = Dimensions.get("window");
-const HEADER_HEIGHT = 150;
-const TAB_HEIGHT = 50;
-const SCROLL_HEIGHT = HEADER_HEIGHT + TAB_HEIGHT;
-const FOLLOW_ENDPOINT = 'https:///us-central1-senior-design-explr.cloudfunctions.net/sendFollowNotification/';
+const {width: SCREEN_WIDTH} = Dimensions.get("window")
+const HEADER_HEIGHT = 150
+const TAB_HEIGHT = 50
+const SCROLL_HEIGHT = HEADER_HEIGHT + TAB_HEIGHT
+const FOLLOW_ENDPOINT = 'https:///us-central1-senior-design-explr.cloudfunctions.net/sendFollowNotification/'
 export default class ProfilePage extends React.Component {
-  scroll = new Animated.Value(0);
+  scroll = new Animated.Value(0)
   tabY = this.scroll.interpolate({
     inputRange: [0, SCROLL_HEIGHT, SCROLL_HEIGHT + TAB_HEIGHT, SCROLL_HEIGHT + TAB_HEIGHT + 1],
     outputRange: [0, 0, 2 * TAB_HEIGHT, 2 * TAB_HEIGHT + 1]
-  });
+  })
 
   constructor(props) {
-    super(props);
+    super(props)
     this.state = {
     	uid: null,
     	nav: null,
@@ -139,6 +139,10 @@ export default class ProfilePage extends React.Component {
 		followingRef.child('followers/' + currUid).remove()
   }
 
+  editProfile = () => {
+  	this.state.nav('ProfileEditPage', {uid: this.state.uid})
+  }
+
   render() {
     return (
     	<View style={{backgroundColor: white, height: '100%'}}>
@@ -153,7 +157,7 @@ export default class ProfilePage extends React.Component {
 		      		<View style={styles.nameContainer}>
 		      			<View style={{flexDirection: 'row'}}>
 		      				<Text style={styles.name}>{ this.state.displayName.length < 16 ? this.state.displayName: (this.state.displayName.slice(0,13) + "...") }</Text>
-		      				<TouchableOpacity onPress={() => (this.state.isMyProfile ? null : (this.state.isFollowing ? this.stopFollowing() : this.sendFollowRequest()))}>
+		      				<TouchableOpacity onPress={() => (this.state.isMyProfile ? this.editProfile() : (this.state.isFollowing ? this.stopFollowing() : this.sendFollowRequest()))}>
 				            <FontAwesome
 				            	name={this.state.isMyProfile ? "edit" : 'user-plus'}
 				            	style={this.state.isFollowing ? styles.iconFollowing : styles.icon}
@@ -247,14 +251,14 @@ const styles = StyleSheet.create({
 		height: 90,
 		borderRadius: 50,
 		borderColor: gray,
-		borderWidth: 6,
+		borderWidth: 3,
 		marginBottom: 40
 	},
 	profilePic: {
 		flex: 1,
-		width: 78,
-		height: 78,
-		borderRadius: 39,
+		width: 83,
+		height: 83,
+		borderRadius: 41.5,
 		borderWidth: 0
 	},
 	textContainer: {

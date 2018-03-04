@@ -3,7 +3,7 @@ import { TouchableOpacity, Text, TextInput, Platform } from 'react-native'
 import firebase from 'firebase'
 import Dimensions from 'Dimensions'
 import { StackNavigator, navigationOptions, NavigationActions } from 'react-navigation'
-import { FontAwesome } from '@expo/vector-icons'
+import { FontAwesome, Ionicons } from '@expo/vector-icons'
 import MapNav from './pages/MapNav'
 import SearchPage from './pages/SearchPage'
 import ProfilePage from './pages/ProfilePage'
@@ -11,6 +11,7 @@ import LocationProfile from './pages/LocationProfile'
 import TripPage from './pages/TripPage'
 import TripMapPage from './pages/TripMapPage'
 import ConnectionsPage from './pages/ConnectionsPage'
+import ProfileEditPage from './pages/ProfileEditPage'
 import { primary, white, transparentWhite } from './utils/colors'
 
 const DEVICE_WIDTH = Dimensions.get('window').width
@@ -169,6 +170,26 @@ const ProfileScreen = ({ navigation }) => (
 	<ProfilePage nav={navigation}/>
 )
 
+const ProfileEditScreen = ({ navigation }) => (
+	<ProfileEditPage nav={navigation}/>
+)
+
+const ProfileEditNavOpts = ({ navigation }) => ({ 
+	headerTitle: "Edit Profile",
+	headerStyle: {
+		backgroundColor: primary,
+		borderBottomWidth: 0,
+	},
+	headerTintColor: white,
+	headerRight:
+		<TouchableOpacity onPress={navigation.state.params.submitProfileEdit && navigation.state.params.submitProfileEdit()}>
+			<Ionicons
+					name='ios-checkmark'
+					style={{ color: white, marginRight: 15, fontSize: 45 }}
+		  	/>
+		</TouchableOpacity>
+})
+
 const LocationScreen = ({ navigation }) => (
 	<LocationProfile nav={navigation}/>
 )
@@ -193,6 +214,10 @@ const MainNavigator = StackNavigator({
 	ProfilePage: {
 		screen: ProfileScreen,
 		navigationOptions: MapNavOpts
+	},
+	ProfileEditPage: {
+		screen: ProfileEditScreen,
+		navigationOptions: ProfileEditNavOpts
 	},
 	FollowersPage: {
 		screen: FollowersScreen,
