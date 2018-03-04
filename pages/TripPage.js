@@ -22,11 +22,11 @@ export default class extends Component {
 
   componentWillMount () {
     let locs = this.props.nav.state.params.trip.locations
-    var tripLocations = Object.keys(locs).map(
+    var tripLocations = locs ? Object.keys(locs).map(
       function(locId) {
         locs[locId].locId = locId
         return locs[locId] }
-    )
+    ) : []
     this.setState({
       trip: this.props.nav.state.params.trip,
       uid: this.props.nav.state.params.uid,
@@ -120,6 +120,7 @@ export default class extends Component {
       console.log('editing')
     } else {
       console.log('submitting') // call to update db here
+      console.log(this.state.tripLocations)
     }
     this.setState({
       oldTripLocations: this.state.tripLocations,
@@ -200,7 +201,7 @@ export default class extends Component {
             />
           </TouchableOpacity>
           <ScrollView style={styles.tripLocationsContainer}>
-          {tripLocations &&
+          {tripLocations.length > 0 &&
             tripLocations.map((location) =>
             <View key={location.index} style={styles.tripLocation}>
               {this.state.editing &&
@@ -235,7 +236,7 @@ export default class extends Component {
               }
             </View>
           )}
-          {!trip.locations &&
+          {tripLocations.length === 0 &&
             <Text>You haven't added any trips yet!</Text>
           }
           </ScrollView>
