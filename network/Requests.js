@@ -1,5 +1,6 @@
 import React from 'react';
 import firebase from 'firebase';
+import { types } from '../utils/poiTypes'
 
 var config = {
   apiKey: 'AIzaSyBztce7Z8iOrB5EgV4IE8gjlFGAy6MXSkQ'
@@ -168,13 +169,25 @@ export async function makePhotoRequest (photoReference) {
   }
 }
 
+function getMatchingType (poiTypes) {
+  for (i = 0; i < poiTypes.length; i++) {
+    if (Object.keys(types).includes(poiTypes[i])) {
+      return poiTypes[i]
+    }
+  }
+  return 'park'
+}
+
 export async function submitPoiToFirebase (poi, photoUrl) {
+  let defaultPic = 'https://picsum.photos/200/300/?image=693'
+  let type = getMatchingType(poi.types)
   firebase.database().ref('pois/' + poi.place_id).set({
     name: poi.name,
     id: poi.place_id,
-    image: photoUrl.url,
+    image: photoUrl ? photoUrl.url : types[poi.type].defaultPic,
     lat: poi.geometry.location.lat,
     long: poi.geometry.location.lng,
-    description: poi.name // FIX THIS
+    description: poi.name, // FIX THIS,
+    type: type
   })
 }

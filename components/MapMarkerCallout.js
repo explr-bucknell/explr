@@ -12,7 +12,7 @@ export default class MapMarkerCallout extends Component {
     }
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this.checkLiked(this.props.id, this.props.uid)
   }
 
@@ -53,18 +53,29 @@ export default class MapMarkerCallout extends Component {
       <View style={styles.callout}>
         <Image style={styles.image} source={{uri: this.props.imageUrl}} />
         <View style={styles.wrapper}>
-          <TouchableOpacity style={styles.titleWrap} onPress={() => this.props.navigate('LocationPage', {location: this.props})}>
+          <TouchableOpacity
+            style={styles.titleWrap}
+            onPress={() => !this.props.trip && this.props.navigate('LocationPage', {location: this.props})}
+          >
             <Text style={styles.title}>
               {this.props.title}
             </Text>
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => {this.state.liked ? this.removeLiked() : this.addLiked()}}>
-            <FontAwesome name={this.state.liked ? "heart" : 'heart-o'} style={styles.icon}/>
-          </TouchableOpacity>
+          {!this.props.trip &&
+            <TouchableOpacity onPress={() => {this.state.liked ? this.removeLiked() : this.addLiked()}}>
+              <FontAwesome name={this.state.liked ? "heart" : 'heart-o'} style={styles.icon}/>
+            </TouchableOpacity>
+          }
+          {this.props.trip &&
+            <TouchableOpacity
+              onPress={() => this.props.locationPress()}
+              style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 8, flex: 1}}
+            >
+              <Text>Navigate</Text>
+              <FontAwesome name='angle-right' style={{fontSize: 30, color: primary}}/>
+            </TouchableOpacity>
+          }
         </View>
-        {/*<Text style={styles.description}>
-          {this.props.description}
-        </Text>*/}
       </View>
     )
   }
