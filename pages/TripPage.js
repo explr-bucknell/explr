@@ -22,7 +22,6 @@ export default class extends Component {
 
   componentWillMount () {
     let locs = this.props.nav.state.params.trip.locations
-    console.log(locs)
     var tripLocations = locs ? Object.keys(locs).map(
       function(locId) {
         locs[locId].locId = locId
