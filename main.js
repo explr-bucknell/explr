@@ -83,7 +83,7 @@ const TripPageOpts = ({ navigation }) => ({
 })
 
 const TripMapPageOpts = ({ navigation }) => ({
-	headerTitle: "EXPLR",
+	headerTitle: `EXPLR: ${navigation.state.params.trip.name}`,
 	headerStyle: {
 		backgroundColor: primary,
 		borderBottomWidth: 0,
@@ -143,7 +143,7 @@ const FollowersScreen = ({ navigation }) => (
 	<ConnectionsPage nav={navigation}/>
 )
 
-const FollowersNavOpts = ({ navigation }) => ({ 
+const FollowersNavOpts = ({ navigation }) => ({
 	headerTitle: "Followers",
 	headerStyle: {
 		backgroundColor: primary,
@@ -156,7 +156,7 @@ const FollowingScreen = ({ navigation }) => (
 	<ConnectionsPage nav={navigation}/>
 )
 
-const FollowingNavOpts = ({ navigation }) => ({ 
+const FollowingNavOpts = ({ navigation }) => ({
 	headerTitle: "Following",
 	headerStyle: {
 		backgroundColor: primary,
