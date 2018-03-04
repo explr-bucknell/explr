@@ -12,9 +12,11 @@ import {
   TouchableOpacity
 } from 'react-native'
 import { getLocation, getTrip } from '../network/Requests'
+import { Location, Permissions } from 'expo'
 import MapView from 'react-native-maps' // eslint-disable-line no-unused-vars
 import MapMarkerCallout from '../components/MapMarkerCallout'
 import { types } from '../utils/poiTypes'
+import getDirections from 'react-native-google-maps-directions'
 
 export default class TripMapPage extends Component {
 
@@ -27,8 +29,26 @@ export default class TripMapPage extends Component {
         latitudeDelta: 0.0922,
         longitudeDelta: 0.0421,
       },
+      userLocation: {},
       locations: {},
       uid: ''
+    }
+  }
+
+  async getCurrentLocation() {
+    const { status } = await Permissions.askAsync(Permissions.LOCATION)
+    if (status === 'granted') {
+      let location = await Location.getCurrentPositionAsync({})
+      if (location.coords) {
+        var region = {}
+        region.latitude = location.coords.latitude
+        region.longitude = location.coords.longitude
+        region.latitudeDelta = 0.0922
+        region.longitudeDelta = 0.0421
+        this.setState({ region, userLocation: region })
+      }
+    } else {
+      console.log("Permission denied")
     }
   }
 
@@ -44,7 +64,6 @@ export default class TripMapPage extends Component {
         })
       })
     )
-
   }
 
   componentWillMount () {
@@ -52,13 +71,28 @@ export default class TripMapPage extends Component {
     .then((trip) =>
       {trip.locations && Object.keys(trip.locations).length > 0 &&
         this.normalizeLocations(trip.locations)
+        this.getCurrentLocation()
       }
     )
   }
 
+  navToGoogleMaps (locId) {
+    const { userLocation, locations } = this.state
+    const data = {
+      source: {
+        latitude: userLocation.latitude,
+        longitude: userLocation.longitude
+      },
+      destination: {
+        latitude: locations[locId].lat,
+        longitude: locations[locId].long
+      },
+    }
+    getDirections(data)
+  }
+
   render () {
     let { locations } = this.state
-    console.log(locations)
     return (
       <View style={styles.container}>
         <MapView
@@ -72,7 +106,7 @@ export default class TripMapPage extends Component {
               <MapView.Marker
                   key={index}
                   coordinate={{ latitude: locations[locationId].lat, longitude: locations[locationId].long }}
-                  pinColor='green'
+                  pinColor={locations[locationId].type ? types[locations[locationId].type].color : 'green' }
                 >
                   <MapView.Callout>
                     <MapMarkerCallout
@@ -82,6 +116,8 @@ export default class TripMapPage extends Component {
                       id={locations[locationId].id}
                       uid={this.state.uid}
                       navigate={this.props.nav}
+                      locationPress={() => this.navToGoogleMaps(locationId)}
+                      trip
                     />
                   </MapView.Callout>
                 </MapView.Marker>
