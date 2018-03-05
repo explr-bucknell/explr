@@ -69,10 +69,12 @@ export default class MapMarkerCallout extends Component {
           {this.props.trip &&
             <TouchableOpacity
               onPress={() => this.props.locationPress()}
-              style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 8, flex: 1}}
+              style={{flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'flex-end', flex: 1}}
             >
-              <Text>Navigate</Text>
-              <FontAwesome name='angle-right' style={{fontSize: 30, color: primary}}/>
+              <View style={{marginRight: 10}}>
+                <Text>Route</Text>
+              </View>
+              <FontAwesome name='angle-right' style={{fontSize: 20, color: primary}}/>
             </TouchableOpacity>
           }
         </View>
@@ -89,10 +91,12 @@ const styles = StyleSheet.create({
   },
   wrapper: {
     flex: 1,
-    flexDirection: 'row'
+    flexDirection: 'row',
+    alignItems: 'flex-end',
+    maxWidth: 200
   },
   titleWrap: {
-    flex: 3,
+    flex: 2,
   },
   title: {
     flex: 1,
