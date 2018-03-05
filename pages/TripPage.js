@@ -42,7 +42,7 @@ export default class extends Component {
 				var locations = []
 				data.forEach((poi) => {
 					locations.push({
-						place_id: poi.place_id,
+						place_id: poi.id,
 						name: poi.name
 					})
 				})
@@ -51,17 +51,21 @@ export default class extends Component {
 		}
 	}
 
-  addLocation (trip_id, place_id, location_name) {
-		addLocationToTrip(this.state.uid, trip_id, place_id, location_name)
-    .then(this.updateTrip())
+  async addLocation (trip_id, place_id, location_name) {
+		await addLocationToTrip(this.state.uid, trip_id, place_id, location_name)
+    .then(() => {this.updateTrip()})
 	}
 
   updateTrip () {
     getTrip(this.state.uid, this.state.trip.tripId)
     .then((trip) => {
+      var tripLocations = trip.locations ? Object.keys(trip.locations).map(
+        function(locId) {
+          trip.locations[locId].locId = locId
+          return trip.locations[locId] }
+      ) : []
       trip.tripId = this.state.trip.tripId
-      this.setState({ trip })
-      this.setState({ addingLocation: false })
+      this.setState({ trip, addingLocation: false, tripLocations })
     })
   }
 
@@ -120,7 +124,6 @@ export default class extends Component {
       console.log('editing')
     } else {
       console.log('submitting') // call to update db here
-      console.log(this.state.tripLocations)
     }
     this.setState({
       oldTripLocations: this.state.tripLocations,

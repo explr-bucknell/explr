@@ -124,7 +124,7 @@ export default class UserTrips extends Component {
 						/>
 					</View>
 				</TouchableOpacity>
-				{this.state.trips.length > 0 &&
+				{this.state.trips && this.state.trips.length > 0 &&
 					<FlatList
 						style={{width: '100%', paddingBottom: 3}}
 						contentContainerStyle={{flexDirection: 'column'}}

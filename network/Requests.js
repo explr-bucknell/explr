@@ -38,10 +38,10 @@ export async function addLocationToTrip(uid, tripId, locationId, locationName) {
   await firebase.database().ref(`users/main/${uid}/trips/${tripId}`).once('value').then(function(snapshot) {
     numLocations = snapshot.val().numLocs
     firebase.database().ref(`users/main/${uid}/trips/${tripId}`).update({
-      numLocs: numLocations + 1
+     numLocs: numLocations + 1
     });
   });
-  
+
   await firebase.database().ref(`users/main/${uid}/trips/${tripId}/locations/${locationId}`).set({
     visited: false,
     name: locationName,
