@@ -31,6 +31,9 @@ import { primary, white, gray, compass } from '../utils/colors'
 export default class MapPage extends Component {
   constructor (props) {
     super(props)
+
+    centerChosenPOI = false
+
     this.state = {
       region: {
         latitude: 40.9549774,
@@ -49,24 +52,19 @@ export default class MapPage extends Component {
       customPinSearchResults: [],
       selectedFilter: 'park',
       selectedPOI: {},
-      centerChosenPOI: false,
       atCurrentLocation: false
     }
   }
 
   componentDidMount () {
-    this.getCurrentLocation()
-    console.log("Get locations")
-    let locations = this.state.locations
-
     // Center map at chosen poi if exists
     if (this.props.state.params && this.props.state.params.id) {
       let place_id = this.props.state.params.id
       getLocation(place_id).then((data) => {
         var locations = {}
         locations[data.id] = data
+        this.centerChosenPOI = true
         this.setState({
-          centerChosenPOI: true,
           region: {
             latitude: data.lat,
             longitude: data.long,
@@ -78,7 +76,7 @@ export default class MapPage extends Component {
       })
     }
     else {
-      //this.runGeoQuery(this.state.region)
+      this.getCurrentLocation()
     }
 
     /*
@@ -162,8 +160,8 @@ export default class MapPage extends Component {
   }
 
   onRegionChangeComplete (region) {
-    if (this.state.centerChosenPOI) {
-      this.setState({ centerChosenPOI: false })
+    if (this.centerChosenPOI) {
+      this.centerChosenPOI = false
     }
     else {
       console.log("rungeoquery")

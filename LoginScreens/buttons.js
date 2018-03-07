@@ -28,7 +28,6 @@ export default class Buttons extends Component {
 		firebase.auth().onAuthStateChanged(function(user) {
 		  if (user) {
 		    // User is signed in.
-		    console.log(user.providerData)
 		    var nav = self.props.nav
 		    nav.navigate('MainPage', {uid: user.uid, loginNav: nav})
 		  } else {

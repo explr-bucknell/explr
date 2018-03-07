@@ -29,7 +29,7 @@ export default class SearchPlaces extends React.Component {
 			var ids = []
 			var names = []
 			data.forEach(function(poi) {
-				ids.push(poi.placeId)
+				ids.push(poi.id)
 				names.push(poi.name)
 			})
 			this.setState({ ids, names })
