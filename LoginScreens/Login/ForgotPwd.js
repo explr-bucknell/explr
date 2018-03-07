@@ -26,7 +26,7 @@ export default class ForgotPwd extends Component {
 		super(props);
   	this.state = {
   		disabled: true,
-  		exsit: true,
+  		exist: true,
   		email: "",
   	};
 	}
@@ -48,7 +48,6 @@ export default class ForgotPwd extends Component {
 			}
 		});
 		this.setState({ exist });
-		console.log(exist);
 		if (exist) {
 			console.log("Sending");
 			//this.props.nav.navigate('ResetPwd', this.getUserData());
@@ -100,8 +99,8 @@ export default class ForgotPwd extends Component {
 						<Text style={[styles.duplicate, {display: this.state.exist ? 'none' : 'flex'}]}>THIS EMAIL IS NOT REGISTERED!</Text>
 					</Form>
 					<TouchableOpacity disabled={this.state.disabled} style={this.state.disabled ? [styles.button, styles.disabled] : styles.button} onPress={() => {this.checkExist()}}>
-				    	<FontAwesome name="angle-right" style={styles.next}/>
-				    </TouchableOpacity>
+			    	<FontAwesome name="angle-right" style={styles.next}/>
+			    </TouchableOpacity>
 				</Content>
 			</Container>
 		);

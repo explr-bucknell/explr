@@ -24,24 +24,34 @@ export default class Buttons extends Component {
 	}
 
 	componentDidMount() {
-		var user = firebase.auth().currentUser;
-		if (!user) {
-			this.setState({
-				loggedIn: false,
-			})
-		}
+		var self = this
+		firebase.auth().onAuthStateChanged(function(user) {
+		  if (user) {
+		    // User is signed in.
+		    console.log(user.providerData)
+		    var nav = self.props.nav
+		    nav.navigate('MainPage', {uid: user.uid, loginNav: nav})
+		  } else {
+		    // No user is signed in.
+		    self.setState({
+					loggedIn: false,
+				})
+		  }
+		})
 	}
 
 	render() {
 		console.log(this.state.loggedIn);
 		return (
-			<View style={[styles.container, {display: this.state.loggedIn ? 'none' : 'flex'}]}>
-				<TouchableOpacity {...this.props} style={styles.signup} onPress={() => {this.props.nav.navigate('SignUpName')}}>
-		    	<Text style={styles.signupText}>SIGN UP</Text>
-		    </TouchableOpacity>
-		    <TouchableOpacity {...this.props} style={styles.login} onPress={() => {this.props.nav.navigate('Login')}}>
-		    	<Text style={styles.loginText}>LOGIN</Text>
-		    </TouchableOpacity>
+			<View style={styles.container}>
+				{ this.state.loggedIn || <View>
+					<TouchableOpacity {...this.props} style={styles.signup} onPress={() => {this.props.nav.navigate('SignUpName')}}>
+			    	<Text style={styles.signupText}>SIGN UP</Text>
+			    </TouchableOpacity>
+			    <TouchableOpacity {...this.props} style={styles.login} onPress={() => {this.props.nav.navigate('Login')}}>
+			    	<Text style={styles.loginText}>LOGIN</Text>
+			    </TouchableOpacity> 
+		  	</View> }
 			</View>
 		);
 	}

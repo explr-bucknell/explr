@@ -39,35 +39,6 @@ export default class ResetPwd extends Component {
 			disabled: ((format.test(pwd) && allowed.test(pwd)) ? false : true),
 			pwd: pwd,
 		});
-		/*
-		if (format.test(pwd)) {
-			this.setState({
-				disabled: false,
-				alert: false,
-			});
-		}
-		else {
-			if (pwd.length < 8) {
-				alert = "Password must be at least 8 characters long";
-			} else if (pwd.length > 20) {
-				alert = "Password must be at most 20 characters long";
-			} else if (pwd.match(/\d+/g) == null) {
-				alert = "Password must contain at least one number";
-			} else if (pwd.match(/[a-z]/) == null) {
-				alert = "Password must contain at least one lowercase letter";
-			} else if (pwd.match(/[A-Z]/) == null) {
-				alert = "Password must contain at least one uppercase letter";
-			} else if (pwd.match(/[@#$%?!]/) == null) {
-				alert = "Password must contain at least one special character (@#$%?!)";
-			} else {
-				alert = "Password contains illegal character"
-			}
-			this.setState({
-				disabled: true,
-				alert: true,
-			});
-		}
-		*/
 	}
 
 	getUserData() {
@@ -115,8 +86,8 @@ export default class ResetPwd extends Component {
 						</Item>
 					</Form>
 					<TouchableOpacity disabled={this.state.disabled} style={this.state.disabled ? [styles.button, styles.disabled] : styles.button} onPress={() => {this.props.nav.navigate('SignUpHandle', this.getUserData())}}>
-				    	<FontAwesome name="angle-right" style={styles.next}/>
-				    </TouchableOpacity>
+			    	<FontAwesome name="angle-right" style={styles.next}/>
+			    </TouchableOpacity>
 				</Content>
 			</Container>
 		);

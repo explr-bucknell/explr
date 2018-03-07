@@ -82,13 +82,23 @@ export default class ProfilePage extends React.Component {
 
   updateProfile = (snapshot) => {
   	this.setState({
-  		imageUrl: snapshot.imageUrl,
   		displayName: snapshot.firstname + ' ' + snapshot.lastname,
   		handle: snapshot.handle,
       numFollowers: snapshot.numFollowers,
       numFollowing: snapshot.numFollowing,
     })
+    if (snapshot.imageUrl) {
+    	this.getProfileImg(snapshot.imageUrl)
+    }
   }
+
+  getProfileImg = (url) => {
+		var self = this
+		var gsReference = firebase.storage().ref(url)
+		gsReference.getDownloadURL().then(function(imageUrl) {
+			self.setState({ imageUrl })
+		})
+	}
 
   sendFollowRequest = () => {
   	var self = this

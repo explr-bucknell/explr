@@ -27,8 +27,15 @@ export default class FollowRequest extends React.Component {
 			approver.uid = snapshot.key
 			approver.name = data.firstname + " " + data.lastname
 			approver.handle = data.handle
-			approver.imgUrl = data.imgUrl
-			self.setState({ approver })
+			if (data.imageUrl) {
+  			var gsReference = firebase.storage().ref(data.imageUrl)
+				gsReference.getDownloadURL().then(function(imageUrl) {
+					approver.imageUrl = imageUrl
+					self.setState({ approver })
+				})
+  		} else {
+				self.setState({ approver })
+			}
 		})
 	}
 

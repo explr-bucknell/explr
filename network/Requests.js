@@ -1,5 +1,6 @@
 import React from 'react';
 import firebase from 'firebase';
+const fetch = require('node-fetch');
 
 var config = {
   apiKey: 'AIzaSyBztce7Z8iOrB5EgV4IE8gjlFGAy6MXSkQ'
@@ -177,5 +178,20 @@ export async function submitPoiToFirebase (poi, photoUrl) {
     lat: poi.geometry.location.lat,
     long: poi.geometry.location.lng,
     description: poi.name // FIX THIS
+  })
+}
+
+export async function uploadNewProfilePic(base64, uid) {
+  var url = 'https://us-central1-senior-design-explr.cloudfunctions.net/profileImageUpload'
+  await fetch(url, {
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      uid: uid,
+      base64: base64
+    }),
   })
 }

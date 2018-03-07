@@ -12,6 +12,7 @@ import TripPage from './pages/TripPage'
 import TripMapPage from './pages/TripMapPage'
 import ConnectionsPage from './pages/ConnectionsPage'
 import ProfileEditPage from './pages/ProfileEditPage'
+import ChangePwdPage from './pages/ChangePwdPage'
 import { primary, white, transparentWhite } from './utils/colors'
 
 const DEVICE_WIDTH = Dimensions.get('window').width
@@ -182,7 +183,27 @@ const ProfileEditNavOpts = ({ navigation }) => ({
 	},
 	headerTintColor: white,
 	headerRight:
-		<TouchableOpacity onPress={navigation.state.params.submitProfileEdit && navigation.state.params.submitProfileEdit()}>
+		<TouchableOpacity onPress={() => navigation.state.params.submitProfileEdit && navigation.state.params.submitProfileEdit()}>
+			<Ionicons
+					name='ios-checkmark'
+					style={{ color: white, marginRight: 15, fontSize: 45 }}
+		  	/>
+		</TouchableOpacity>
+})
+
+const ChangePwdScreen = ({ navigation }) => (
+	<ChangePwdPage nav={navigation}/>
+)
+
+const ChangePwdNavOpts = ({ navigation }) => ({ 
+	headerTitle: "Change Password",
+	headerStyle: {
+		backgroundColor: primary,
+		borderBottomWidth: 0,
+	},
+	headerTintColor: white,
+	headerRight:
+		<TouchableOpacity onPress={() => navigation.state.params.changePassword && navigation.state.params.changePassword()}>
 			<Ionicons
 					name='ios-checkmark'
 					style={{ color: white, marginRight: 15, fontSize: 45 }}
@@ -218,6 +239,10 @@ const MainNavigator = StackNavigator({
 	ProfileEditPage: {
 		screen: ProfileEditScreen,
 		navigationOptions: ProfileEditNavOpts
+	},
+	ChangePwdPage: {
+		screen: ChangePwdScreen,
+		navigationOptions: ChangePwdNavOpts
 	},
 	FollowersPage: {
 		screen: FollowersScreen,

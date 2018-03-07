@@ -29,9 +29,16 @@ export default class FollowRequest extends React.Component {
 			sender.uid = snapshot.key
 			sender.name = data.firstname + " " + data.lastname
 			sender.handle = data.handle
-			sender.imgUrl = data.imgUrl
 			sender.numFollowing = data.numFollowing
-			self.setState({ sender })
+			if (data.imageUrl) {
+  			var gsReference = firebase.storage().ref(data.imageUrl)
+				gsReference.getDownloadURL().then(function(imageUrl) {
+					sender.imageUrl = imageUrl
+					self.setState({ sender })
+				})
+  		} else {
+				self.setState({ sender })
+			}
 		})
 
 		var userRef = firebase.database().ref("users/main/" + this.props.uid)
@@ -39,6 +46,14 @@ export default class FollowRequest extends React.Component {
 			self.setState({
 				numFollowers: snapshot.val().numFollowers
 			})
+		})
+	}
+
+	getProfileImg = (url) => {
+		var self = this
+		var gsReference = firebase.storage().ref(url)
+		gsReference.getDownloadURL().then(function(imageUrl) {
+			self.setState({ imageUrl })
 		})
 	}
 

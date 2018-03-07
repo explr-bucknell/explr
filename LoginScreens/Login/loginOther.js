@@ -105,7 +105,7 @@ export default class LoginOther extends Component {
 	}
 
 	async initUser(uid, firstname, lastname, imageUrl) {
-		var navigate = this.props.nav.navigate;
+		var nav = this.props.nav;
 		var userExist;
 		var usersRef = firebase.database().ref('users/main');
 		var user = firebase.auth().currentUser;
@@ -148,7 +148,7 @@ export default class LoginOther extends Component {
 			});
 		}
 
-		navigate("MainPage", {uid: uid});
+		nav.navigate("MainPage", {uid: uid, loginNav: nav});
 	}
 
  	render() {

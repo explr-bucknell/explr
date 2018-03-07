@@ -57,11 +57,20 @@ export default class ConnectionsPage extends React.Component {
 		  		profile.name = userData.firstname + " " + userData.lastname
 		  		profile.handle = userData.handle
 		  		if (userData.imageUrl) {
-		  			profile.imageUrl = userData.imageUrl
-		  		}
-		  		self.data = [...self.data, profile]
-		  		if (self.data.length == uids.length) {
-		  			self.setState({ data: self.data })
+						var gsReference = firebase.storage().ref(userData.imageUrl)
+						gsReference.getDownloadURL().then(function(imageUrl) {
+							profile.imageUrl = imageUrl
+							self.data = [...self.data, profile]
+
+							if (self.data.length == uids.length) {
+				  			self.setState({ data: self.data })
+				  		}
+						})
+		  		} else {
+		  			self.data = [...self.data, profile]
+						if (self.data.length == uids.length) {
+			  			self.setState({ data: self.data })
+			  		}
 		  		}
 		  	}
 		  })

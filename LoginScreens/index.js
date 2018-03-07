@@ -27,9 +27,9 @@ const TEXT_SKIP = DEVICE_HEIGHT / 10;
 
 const StartScreen = ( {navigation} ) => (
 	<View style={styles.container}>
-        <Logo />
-        <Buttons nav={navigation}/>
-    </View>
+    <Logo />
+    <Buttons nav={navigation}/>
+  </View>
 );
 
 const PromptName = ( {navigation} ) => (

@@ -4,6 +4,7 @@ import { FormLabel, FormInput, FormValidationMessage } from 'react-native-elemen
 import firebase from 'firebase'
 import { ImagePicker } from 'expo'
 import { FontAwesome } from '@expo/vector-icons'
+import { uploadNewProfilePic } from '../network/Requests'
 import { primary, white, gray, black } from '../utils/colors'
 
 export default class ProfileEditPage extends React.Component {
@@ -13,7 +14,7 @@ export default class ProfileEditPage extends React.Component {
 
 	uid = this.props.nav.state.params.uid
 
-	updatedUser: {}
+	updatedUser = {}
 
 	state = {
 		imageUrl: null,
@@ -22,7 +23,8 @@ export default class ProfileEditPage extends React.Component {
 		handle: null,
 		about: null,
 		location: null,
-		websites: null
+		websites: null,
+		handleStatus: true
 	}
 
 	componentDidMount() {
@@ -35,7 +37,6 @@ export default class ProfileEditPage extends React.Component {
   	userRef.on('value', function(snapshot) {
   		var snapshot = snapshot.val()
   		self.setState({
-	  		imageUrl: snapshot.imageUrl,
 	  		firstname: snapshot.firstname,
 	  		lastname: snapshot.lastname,
 	  		handle: snapshot.handle,
@@ -43,7 +44,36 @@ export default class ProfileEditPage extends React.Component {
 	  		location: snapshot.location,
 	  		websites: snapshot.websites
 	    })
+  		if (snapshot.imageUrl) {
+  			self.getProfileImg(snapshot.imageUrl)
+  		}
   	})
+	}
+
+	getProfileImg = (url) => {
+		var self = this
+		var gsReference = firebase.storage().ref(url)
+		gsReference.getDownloadURL().then(function(imageUrl) {
+			self.setState({ imageUrl })
+		})
+	}
+
+	validateHandle = async (handle) => {
+		if (handle == this.state.handle) {
+			return true
+		}
+		var allowed = (handle.length >= 5) && (handle.length <= 20) && (/^[a-z0-9]+$/.test(handle))
+		var duplicate;
+
+		var handlesRef = firebase.database().ref('users/handles')
+		await handlesRef.child(handle).once("value", function(snapshot) {
+	  	if (snapshot.val()) {
+	  		duplicate = true
+	  	} else {
+	  		duplicate = false
+	  	}
+		})
+		return (!duplicate) && allowed
 	}
 
 	updateFirstname = (text) => {
@@ -55,6 +85,7 @@ export default class ProfileEditPage extends React.Component {
 	}
 
 	updateHandle = (text) => {
+		this.setState({ handleStatus: true })
 		this.updatedUser.handle = text
 	}
 
@@ -80,20 +111,33 @@ export default class ProfileEditPage extends React.Component {
     })
 
     if (!result.cancelled) {
-    	//console.log('base64', result.base64)
-    	this.uploadImage(result.base64)
+    	uploadNewProfilePic(result.base64, this.uid)
     }
 	}
 
-	uploadImage = (base64) => {
-		var ref = firebase.storage().ref().child('profilePic')
-		ref.putString(base64, 'base64').then(function(snapshot) {
-		  console.log('snap', snapshot);
-		})
-	}
-
-	submitProfileEdit = () => {
-		console.log("submit")
+	submitProfileEdit = async () => {
+		if (this.updatedUser.handle) {
+			var valid = await this.validateHandle(this.updatedUser.handle)
+			if (!valid) {
+				this.setState({ handleStatus: false })
+				return
+			}
+			let newHandle = this.updatedUser.handle
+			let oldHandle = this.state.handle
+			if (newHandle != oldHandle) {
+				let uid = this.uid
+				handleRef = firebase.database().ref('users/handles')
+				handleRef.child(oldHandle).remove()
+				handleRef.child(newHandle).set(uid)
+			}
+		}
+		var self = this
+		const url = 'users/main/' + this.uid
+  	var userRef = firebase.database().ref(url)
+  	var updates = this.updatedUser
+  	userRef.update({ ...updates }).then(() => {
+  		self.props.nav.goBack()
+  	})
 	}
 
 	render() {
@@ -109,26 +153,26 @@ export default class ProfileEditPage extends React.Component {
 				</View>
 				<View style={styles.nameContainer}>
 					<FormLabel>First name</FormLabel>
-					<FormInput defaultValue={this.state.firstname} inputStyle={{color: black}} onChangeText={(text) => this.updateFirstname(text)}/>
-					{/*<FormValidationMessage>Error message</FormValidationMessage>*/}
+					<FormInput defaultValue={this.state.firstname} inputStyle={{color: black}} maxLength={10} onChangeText={(text) => this.updateFirstname(text)}/>
 					<FormLabel>Last name</FormLabel>
-					<FormInput defaultValue={this.state.lastname} inputStyle={{color: black}} onChangeText={(text) => this.updateLastname(text)}/>
+					<FormInput defaultValue={this.state.lastname} inputStyle={{color: black}} maxLength={10} onChangeText={(text) => this.updateLastname(text)}/>
 				</View>
 				<View style={styles.otherContainer}>
 					<FormLabel>Handle</FormLabel>
-					<FormInput defaultValue={this.state.handle} inputStyle={{color: black}} onChangeText={(text) => this.updateHandle(text)}/>
+					<FormInput defaultValue={this.state.handle} inputStyle={{color: black}} maxLength={10} autoCapitalize={'none'} onChangeText={(text) => this.updateHandle(text)}/>
+					{ !this.state.handleStatus && <FormValidationMessage>This handle is already taken</FormValidationMessage> }
 				</View>
 				<View style={styles.otherContainer}>
 					<FormLabel>About you</FormLabel>
-					<FormInput defaultValue={this.state.about} inputStyle={{color: black}} onChangeText={(text) => this.updateAbout(text)}/>
+					<FormInput defaultValue={this.state.about} inputStyle={{color: black}} maxLength={50} onChangeText={(text) => this.updateAbout(text)}/>
 				</View>
 				<View style={styles.otherContainer}>
 					<FormLabel>Location</FormLabel>
-					<FormInput defaultValue={this.state.location} inputStyle={{color: black}} onChangeText={(text) => this.updateLocation(text)}/>
+					<FormInput defaultValue={this.state.location} inputStyle={{color: black}} maxLength={20} onChangeText={(text) => this.updateLocation(text)}/>
 				</View>
 				<View style={styles.otherContainer}>
 					<FormLabel>Websites</FormLabel>
-					<FormInput defaultValue={this.state.websites} inputStyle={{color: black}} onChangeText={(text) => this.updateWebsites(text)}/>
+					<FormInput defaultValue={this.state.websites} inputStyle={{color: black}} maxLength={30} onChangeText={(text) => this.updateWebsites(text)}/>
 				</View>
 			</ScrollView>
 		)
@@ -153,6 +197,8 @@ const styles = StyleSheet.create({
 	profilePicWrapper: {
 		width: 120,
 		height: 120,
+		justifyContent: 'center',
+  	alignItems: 'center',
 		borderRadius: 60,
 		borderColor: gray,
 		borderWidth: 3,
