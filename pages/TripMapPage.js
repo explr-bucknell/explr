@@ -35,23 +35,6 @@ export default class TripMapPage extends Component {
     }
   }
 
-  async getCurrentLocation() {
-    const { status } = await Permissions.askAsync(Permissions.LOCATION)
-    if (status === 'granted') {
-      let location = await Location.getCurrentPositionAsync({})
-      if (location.coords) {
-        var region = {}
-        region.latitude = location.coords.latitude
-        region.longitude = location.coords.longitude
-        region.latitudeDelta = 0.0922
-        region.longitudeDelta = 0.0421
-        this.setState({ region, userLocation: region })
-      }
-    } else {
-      console.log("Permission denied")
-    }
-  }
-
   normalizeLocations (locations) {
     var self = this
     Object.keys(locations).map((locationId) =>
@@ -71,7 +54,6 @@ export default class TripMapPage extends Component {
     .then((trip) =>
       {trip.locations && Object.keys(trip.locations).length > 0 &&
         this.normalizeLocations(trip.locations)
-        this.getCurrentLocation()
       }
     )
   }

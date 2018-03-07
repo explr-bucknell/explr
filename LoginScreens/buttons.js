@@ -18,6 +18,8 @@ export default class Buttons extends Component {
   constructor(props) {
     super(props);
 
+    unsubscribe = null
+
     this.state = {
     	loggedIn: true,
     }
@@ -25,13 +27,15 @@ export default class Buttons extends Component {
 
 	componentDidMount() {
 		var self = this
-		firebase.auth().onAuthStateChanged(function(user) {
+		this.unsubscribe = firebase.auth().onAuthStateChanged(function(user) {
 		  if (user) {
 		    // User is signed in.
 		    var nav = self.props.nav
+		    self.unsubscribe()
 		    nav.navigate('MainPage', {uid: user.uid, loginNav: nav})
 		  } else {
 		    // No user is signed in.
+		    self.unsubscribe()
 		    self.setState({
 					loggedIn: false,
 				})

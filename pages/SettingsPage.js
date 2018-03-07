@@ -38,7 +38,25 @@ export default class SettingsPage extends React.Component {
   }
 
   facebookSignin = () => {
-
+    console.log('facebook')
+    var self = this
+    let auth = firebase.auth()
+    let provider = new firebase.auth.FacebookAuthProvider()
+    auth.currentUser.linkWithRedirect(provider)
+    firebase.auth().getRedirectResult().then(function(result) {
+      if (result.credential) {
+        // Accounts successfully linked.
+        var credential = result.credential;
+        var user = result.user;
+        console.log(credential)
+        self.setState({
+          facebook: true
+        })
+      }
+    }).catch(function(error) {
+      // Handle Errors here.
+      console.log('Facebook linking failed', error)
+    });
   }
 
   twitterSignin = () => {

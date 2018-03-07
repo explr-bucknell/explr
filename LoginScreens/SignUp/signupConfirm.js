@@ -28,14 +28,14 @@ export default class SignupConfirm extends Component {
     var intervalID = setInterval(function(){
     	var user = firebase.auth().currentUser;
     	if (!user) {
-            navigate('Start');
-        } else {
-        	user.reload();
-        	if (user.emailVerified) {
-				clearInterval(intervalID);
-			navigate("SignUpDone", {uid: user.uid});
-		}
-        }
+         navigate('Start');
+      } else {
+      	user.reload();
+      	if (user.emailVerified) {
+					clearInterval(intervalID);
+					navigate("SignUpDone", {uid: user.uid});
+				}
+      }
     }, 2000);
   }
 

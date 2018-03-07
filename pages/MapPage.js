@@ -56,10 +56,10 @@ export default class MapPage extends Component {
     // Center map at chosen poi if exists
     if (this.props.state.params && this.props.state.params.id) {
       let place_id = this.props.state.params.id
+      this.centerChosenPOI = true
       getLocation(place_id).then((data) => {
         var locations = {}
         locations[data.id] = data
-        this.centerChosenPOI = true
         this.setState({
           region: {
             latitude: data.lat,
