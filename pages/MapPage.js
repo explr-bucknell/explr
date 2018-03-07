@@ -244,7 +244,7 @@ export default class MapPage extends Component {
                   latitude: locations[locationId].lat,
                   longitude: locations[locationId].long
                 }}
-                pinColor={ locations[locationId].type ? types[locations[locationId].type].color : 'green' }
+                pinColor={ types[locations[locationId].type].color }
               >
               <MapView.Callout>
                 <MapMarkerCallout
