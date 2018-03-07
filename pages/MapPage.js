@@ -27,6 +27,7 @@ import {
 import SearchFilterOption from '../components/SearchFilterOption'
 import CustomPinSearch from '../components/CustomPinSearch'
 import { primary, white, gray, compass } from '../utils/colors'
+import { types } from '../utils/poiTypes'
 
 export default class MapPage extends Component {
   constructor (props) {
@@ -42,11 +43,6 @@ export default class MapPage extends Component {
         longitudeDelta: 0.0421,
       },
       locations: {},
-      /*locationTypes: {
-        national_monuments: 'blue',
-        national_parks: 'green',
-        pois: 'red'
-      },*/
       customPinSearchCoords: {},
       editingCustomPin: false,
       customPinSearchResults: [],
@@ -134,7 +130,6 @@ export default class MapPage extends Component {
         });
         self.setState({ locations })
       } else {
-        console.log("no poi in this area")
       }
     })
   }
@@ -164,7 +159,6 @@ export default class MapPage extends Component {
       this.centerChosenPOI = false
     }
     else {
-      console.log("rungeoquery")
       this.setState({ region })
       this.runGeoQuery(region);
     }
@@ -190,13 +184,20 @@ export default class MapPage extends Component {
     let poiType = this.state.selectedFilter
     getPOIDetails(poi.place_id)
       .then((details) => {
-          makePhotoRequest(details.result.photos[0].photo_reference)
-          .then((photoUrl) => {
-            submitPoiToFirebase(poi, photoUrl)
+          if (details.result.photos) {
+            makePhotoRequest(details.result.photos[0].photo_reference)
+            .then((photoUrl) => {
+              submitPoiToFirebase(poi, photoUrl)
+              .then(() => {
+                this.updateLocations (poi.place_id)
+              })
+            })
+          } else {
+            submitPoiToFirebase(poi, undefined)
             .then(() => {
               this.updateLocations (poi.place_id)
             })
-          })
+          }
       })
   }
 
@@ -224,7 +225,6 @@ export default class MapPage extends Component {
 
   render() {
     var locations = this.state.locations
-
     return (
       <View style={styles.container}>
         <MapView
@@ -235,25 +235,25 @@ export default class MapPage extends Component {
           onLongPress={e => this.dropPin(e.nativeEvent.coordinate)}
         >
           { Object.keys(locations).length > 0 &&
-            Object.keys(locations).map((locationName, index) =>
+            Object.keys(locations).map((locationId, index) =>
               <MapView.Marker
                 key={index}
                 coordinate={{
-                  latitude: locations[locationName].lat,
-                  longitude: locations[locationName].long
+                  latitude: locations[locationId].lat,
+                  longitude: locations[locationId].long
                 }}
-                pinColor={"red"}
+                pinColor={ locations[locationId].type ? types[locations[locationId].type].color : 'green' }
               >
-                <MapView.Callout>
-                  <MapMarkerCallout
-                    title={locations[locationName].name}
-                    // description='asdfasdf'
-                    imageUrl={locations[locationName].image}
-                    id={locations[locationName].id}
-                    uid={this.props.uid}
-                    navigate={this.props.navigate}
-                  />
-                </MapView.Callout>
+              <MapView.Callout>
+                <MapMarkerCallout
+                  title={locations[locationId].name}
+                  // description='asdfasdf'
+                  imageUrl={locations[locationId].image}
+                  id={locations[locationId].id}
+                  uid={this.props.uid}
+                  navigate={this.props.navigate}
+                />
+              </MapView.Callout>
               </MapView.Marker>
             )
           }

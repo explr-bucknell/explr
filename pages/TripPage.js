@@ -22,11 +22,11 @@ export default class extends Component {
 
   componentWillMount () {
     let locs = this.props.nav.state.params.trip.locations
-    var tripLocations = Object.keys(locs).map(
+    var tripLocations = locs ? Object.keys(locs).map(
       function(locId) {
         locs[locId].locId = locId
         return locs[locId] }
-    )
+    ) : []
     this.setState({
       trip: this.props.nav.state.params.trip,
       uid: this.props.nav.state.params.uid,
@@ -42,7 +42,7 @@ export default class extends Component {
 				var locations = []
 				data.forEach((poi) => {
 					locations.push({
-						place_id: poi.place_id,
+						place_id: poi.id,
 						name: poi.name
 					})
 				})
@@ -51,17 +51,21 @@ export default class extends Component {
 		}
 	}
 
-  addLocation (trip_id, place_id, location_name) {
-		addLocationToTrip(this.state.uid, trip_id, place_id, location_name)
-    .then(this.updateTrip())
+  async addLocation (trip_id, place_id, location_name) {
+		await addLocationToTrip(this.state.uid, trip_id, place_id, location_name)
+    .then(() => {this.updateTrip()})
 	}
 
   updateTrip () {
     getTrip(this.state.uid, this.state.trip.tripId)
     .then((trip) => {
+      var tripLocations = trip.locations ? Object.keys(trip.locations).map(
+        function(locId) {
+          trip.locations[locId].locId = locId
+          return trip.locations[locId] }
+      ) : []
       trip.tripId = this.state.trip.tripId
-      this.setState({ trip })
-      this.setState({ addingLocation: false })
+      this.setState({ trip, addingLocation: false, tripLocations })
     })
   }
 
@@ -200,7 +204,7 @@ export default class extends Component {
             />
           </TouchableOpacity>
           <ScrollView style={styles.tripLocationsContainer}>
-          {tripLocations &&
+          {tripLocations.length > 0 &&
             tripLocations.map((location) =>
             <View key={location.index} style={styles.tripLocation}>
               {this.state.editing &&
@@ -235,7 +239,7 @@ export default class extends Component {
               }
             </View>
           )}
-          {!trip.locations &&
+          {tripLocations.length === 0 &&
             <Text>You haven't added any trips yet!</Text>
           }
           </ScrollView>

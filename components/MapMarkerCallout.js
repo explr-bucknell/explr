@@ -12,7 +12,7 @@ export default class MapMarkerCallout extends Component {
     }
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this.checkLiked(this.props.id, this.props.uid)
   }
 
@@ -53,18 +53,31 @@ export default class MapMarkerCallout extends Component {
       <View style={styles.callout}>
         <Image style={styles.image} source={{uri: this.props.imageUrl}} />
         <View style={styles.wrapper}>
-          <TouchableOpacity style={styles.titleWrap} onPress={() => this.props.navigate('LocationPage', {location: this.props})}>
+          <TouchableOpacity
+            style={styles.titleWrap}
+            onPress={() => !this.props.trip && this.props.navigate('LocationPage', {location: this.props})}
+          >
             <Text style={styles.title}>
               {this.props.title}
             </Text>
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => {this.state.liked ? this.removeLiked() : this.addLiked()}}>
-            <FontAwesome name={this.state.liked ? "heart" : 'heart-o'} style={styles.icon}/>
-          </TouchableOpacity>
+          {!this.props.trip &&
+            <TouchableOpacity onPress={() => {this.state.liked ? this.removeLiked() : this.addLiked()}}>
+              <FontAwesome name={this.state.liked ? "heart" : 'heart-o'} style={styles.icon}/>
+            </TouchableOpacity>
+          }
+          {this.props.trip &&
+            <TouchableOpacity
+              onPress={() => this.props.locationPress()}
+              style={{flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'flex-end', flex: 1}}
+            >
+              <View style={{marginRight: 10}}>
+                <Text>Route</Text>
+              </View>
+              <FontAwesome name='angle-right' style={{fontSize: 20, color: primary}}/>
+            </TouchableOpacity>
+          }
         </View>
-        {/*<Text style={styles.description}>
-          {this.props.description}
-        </Text>*/}
       </View>
     )
   }
@@ -78,10 +91,12 @@ const styles = StyleSheet.create({
   },
   wrapper: {
     flex: 1,
-    flexDirection: 'row'
+    flexDirection: 'row',
+    alignItems: 'flex-end',
+    maxWidth: 200
   },
   titleWrap: {
-    flex: 3,
+    flex: 2,
   },
   title: {
     flex: 1,
