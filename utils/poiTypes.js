@@ -68,5 +68,8 @@ export const types = {
     color: 'black',
     name: 'Zoos',
     defaultPic: 'https://res.klook.com/images/fl_lossy.progressive,q_65/c_fill,w_1295,h_720,f_auto/w_80,x_15,y_15,g_south_west,l_klook_water/activities/51985f29-Singapore-Zoo-Breakfast/SingaporeZooBreakfast.jpg'
+  },
+  'undefined': {
+    color: 'orange'
   }
 }
