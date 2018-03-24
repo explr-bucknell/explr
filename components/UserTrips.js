@@ -57,7 +57,7 @@ export default class UserTrips extends Component {
 				<TouchableOpacity 
 					style={styles.createTripContainer} 
 					onPress={() => {
-						closeModal()
+						adding && closeModal()
 						this.props.navigate('CreateTripPage', { adding, uid, locationId, locationName })
 					}}>
 					<View style={{width: '100%', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
