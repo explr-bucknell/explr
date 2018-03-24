@@ -1,9 +1,12 @@
 import React, { Component } from "react";
-import { StyleSheet, Text, View, ScrollView, TouchableOpacity, TextInput, Button } from 'react-native'
+import { StyleSheet, Text, View, ScrollView, TouchableOpacity, TextInput, Button, Platform, NativeModules } from 'react-native'
 import Modal from 'react-native-modal'
-import { white, primary } from '../utils/colors'
+import { white, primary, transparentWhite, gray } from '../utils/colors'
 import { FontAwesome, Ionicons } from '@expo/vector-icons'
 import { getTrip, getPOIAutocomplete, addLocationToTrip } from '../network/Requests'
+
+const { StatusBarManager } = NativeModules
+const STATUSBAR_HEIGHT = Platform.OS === 'ios' ? 20 : StatusBarManager.HEIGHT
 
 export default class extends Component {
 
@@ -25,7 +28,8 @@ export default class extends Component {
     var tripLocations = locs ? Object.keys(locs).map(
       function(locId) {
         locs[locId].locId = locId
-        return locs[locId] }
+        return locs[locId]
+      }
     ) : []
     this.setState({
       trip: this.props.nav.state.params.trip,
@@ -52,12 +56,12 @@ export default class extends Component {
 	}
 
   async addLocation (trip_id, place_id, location_name) {
-		await addLocationToTrip(this.state.uid, trip_id, place_id, location_name)
+		await addLocationToTrip(trip_id, place_id, location_name)
     .then(() => {this.updateTrip()})
 	}
 
   updateTrip () {
-    getTrip(this.state.uid, this.state.trip.tripId)
+    getTrip(this.state.trip.tripId)
     .then((trip) => {
       var tripLocations = trip.locations ? Object.keys(trip.locations).map(
         function(locId) {
@@ -142,67 +146,71 @@ export default class extends Component {
           style={{margin: 0}}
         >
           <View style={styles.modalContent}>
-            <View style={[styles.tripNameContainer, {marginTop: 10}]}>
-              <Text style={{fontSize: 20}}>Adding location to "{trip.name}"</Text>
-            </View>
             <View style={styles.searchBarContainer}>
               <TextInput
+                placeholder='Search for locations to add...'
+                placeholderTextColor={transparentWhite}
                 onChangeText={ (text) => this.handleTextChange(text.trim()) }
                 autoFocus={ true }
                 style={styles.searchBar}
               />
               <Button title='Cancel' color='white' onPress={() => this.cancelLocationSearch()}/>
             </View>
-            <View>
+            <ScrollView>
               {this.state.locations.map((location, i) => (
                 <TouchableOpacity
                   key={i}
                   style={styles.location}
                   onPress={() => this.addLocation(trip.tripId, location.place_id, location.name)}
                 >
-                  <Text style={{fontSize: 16}}>{location.name}</Text>
+                  <Text style={{fontSize: 15}}>{location.name}</Text>
                     <Ionicons
-                        name='ios-add-circle-outline'
-                        size={25}
-                        style={{ color: primary }}
+                      name='ios-add-circle-outline'
+                      size={25}
+                      style={{ color: primary }}
                     />
                 </TouchableOpacity>
               ))}
-            </View>
+            </ScrollView>
           </View>
         </Modal>
-        <View style={styles.tripNameContainer}>
-          {this.state.editing &&
-            <View style={{position: 'absolute', left: 0}}>
-              <Button title='cancel'
-                onPress={() => this.setState({
-                  tripLocations: this.state.oldTripLocations,
-                  editing: !this.state.editing
-                })}
-                color={primary}
-              />
+        <View>
+          { this.state.editing ? 
+            <View style={styles.editSubmitContainer}>
+              <View style={{position: 'absolute', left: 0}}>
+                <Button title='cancel'
+                  onPress={() => this.setState({
+                    tripLocations: this.state.oldTripLocations,
+                    editing: !this.state.editing
+                  })}
+                  color={white}
+                />
+              </View>
+              <View style={{position: 'absolute', right: 0}}>
+                <Button title={'submit'}
+                  onPress={() => this.editOrSubmit()}
+                  color={white}
+                />
+              </View>
+            </View> :
+            <View style={styles.toolbarContainer}>
+              <Text style={{fontSize: 16, fontWeight: 'bold', color: white}}>Manage locations</Text>
+              <View style={{flexDirection: 'row'}}>
+                <Ionicons
+                    name='ios-create-outline'
+                    size={25}
+                    style={{ color: white, marginRight: 10 }}
+                    onPress={() => this.editOrSubmit()}
+                />
+                <Ionicons
+                    name='ios-add-circle-outline'
+                    size={25}
+                    style={{ color: white }}
+                    onPress={() => this.setState({ addingLocation: true })}
+                />
+              </View>
             </View>
           }
-          <Text style={{fontSize: 20}}>{trip.name}</Text>
-          <View style={{position: 'absolute', right: 0}}>
-            <Button title={this.state.editing ? 'submit' : 'edit'}
-              onPress={() => this.editOrSubmit()}
-              color={primary}
-            />
-          </View>
-        </View>
-        <View>
-          <TouchableOpacity
-            style={styles.addLocationContainer}
-            onPress={() => this.setState({ addingLocation: true })}
-          >
-            <Text style={{fontSize: 18, fontWeight: 'bold', color: white}}>Add a location</Text>
-            <Ionicons
-                name='ios-add-circle-outline'
-                size={25}
-                style={{ color: white }}
-            />
-          </TouchableOpacity>
           <ScrollView style={styles.tripLocationsContainer}>
           {tripLocations.length > 0 &&
             tripLocations.map((location) =>
@@ -213,7 +221,7 @@ export default class extends Component {
                 </TouchableOpacity>
               }
               <View style={{flex: 3, justifyContent: 'center', alignItems: 'flex-start'}}>
-                <Text style={{fontSize: 16}}>
+                <Text style={{fontSize: 15}}>
                   {location.name.split(',')[0]}
                 </Text>
               </View>
@@ -240,7 +248,7 @@ export default class extends Component {
             </View>
           )}
           {tripLocations.length === 0 &&
-            <Text>You haven't added any trips yet!</Text>
+            <Text>You haven't added any locations yet!</Text>
           }
           </ScrollView>
         </View>
@@ -250,16 +258,16 @@ export default class extends Component {
 }
 
 const styles = StyleSheet.create({
-  tripNameContainer: {
+  editSubmitContainer: {
     width: '100%',
     height: 50,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: primary
   },
   tripLocationsContainer: {
     borderTopWidth: 1,
-    borderColor:
-    primary,
+    borderColor: primary,
     height: '100%'
   },
   tripLocation: {
@@ -277,20 +285,19 @@ const styles = StyleSheet.create({
     borderColor: primary,
     borderRadius: 50
   },
-  addLocationContainer: {
-		height: 60,
+  toolbarContainer: {
+		height: 50,
 		width: '100%',
 		backgroundColor: primary,
-		borderTopColor: white,
-		borderTopWidth: 1,
 		alignSelf: 'center',
 		alignItems: 'center',
-		padding: 12,
+		padding: 10,
 		flexDirection: 'row',
 		justifyContent: 'space-between'
 	},
   modalContent: {
 		margin: 0,
+    marginTop: STATUSBAR_HEIGHT,
 		padding: 0,
 		flex: 1,
 		backgroundColor: white
@@ -304,21 +311,22 @@ const styles = StyleSheet.create({
 		flexDirection: 'row'
 	},
   location: {
-		height: 50,
-		width: '100%',
+		height: 44,
+		width: '96%',
+    alignSelf: 'center',
 		flexDirection: 'row',
 		justifyContent: 'space-between',
 		alignItems: 'center',
 		paddingLeft: 10,
 		paddingRight: 10,
 		borderBottomWidth: 1,
-		borderColor: 'black'
+		borderColor: gray
 	},
   searchBar: {
     width: '80%',
-    height: 40,
+    height: 50,
     color: white,
-    fontSize: 16,
+    fontSize: 15,
     paddingLeft: 10
   }
 })

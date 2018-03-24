@@ -1,9 +1,9 @@
-import React from 'react'
-import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import React, { Component } from 'react'
+import { Image, StyleSheet, Text, TouchableOpacity, View, ScrollView } from 'react-native'
 import firebase from 'firebase'
 import { primary, white, gray, black } from '../utils/colors'
 
-export default class SearchUsers extends React.Component {
+export default class SearchUsers extends Component {
 	constructor(props) {
 		super(props)
 	}
@@ -20,7 +20,6 @@ export default class SearchUsers extends React.Component {
 	}
 
 	handleTextChange = (text) => {
-		console.log("Search users", text)
 		if (!text) {
 			this.setState({ uids:[], names: [], handles: [], images: [] })
 			return
@@ -28,7 +27,7 @@ export default class SearchUsers extends React.Component {
 		text = text.toLowerCase()
 		var self = this
 		var ref = firebase.database().ref('users/main')
-		ref.orderByChild("handle").startAt(text).endAt(text + '\uf8ff').limitToFirst(10).on("value", function(snapshot) {
+		ref.orderByChild("handle").startAt(text).endAt(text + '\uf8ff').limitToFirst(100).on("value", function(snapshot) {
 			var uids = []
   		var names = []
   		var handles = []
@@ -46,7 +45,7 @@ export default class SearchUsers extends React.Component {
 
 	render() {
 		return (
-			<View style={styles.container}>
+			<ScrollView style={styles.container}>
 				{this.state.names.map((name, i) => (
 					<TouchableOpacity key={i} style={styles.profileCard} onPress={() => this.props.nav.navigate('ProfilePage', {uid: this.state.uids[i]})}>
 						<Image style={styles.profilePic} source={ this.state.images[i] ? {uri: this.state.images[i]} : (require('../assets/images/profilePic.png')) } />
@@ -56,7 +55,7 @@ export default class SearchUsers extends React.Component {
 						</View>
 					</TouchableOpacity>
 				))}
-			</View>
+			</ScrollView>
 		)
 	}
 }

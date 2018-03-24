@@ -1,9 +1,9 @@
-import React from 'react'
-import { Image, StyleSheet, Text, TouchableOpacity, View, ScrollView } from 'react-native'
+import React, { Component } from 'react'
+import { StyleSheet, Text, TouchableOpacity, View, ScrollView } from 'react-native'
 import { getPOIAutocomplete } from '../network/Requests'
 import { primary, white, gray, black } from '../utils/colors'
 
-export default class SearchPlaces extends React.Component {
+export default class SearchPlaces extends Component {
 	constructor(props) {
 		super(props)
 	}
@@ -18,7 +18,6 @@ export default class SearchPlaces extends React.Component {
 	}
 
 	handleTextChange = (text) => {
-		console.log("Search places", text)
 		if (!text) {
 			this.setState({ ids:[], names:[] })
 			return

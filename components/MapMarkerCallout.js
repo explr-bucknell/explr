@@ -16,16 +16,21 @@ export default class MapMarkerCallout extends Component {
     this.checkLiked(this.props.id, this.props.uid)
   }
 
-  async checkLiked(id, uid) {
+  checkLiked(id, uid) {
     var ref = firebase.database().ref('users/main/' + uid + '/saved')
+    var self = this
     var liked
-    await ref.child(id).once("value", function(snapshot) {
+    ref.child(id).on("value", function(snapshot) {
       if (snapshot.val()) {
         liked = true
       } else {
         liked = false
       }
+      self.setLiked(liked)
     });
+  }
+
+  setLiked = liked => {
     this.setState({ liked })
   }
 

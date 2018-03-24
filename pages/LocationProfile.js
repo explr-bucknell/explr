@@ -97,24 +97,25 @@ export default class LocationProfile extends React.Component {
   }
 
   addLocation (trip) {
-    addLocationToTrip(this.state.uid, trip.tripId, this.state.locationId, this.state.locationName)
+    addLocationToTrip(trip.tripId, this.state.locationId, this.state.locationName)
     this.toggleAddLocation()
   }
 
   getUserTrips () {
-    getTrips(this.props.uid)
-		.then((trips) => {
-			const updatedTrips = []
-			if (Object.keys(trips).length > 0) {
-				Object.keys(trips).forEach((tripId) => {
-					trips[tripId].tripId = tripId
-					updatedTrips.push(trips[tripId])
-				})
-				this.setState({
-					trips: updatedTrips
-				})
-			}
-		})
+    getTrips(this.props.uid, this.loadTrips)
+  }
+
+  loadTrips = (trips) => {
+    const updatedTrips = []
+    if (trips && Object.keys(trips).length > 0) {
+      Object.keys(trips).forEach((tripId) => {
+        trips[tripId].tripId = tripId
+        updatedTrips.push(trips[tripId])
+      })
+      this.setState({
+        trips: updatedTrips
+      })
+    }
   }
 
   _keyExtractor = (item, index) => item.tripId

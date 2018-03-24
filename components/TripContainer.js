@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
 import { Ionicons } from '@expo/vector-icons'
-import { primary, white, transparentWhite } from '../utils/colors'
+import { primary, white, transparentWhite, gray } from '../utils/colors'
 
 export default class TripContainer extends Component {
 
@@ -14,7 +14,7 @@ export default class TripContainer extends Component {
 					() => this.props.navigate('TripPage', {trip: trip, uid: this.props.uid})
 				}
 				style={styles.tripContainer}>
-				<Text style={{fontSize: 18, color: 'black'}}>{trip.name} (0/{trip.numLocs} completed)</Text>
+				<Text style={{fontSize: 15, color: 'black'}}>{trip.name} (0/{trip.numLocs} completed)</Text>
 				{!this.props.adding &&
 					<Ionicons
 						name='ios-arrow-dropright'
@@ -36,10 +36,10 @@ export default class TripContainer extends Component {
 
 const styles = StyleSheet.create({
 	tripContainer: {
-		height: 60,
+		height: 50,
 		width: '96%',
 		alignSelf: 'center',
-		borderBottomColor: 'black',
+		borderBottomColor: gray,
 		borderBottomWidth: StyleSheet.hairlineWidth,
 		alignItems: 'center',
 		padding: 5,

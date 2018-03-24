@@ -102,7 +102,8 @@ export default class ContentGrid extends Component {
 const styles = StyleSheet.create({
 	contentGrid: {
 		flexDirection: 'row',
-		flexWrap: 'wrap'
+		flexWrap: 'wrap',
+    height: '100%'
 	},
 	noText: {
 		fontSize: 20,

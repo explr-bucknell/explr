@@ -246,8 +246,8 @@ export default class MapPage extends Component {
               >
               <MapView.Callout>
                 <MapMarkerCallout
+                  key={locations[locationId].id}
                   title={locations[locationId].name}
-                  // description='asdfasdf'
                   imageUrl={locations[locationId].image}
                   id={locations[locationId].id}
                   uid={this.props.uid}

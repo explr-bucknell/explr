@@ -9,6 +9,7 @@ import SearchPage from './pages/SearchPage'
 import ProfilePage from './pages/ProfilePage'
 import LocationProfile from './pages/LocationProfile'
 import TripPage from './pages/TripPage'
+import CreateTripPage from './pages/CreateTripPage'
 import TripMapPage from './pages/TripMapPage'
 import ConnectionsPage from './pages/ConnectionsPage'
 import ProfileEditPage from './pages/ProfileEditPage'
@@ -58,7 +59,7 @@ const LocationPageOpts = ({ navigation }) => ({
 })
 
 const TripPageOpts = ({ navigation }) => ({
-	headerTitle: "EXPLR",
+	headerTitle: navigation.state.params.trip.name,
 	headerStyle: {
 		backgroundColor: primary,
 		borderBottomWidth: 0,
@@ -116,6 +117,7 @@ const SearchNavOpts = ({ navigation }) => ({
       	onChangeText={ (text) => {
       		navigation.state.params.handlePlaceSearch && navigation.state.params.handlePlaceSearch(text.trim())
       		navigation.state.params.handleUserSearch && navigation.state.params.handleUserSearch(text.trim())
+      		navigation.state.params.handleTagSearch && navigation.state.params.handleTagSearch(text.trim())
       	}}
         placeholderTextColor={ transparentWhite }
         autoFocus={ true }
@@ -191,6 +193,26 @@ const ProfileEditNavOpts = ({ navigation }) => ({
 		</TouchableOpacity>
 })
 
+const CreateTripScreen = ({ navigation }) => (
+	<CreateTripPage nav={navigation}/>
+)
+
+const CreateTripNavOpts = ({ navigation }) => ({ 
+	headerTitle: "New Trip",
+	headerStyle: {
+		backgroundColor: primary,
+		borderBottomWidth: 0,
+	},
+	headerTintColor: white,
+	headerRight:
+		<TouchableOpacity onPress={() => navigation.state.params.finishNewTrip && navigation.state.params.finishNewTrip()}>
+			<Ionicons
+					name='ios-checkmark'
+					style={{ color: white, marginRight: 15, fontSize: 45 }}
+		  	/>
+		</TouchableOpacity>
+})
+
 const ChangePwdScreen = ({ navigation }) => (
 	<ChangePwdPage nav={navigation}/>
 )
@@ -255,6 +277,10 @@ const MainNavigator = StackNavigator({
 	TripPage: {
 		screen: TripScreen,
 		navigationOptions: TripPageOpts
+	},
+	CreateTripPage: {
+		screen: CreateTripScreen,
+		navigationOptions: CreateTripNavOpts
 	},
 	TripMapPage: {
 		screen: TripMapScreen,

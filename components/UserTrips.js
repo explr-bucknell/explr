@@ -1,20 +1,21 @@
 import React, { Component } from 'react'
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, Button, TextInput } from 'react-native'
 import { Ionicons } from '@expo/vector-icons'
-import { white, primary } from '../utils/colors'
+import { white, primary, transparentWhite } from '../utils/colors'
 import Modal from 'react-native-modal'
 import { createTrip, getTrips, addLocationToTrip, createTripWithLocation } from '../network/Requests'
 import TripContainer from './TripContainer'
+import Tags from '../components/Tags'
 
 export default class UserTrips extends Component {
 
 	constructor (props) {
 		super(props)
-		this.state = {
-			modalVisible: false,
-			newTripName: '',
-			trips: []
-		}
+	}
+
+	state = {
+		newTripName: '',
+		trips: []
 	}
 
 	componentDidMount () {
@@ -25,26 +26,21 @@ export default class UserTrips extends Component {
 		this.retrieveTrips()
 	}
 
-	retrieveTrips () {
-		getTrips(this.props.uid)
-		.then((trips) => {
-			const updatedTrips = []
-			if (Object.keys(trips).length > 0) {
-				Object.keys(trips).forEach((tripId) => {
-					trips[tripId].tripId = tripId
-					updatedTrips.push(trips[tripId])
-				})
-				this.setState({
-					trips: updatedTrips
-				})
-			}
-		})
+	retrieveTrips = () => {
+		getTrips(this.props.uid, this.loadTrips)
 	}
 
-	_keyExtractor = (item, index) => item.tripId
-
-	promptNewTrip () {
-		this.setState({ modalVisible: true })
+	loadTrips = (trips) => {
+		const updatedTrips = []
+		if (trips && Object.keys(trips).length > 0) {
+			Object.keys(trips).forEach((tripId) => {
+				trips[tripId].tripId = tripId
+				updatedTrips.push(trips[tripId])
+			})
+			this.setState({
+				trips: updatedTrips
+			})
+		}
 	}
 
 	addLocationToTrip (trip_id, location_id, location_name) {
@@ -54,91 +50,42 @@ export default class UserTrips extends Component {
 		})
 	}
 
-	finishNewTrip () {
-		this.setState({ modalVisible: false, newTripName: '' })
-		if (!this.props.adding) {
-			createTrip(this.props.uid, this.state.newTripName)
-			.then(() => {
-				this.retrieveTrips()
-			})
-		} else {
-			createTripWithLocation (
-				this.props.uid,
-				this.state.newTripName,
-				this.props.locationId,
-				this.props.locationName
-			)
-			.then(() => {
-				this.retrieveTrips()
-			})
-		}
-	}
-
 	render () {
+		let { adding, uid, locationId, locationName } = this.props
 		return (
 			<View style={styles.tripsContainer}>
-				<Modal
-          isVisible={this.state.modalVisible}
-					backdropColor={'black'}
-					backdropOpacity={0}
-					style={{margin: 0}}
-        >
-					<View style={styles.modalContent}>
-						<Text>Enter Trip Name:</Text>
-						<TextInput
-							style={styles.newTripNameContainer}
-							onChangeText={(newTripName) => this.setState({ newTripName })}
-						/>
-					<View style={styles.submitCancelContainer}>
-							<TouchableOpacity  onPress={() => this.setState({ modalVisible: false })}>
-								<Text style={{color: primary}}>Cancel</Text>
-							</TouchableOpacity>
-							<TouchableOpacity
-								onPress={() => this.state.newTripName.length > 0 && this.finishNewTrip()}
-							>
-								<Text
-									style={{color: this.state.newTripName.length > 0 ? primary : 'rgba(0, 0, 0, 0.5)'}}
-								>
-									Submit
-								</Text>
-							</TouchableOpacity>
-						</View>
-					</View>
-				</Modal>
-				<TouchableOpacity style={styles.createTripContainer} onPress={() => this.promptNewTrip()}>
+				<TouchableOpacity style={styles.createTripContainer} onPress={() => this.props.navigate('CreateTripPage', {adding: adding, uid: uid, locationId: locationId, locationName: locationName})}>
 					<View style={{width: '100%', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
 						<View style={{width: '80%'}}>
 						{!this.props.adding &&
-							<Text style={{fontSize: 18, fontWeight: 'bold', color: white}}>Create new trip</Text>
+							<Text style={{fontSize: 16, fontWeight: 'bold', color: white}}>Create new trip</Text>
 						}
 						{this.props.adding &&
-							<Text style={{fontSize: 18, fontWeight: 'bold', color: white}}>
+							<Text style={{fontSize: 16, fontWeight: 'bold', color: white}}>
 								Create new trip containing {this.props.locationName}
 							</Text>
 						}
 						</View>
 						<Ionicons
-								name='ios-add-circle-outline'
-								size={25}
-								style={{ color: white }}
+							name='ios-add-circle-outline'
+							size={25}
+							style={{ color: white }}
 						/>
 					</View>
 				</TouchableOpacity>
 				{this.state.trips && this.state.trips.length > 0 &&
-					<FlatList
-						style={{width: '100%', paddingBottom: 3}}
-						contentContainerStyle={{flexDirection: 'column'}}
-						data={this.state.trips}
-	  				renderItem={({item}) =>
+					<View style={{width: '100%', paddingBottom: 3}}>
+						{this.state.trips.map(item => 
 							<TripContainer
+								key={item.tripId}
 								trip={item}
 								navigate={this.props.navigate}
 								uid={this.props.uid}
 								adding={this.props.adding}
 								selectLocation={() => this.props.addLocation(item)}
-							/>}
-						keyExtractor={this._keyExtractor}
-					/>
+							/>
+						)}
+					</View>
 				}
 				{this.state.trips.length === 0 &&
 					<Text>No Trips Yet!</Text>
@@ -153,7 +100,7 @@ const styles = StyleSheet.create({
 		flex: 1,
 		backgroundColor: white,
 		alignItems: 'center',
-		height: 350,
+		height: '100%'
 	},
 	createTripContainer: {
 		width: '100%',
@@ -162,26 +109,28 @@ const styles = StyleSheet.create({
 		borderTopWidth: 1,
 		alignSelf: 'center',
 		alignItems: 'center',
-		padding: 12,
+		padding: 10,
 		flexDirection: 'row',
 		justifyContent: 'space-between'
 	},
 	modalContent: {
 		margin: 0,
-		marginTop: 325,
+		marginTop: 320,
 		padding: 20,
 		flex: 1,
-		backgroundColor: white,
-		borderTopColor: primary,
-		borderTopWidth: 2
+		backgroundColor: primary
+	},
+	modalText: {
+		color: white
 	},
 	newTripNameContainer: {
-		height: 40,
-		borderColor: 'gray',
+		height: 30,
+		borderColor: transparentWhite,
 		borderBottomWidth: 1,
 		marginTop: 10,
 		marginBottom: 10,
-		paddingLeft: 5
+		paddingLeft: 5,
+		color: white
 	},
 	submitCancelContainer: {
 		justifyContent: 'space-between',

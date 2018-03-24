@@ -7,20 +7,34 @@ var config = {
   apiKey: 'AIzaSyBztce7Z8iOrB5EgV4IE8gjlFGAy6MXSkQ'
 }
 
-export async function createTrip(uid, tripName) {
-  var tripId = firebase.database().ref(`users/main/${uid}/trips/`).push().key
-  await firebase.database().ref(`users/main/${uid}/trips/${tripId}`).update({
+export async function createTrip(uid, tripName, tripTags, permission) {
+  var tripId = firebase.database().ref(`trips/`).push().key
+  await firebase.database().ref(`trips/${tripId}`).update({
     name: tripName,
+    tags: tripTags,
+    permission: permission,
     numLocs: 0,
     creator: uid,
     locations: {}
   })
+
+  tripTags.forEach(tag => {
+    firebase.database().ref(`tags/${tag}/trips`).update({
+      [tripId]: Date.now()
+    })
+    firebase.database().ref(`tags/${tag}/count`).transaction(function(count) {
+      count = count ? count + 1 : 1
+      return count
+    })
+  })
 }
 
-export async function createTripWithLocation(uid, tripName, locationId, locationName) {
-  var tripId = firebase.database().ref(`users/main/${uid}/trips/`).push().key
-  await firebase.database().ref(`users/main/${uid}/trips/${tripId}`).update({
+export async function createTripWithLocation(uid, tripName, tripTags, permission, locationId, locationName) {
+  var tripId = firebase.database().ref(`trips/`).push().key
+  await firebase.database().ref(`trips/${tripId}`).update({
     name: tripName,
+    tags: tripTags,
+    permission: permission,
     numLocs: 1,
     creator: uid,
     locations: {
@@ -31,39 +45,40 @@ export async function createTripWithLocation(uid, tripName, locationId, location
       }
     }
   })
+
+  tripTags.forEach(tag => {
+    firebase.database().ref(`tags/${tag}`).update({
+      tripId: Data.now()
+    })
+  })
 }
 
 //Add a new location to a trip
-export async function addLocationToTrip(uid, tripId, locationId, locationName) {
+export async function addLocationToTrip(tripId, locationId, locationName) {
   var numLocations = 0;
-  await firebase.database().ref(`users/main/${uid}/trips/${tripId}`).once('value').then(function(snapshot) {
-    numLocations = snapshot.val().numLocs
-    firebase.database().ref(`users/main/${uid}/trips/${tripId}`).update({
-     numLocs: numLocations + 1
-    });
+  await firebase.database().ref(`trips/${tripId}/numLocs/`).transaction(function(numLocs) {
+    numLocations = numLocs;
+    return numLocs + 1;
   });
 
-  await firebase.database().ref(`users/main/${uid}/trips/${tripId}/locations/${locationId}`).set({
+  await firebase.database().ref(`trips/${tripId}/locations/${locationId}`).set({
     visited: false,
     name: locationName,
     index: numLocations
   });
 }
 
-export async function getTrips(uid) {
-  try {
-    let trips = await fetch(`https://senior-design-explr.firebaseio.com/users/main/${uid}/trips.json`)
-    let tripsJson = await trips.json()
-    return tripsJson
-  } catch (error) {
-    console.error(error)
-    return null
-  }
+export async function getTrips(uid, callback) {
+  firebase.database().ref('trips/').orderByChild('creator').equalTo(uid).on('value', function(snapshot) {
+    if (snapshot.numChildren()) {
+      callback(snapshot.val())
+    }
+  })
 }
 
-export async function getTrip (uid, tripId) {
+export async function getTrip (tripId) {
   try {
-    let trip = await fetch(`https://senior-design-explr.firebaseio.com/users/main/${uid}/trips/${tripId}.json`)
+    let trip = await fetch(`https://senior-design-explr.firebaseio.com/trips/${tripId}.json`)
     let tripJson = await trip.json()
     return tripJson
   } catch (error) {
