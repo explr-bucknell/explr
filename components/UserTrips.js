@@ -51,10 +51,15 @@ export default class UserTrips extends Component {
 	}
 
 	render () {
-		let { adding, uid, locationId, locationName } = this.props
+		let { adding, uid, locationId, locationName, closeModal } = this.props
 		return (
 			<View style={styles.tripsContainer}>
-				<TouchableOpacity style={styles.createTripContainer} onPress={() => this.props.navigate('CreateTripPage', {adding: adding, uid: uid, locationId: locationId, locationName: locationName})}>
+				<TouchableOpacity 
+					style={styles.createTripContainer} 
+					onPress={() => {
+						closeModal()
+						this.props.navigate('CreateTripPage', { adding, uid, locationId, locationName })
+					}}>
 					<View style={{width: '100%', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
 						<View style={{width: '80%'}}>
 						{!this.props.adding &&

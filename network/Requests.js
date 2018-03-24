@@ -47,8 +47,12 @@ export async function createTripWithLocation(uid, tripName, tripTags, permission
   })
 
   tripTags.forEach(tag => {
-    firebase.database().ref(`tags/${tag}`).update({
-      tripId: Data.now()
+    firebase.database().ref(`tags/${tag}/trips`).update({
+      [tripId]: Date.now()
+    })
+    firebase.database().ref(`tags/${tag}/count`).transaction(function(count) {
+      count = count ? count + 1 : 1
+      return count
     })
   })
 }

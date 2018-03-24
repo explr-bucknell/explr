@@ -96,6 +96,10 @@ export default class LocationProfile extends React.Component {
     })
   }
 
+  closeModal = () => {
+    this.setState({ addingLocationToTrip: false })
+  }
+
   addLocation (trip) {
     addLocationToTrip(trip.tripId, this.state.locationId, this.state.locationName)
     this.toggleAddLocation()
@@ -141,6 +145,7 @@ export default class LocationProfile extends React.Component {
               locationId={this.state.locationId}
               locationName={this.state.locationName}
               addLocation={(trip) => this.addLocation(trip)}
+              closeModal={this.closeModal}
               adding
             />
           </Modal>

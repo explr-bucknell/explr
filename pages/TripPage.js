@@ -220,7 +220,7 @@ export default class extends Component {
                   <Text style={{color: 'red'}}>Delete</Text>
                 </TouchableOpacity>
               }
-              <View style={{flex: 3, justifyContent: 'center', alignItems: 'flex-start'}}>
+              <View style={{justifyContent: 'center', alignItems: 'flex-start'}}>
                 <Text style={{fontSize: 15}}>
                   {location.name.split(',')[0]}
                 </Text>
@@ -271,8 +271,10 @@ const styles = StyleSheet.create({
     height: '100%'
   },
   tripLocation: {
-    borderBottomWidth: 1,
-    borderColor: 'gray',
+    width: '96%',
+    alignSelf: 'center',
+    borderBottomColor: gray,
+    borderBottomWidth: StyleSheet.hairlineWidth,
     padding: 15,
     paddingLeft: 10,
     flexDirection: 'row',
