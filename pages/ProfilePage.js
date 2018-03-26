@@ -7,6 +7,7 @@ import { primary, white, gray, black, transparentWhite } from '../utils/colors'
 import ContentGrid from '../components/ContentGrid'
 import SavedLocations from '../components/SavedLocations'
 import UserTrips from '../components/UserTrips'
+import SettingsPage from './SettingsPage'
 
 const {width: SCREEN_WIDTH} = Dimensions.get("window")
 const HEADER_HEIGHT = 150
@@ -37,6 +38,7 @@ export default class ProfilePage extends React.Component {
   }
 
   componentWillMount() {
+    console.log(this.props)
   	this.setState({
   		uid: this.props.uid ? this.props.uid : this.props.nav.state.params.uid,
   		nav: this.props.navigate ? this.props.navigate : this.props.nav.navigate
@@ -229,11 +231,11 @@ export default class ProfilePage extends React.Component {
 							/>
         		</Animated.View>
         	}>
-						<Tab heading="Places">
+						<Tab heading="Liked Places">
 							<SavedLocations uid={this.state.uid}/>
 						</Tab>
-	  				<Tab heading="Trips">
-							<UserTrips uid={this.state.uid} navigate={this.props.navigate}/>
+	  				<Tab heading="Settings">
+							<SettingsPage uid={this.state.uid} loginNav={this.props.loginNav}/>
 						</Tab>
 			    </Tabs>
 				</Animated.ScrollView>

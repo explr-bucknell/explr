@@ -69,7 +69,7 @@ export default class SettingsPage extends React.Component {
 
 	render() {
 		return (
-			<ScrollView style={styles.container}>
+			<View style={styles.container}>
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>SOCIAL</Text>
           <TouchableOpacity style={[styles.button, styles.facebook]} onPress={() => this.facebookSignin()}>
@@ -83,7 +83,7 @@ export default class SettingsPage extends React.Component {
               <TouchableOpacity style={styles.socialStatus}>
                 <Text style={styles.enabled}>CONNECT</Text>
                 <Ionicons style={styles.enabledIcon} name='ios-arrow-forward'/>
-              </TouchableOpacity> ) 
+              </TouchableOpacity> )
             }
           </TouchableOpacity>
           <TouchableOpacity style={[styles.button, styles.twitter]} onPress={() => this.twitterSignin()}>
@@ -97,7 +97,7 @@ export default class SettingsPage extends React.Component {
               <TouchableOpacity style={styles.socialStatus}>
                 <Text style={styles.enabled}>CONNECT</Text>
                 <Ionicons style={styles.enabledIcon} name='ios-arrow-forward'/>
-              </TouchableOpacity> ) 
+              </TouchableOpacity> )
             }
           </TouchableOpacity>
           <TouchableOpacity style={[styles.button, styles.google]} onPress={() => this.googleSignin()}>
@@ -111,7 +111,7 @@ export default class SettingsPage extends React.Component {
               <TouchableOpacity style={styles.socialStatus}>
                 <Text style={styles.enabled}>CONNECT</Text>
                 <Ionicons style={styles.enabledIcon} name='ios-arrow-forward'/>
-              </TouchableOpacity> ) 
+              </TouchableOpacity> )
             }
           </TouchableOpacity>
         </View>
@@ -148,19 +148,18 @@ export default class SettingsPage extends React.Component {
             </CardItem>
           </Card>
         </View>
-      </ScrollView>
+      </View>
 		)
 	}
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     backgroundColor: white,
     paddingLeft: 20,
     paddingRight: 20,
     paddingTop: 20,
-    paddingBottom: 10
+    paddingBottom: 10,
   },
   section: {
     marginBottom: 20

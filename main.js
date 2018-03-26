@@ -14,6 +14,7 @@ import TripMapPage from './pages/TripMapPage'
 import ConnectionsPage from './pages/ConnectionsPage'
 import ProfileEditPage from './pages/ProfileEditPage'
 import ChangePwdPage from './pages/ChangePwdPage'
+import SettingsPage from './pages/SettingsPage'
 import { primary, white, transparentWhite } from './utils/colors'
 
 const DEVICE_WIDTH = Dimensions.get('window').width
@@ -177,7 +178,7 @@ const ProfileEditScreen = ({ navigation }) => (
 	<ProfileEditPage nav={navigation}/>
 )
 
-const ProfileEditNavOpts = ({ navigation }) => ({ 
+const ProfileEditNavOpts = ({ navigation }) => ({
 	headerTitle: "Edit Profile",
 	headerStyle: {
 		backgroundColor: primary,
@@ -197,7 +198,7 @@ const CreateTripScreen = ({ navigation }) => (
 	<CreateTripPage nav={navigation}/>
 )
 
-const CreateTripNavOpts = ({ navigation }) => ({ 
+const CreateTripNavOpts = ({ navigation }) => ({
 	headerTitle: "New Trip",
 	headerStyle: {
 		backgroundColor: primary,
@@ -217,7 +218,7 @@ const ChangePwdScreen = ({ navigation }) => (
 	<ChangePwdPage nav={navigation}/>
 )
 
-const ChangePwdNavOpts = ({ navigation }) => ({ 
+const ChangePwdNavOpts = ({ navigation }) => ({
 	headerTitle: "Change Password",
 	headerStyle: {
 		backgroundColor: primary,
@@ -289,7 +290,7 @@ const MainNavigator = StackNavigator({
 	LocationPage: {
 		screen: LocationScreen,
 		navigationOptions: LocationPageOpts
-	}
+	},
 })
 
 export default MainNavigator

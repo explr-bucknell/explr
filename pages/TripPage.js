@@ -175,7 +175,7 @@ export default class extends Component {
           </View>
         </Modal>
         <View>
-          { this.state.editing ? 
+          { this.state.editing ?
             <View style={styles.editSubmitContainer}>
               <View style={{position: 'absolute', left: 0}}>
                 <Button title='cancel'
@@ -199,7 +199,7 @@ export default class extends Component {
                 <Ionicons
                     name='ios-create-outline'
                     size={25}
-                    style={{ color: white, marginRight: 10 }}
+                    style={{ color: white, marginRight: 15 }}
                     onPress={() => this.editOrSubmit()}
                 />
                 <Ionicons
@@ -248,7 +248,9 @@ export default class extends Component {
             </View>
           )}
           {tripLocations.length === 0 &&
-            <Text>You haven't added any locations yet!</Text>
+            <View style={{width: '100%', justifyContent: 'center', paddingTop: 10}}>
+              <Text>You haven't added any locations yet!</Text>
+            </View>
           }
           </ScrollView>
         </View>
