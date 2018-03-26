@@ -4,36 +4,30 @@ import { Permissions, Notifications } from 'expo';
 const PUSH_ENDPOINT = 'https://us-central1-senior-design-explr.cloudfunctions.net/addPushToken/';
 
 export async function registerForPushNotificationsAsyc(user_id) {
-  console.log('made it into the function bitchesssss');
   const { status: existingStatus } = await Permissions.getAsync(Permissions.NOTIFICATIONS);
   let finalStatus = existingStatus;
-//make sure determined
+  //make sure determined
   if (existingStatus !== 'granted') {
     //for IOS
     const { status } = await Permissions.askAsync(Permissions.NOTIFICATIONS);
     finalStatus = status;
   }
-
-// no permissions?
-if (finalStatus !== 'granted') {
-
-  return;
-}
-
-//get token
-let token = await Notifications.getExpoPushTokenAsync();
-//POST
-console.log('bouta make that postman cri');
-console.log('literally just that');
-return fetch(PUSH_ENDPOINT, {
-  method: 'POST',
-  headers: {
-    Accept: 'application/json',
-    'Content-Type': 'application/json',
-  },
-  body:JSON.stringify({
-    token: token,
-    uid: user_id
-  }),
-});
+  // no permissions?
+  if (finalStatus !== 'granted') {
+    return;
+  }
+  //get token
+  let token = await Notifications.getExpoPushTokenAsync();
+  //POST
+  return fetch(PUSH_ENDPOINT, {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
+    body:JSON.stringify({
+      token: token,
+      uid: user_id
+    }),
+  });
 }

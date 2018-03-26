@@ -103,6 +103,7 @@ export default class SignupPwd extends Component {
 	    handle: handle,
 	    numFollowers: 0,
 	    numFollowing: 0,
+			trips: {}
 		});
 	}
 
