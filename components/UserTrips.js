@@ -54,8 +54,8 @@ export default class UserTrips extends Component {
 		let { adding, uid, locationId, locationName, closeModal } = this.props
 		return (
 			<View style={styles.tripsContainer}>
-				<TouchableOpacity 
-					style={styles.createTripContainer} 
+				<TouchableOpacity
+					style={styles.createTripContainer}
 					onPress={() => {
 						adding && closeModal()
 						this.props.navigate('CreateTripPage', { adding, uid, locationId, locationName })
@@ -80,7 +80,7 @@ export default class UserTrips extends Component {
 				</TouchableOpacity>
 				{this.state.trips && this.state.trips.length > 0 &&
 					<View style={{width: '100%', paddingBottom: 3}}>
-						{this.state.trips.map(item => 
+						{this.state.trips.map(item =>
 							<TripContainer
 								key={item.tripId}
 								trip={item}
@@ -93,7 +93,9 @@ export default class UserTrips extends Component {
 					</View>
 				}
 				{this.state.trips.length === 0 &&
-					<Text>No Trips Yet!</Text>
+					<View style={{padding: 10}}>
+						<Text>No Trips Yet!</Text>
+					</View>
 				}
 			</View>
 		)

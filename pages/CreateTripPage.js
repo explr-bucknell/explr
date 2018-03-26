@@ -100,9 +100,9 @@ export default class CreateTripPage extends Component {
           onChangeText={(name) => this.handleNameChange(name)}
         />
         <Text style={this.state.showAlert ? styles.showAlert : styles.hideAlert}>Please enter a name!</Text>
-        <Text style={styles.text}>Add Trip Tags:</Text>
-        <Tags 
-          tags={this.state.tags} 
+        <Text style={styles.text}>Add Trip Tags (separate by a space):</Text>
+        <Tags
+          tags={this.state.tags}
           addNewTag={this.addNewTag}
           removeTag={this.removeTag}
         />

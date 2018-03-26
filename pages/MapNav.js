@@ -6,7 +6,7 @@ import MapPage from './MapPage'
 import ProfilePage from './ProfilePage'
 import SettingsPage from './SettingsPage'
 import NotificationPage from './NotificationPage'
-import TripPage from './TripPage'
+import UserTrips from '../components/UserTrips'
 import { FontAwesome } from '@expo/vector-icons'
 import { primary, white, gray } from '../utils/colors'
 
@@ -14,6 +14,10 @@ const DEVICE_HEIGHT = Dimensions.get('window').height;
 
 const MapScreen = (props) => (
 	<MapPage {...props.screenProps}/>
+)
+
+const TripsScreen = (props) => (
+	<UserTrips {...props.screenProps}/>
 )
 
 const ProfileScreen = (props) => (
@@ -44,6 +48,10 @@ const MapNav = TabNavigator({
 		screen: props => MapScreen(props),
     navigationOptions: navOpts('Explore', 'map')
 	},
+	TripPage: {
+		screen: props => TripsScreen(props),
+		navigationOptions: navOpts('Trips', 'list')
+	},
 	ProfilePage: {
 		screen: props => ProfileScreen(props),
     navigationOptions: navOpts('Profile', 'user')
@@ -51,10 +59,6 @@ const MapNav = TabNavigator({
   NotificationPage: {
     screen: props => NotificationScreen(props),
     navigationOptions: navOpts('Notifications', 'bell')
-  },
-  SettingsPage: {
-    screen: props => SettingsScreen(props),
-    navigationOptions: navOpts('Settings', 'cogs')
   },
 }
 , {
