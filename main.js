@@ -234,6 +234,23 @@ const ChangePwdNavOpts = ({ navigation }) => ({
 		</TouchableOpacity>
 })
 
+const SettingsPageOpts = ({ navigation }) => ({
+	headerTitle: 'Settings',
+	headerStyle: {
+		backgroundColor: primary,
+		borderBottomWidth: 0,
+	},
+	headerTintColor: white,
+	headerLeft:
+		<TouchableOpacity onPress={() => navigation.goBack(null)} style={{ marginLeft: 10 }}>
+			<FontAwesome
+					name='angle-left'
+					size={35}
+					style={{ color: white }}
+				/>
+		</TouchableOpacity>,
+})
+
 const LocationScreen = ({ navigation }) => (
 	<LocationProfile nav={navigation}/>
 )
@@ -244,6 +261,10 @@ const TripScreen = ({ navigation }) => (
 
 const TripMapScreen = ({ navigation }) => (
 	<TripMapPage nav={navigation} />
+)
+
+const SettingsScreen = ({ navigation }) => (
+	<SettingsPage nav={navigation} />
 )
 
 const MainNavigator = StackNavigator({
@@ -291,6 +312,10 @@ const MainNavigator = StackNavigator({
 		screen: LocationScreen,
 		navigationOptions: LocationPageOpts
 	},
+	SettingsPage: {
+		screen: SettingsScreen,
+		navigationOptions: SettingsPageOpts
+	}
 })
 
 export default MainNavigator

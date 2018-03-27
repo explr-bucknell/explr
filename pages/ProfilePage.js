@@ -38,11 +38,11 @@ export default class ProfilePage extends React.Component {
   }
 
   componentWillMount() {
-    console.log(this.props)
   	this.setState({
   		uid: this.props.uid ? this.props.uid : this.props.nav.state.params.uid,
   		nav: this.props.navigate ? this.props.navigate : this.props.nav.navigate
   	})
+    console.log(this.props)
   }
 
   componentDidMount() {
@@ -155,6 +155,10 @@ export default class ProfilePage extends React.Component {
   	this.state.nav('ProfileEditPage', {uid: this.state.uid})
   }
 
+  settings = () => {
+    this.state.nav('SettingsPage', {loginNav: this.props.loginNav, navigate: this.props.navigate})
+  }
+
   render() {
     return (
     	<View style={{backgroundColor: white, height: '100%'}}>
@@ -169,9 +173,9 @@ export default class ProfilePage extends React.Component {
 		      		<View style={styles.nameContainer}>
 		      			<View style={{flexDirection: 'row'}}>
 		      				<Text style={styles.name}>{ this.state.displayName.length < 16 ? this.state.displayName: (this.state.displayName.slice(0,13) + "...") }</Text>
-		      				<TouchableOpacity onPress={() => (this.state.isMyProfile ? this.editProfile() : (this.state.isFollowing ? this.stopFollowing() : this.sendFollowRequest()))}>
+		      				<TouchableOpacity onPress={() => (this.state.isMyProfile ? this.settings() : (this.state.isFollowing ? this.stopFollowing() : this.sendFollowRequest()))}>
 				            <FontAwesome
-				            	name={this.state.isMyProfile ? "edit" : 'user-plus'}
+				            	name={this.state.isMyProfile ? 'cogs' : 'user-plus'}
 				            	style={this.state.isFollowing ? styles.iconFollowing : styles.icon}
 				            />
 				          </TouchableOpacity>
@@ -234,8 +238,8 @@ export default class ProfilePage extends React.Component {
 						<Tab heading="Liked Places">
 							<SavedLocations uid={this.state.uid}/>
 						</Tab>
-	  				<Tab heading="Settings">
-							<SettingsPage uid={this.state.uid} loginNav={this.props.loginNav}/>
+	  				<Tab heading="Trips">
+							<UserTrips uid={this.state.uid} navigate={this.props.navigate}/>
 						</Tab>
 			    </Tabs>
 				</Animated.ScrollView>

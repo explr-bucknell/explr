@@ -17,7 +17,7 @@ const MapScreen = (props) => (
 )
 
 const TripsScreen = (props) => (
-	<UserTrips {...props.screenProps}/>
+	<UserTrips {...props.screenProps} user/>
 )
 
 const ProfileScreen = (props) => (

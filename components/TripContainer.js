@@ -1,49 +1,131 @@
 import React, { Component } from 'react'
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Image } from 'react-native'
 import { Ionicons } from '@expo/vector-icons'
 import { primary, white, transparentWhite, gray } from '../utils/colors'
+import { getLocation } from '../network/Requests'
 
 export default class TripContainer extends Component {
 
+	constructor (props) {
+		super(props)
+		this.state = {
+			completed: 0,
+			tripIcons: []
+		}
+	}
+
+	componentWillMount () {
+		let locs = this.props.trip.locations
+		let numCompleted = 0
+		let self = this
+		{locs && Object.keys(locs).forEach((locId) => {
+			let numComp
+			numCompleted = locs[locId].visited ? numCompleted + 1 : numCompleted
+			this.setState({
+
+			})
+			getLocation(locId).then((location) => {
+				let tripIcons = self.state.tripIcons
+				tripIcons.push(location.image)
+				this.setState({
+					tripIcons
+				})
+			})
+		})}
+		this.setState({
+			completed: numCompleted
+		})
+	}
+
 	render () {
 		let trip = this.props.trip
+		const { tripIcons } = this.state
 		return (
-			<TouchableOpacity
-				onPress={
-					this.props.adding ? () => this.props.selectLocation() :
-					() => this.props.navigate('TripPage', {trip: trip, uid: this.props.uid})
+			<View style={styles.tripContainer}>
+				<TouchableOpacity
+					onPress={
+						this.props.adding ? () => this.props.selectLocation() :
+						() => this.props.navigate('TripPage', {trip: trip, uid: this.props.uid})
+					}
+					style={styles.touchableContainer}>
+					<View style={styles.informationContainer}>
+						<Text style={{fontSize: 18, color: 'black'}}>
+							{trip.name} ({this.state.completed}/{trip.numLocs} completed)
+						</Text>
+						<View style={{marginTop: 10}}>
+							<Text style={{fontSize: 15}}>Who can see: {trip.permission}</Text>
+						</View>
+						{tripIcons.length > 0 &&
+							<View style={{flexDirection: 'row'}}>
+								{tripIcons.map((url, index) =>
+									<View key={index} style={styles.locationIcon}>
+										<Image
+											source={{uri: url}}
+											style={{height: 50, width: 50, borderRadius: 25}}
+											key={index}
+										/>
+									</View>
+								)}
+							</View>
+						}
+					</View>
+					{!this.props.adding &&
+						<Ionicons
+							name='ios-arrow-dropright'
+							size={25}
+							style={{ color: primary }}
+						/>
+					}
+					{this.props.adding &&
+						<Ionicons
+							name='ios-add-circle-outline'
+							size={25}
+							style={{ color: primary }}
+						/>
+					}
+				</TouchableOpacity>
+				{trip.numLocs > 0 &&
+					<View style={{flexDirection: 'row', justifyContent: 'flex-start'}}>
+						<View style={[{width: `${(this.state.completed/trip.numLocs) * 100}%`}, styles.progressBar]}/>
+					</View>
 				}
-				style={styles.tripContainer}>
-				<Text style={{fontSize: 15, color: 'black'}}>{trip.name} (0/{trip.numLocs} completed)</Text>
-				{!this.props.adding &&
-					<Ionicons
-						name='ios-arrow-dropright'
-						size={25}
-						style={{ color: primary }}
-					/>
-				}
-				{this.props.adding &&
-					<Ionicons
-						name='ios-add-circle-outline'
-						size={25}
-						style={{ color: primary }}
-					/>
-				}
-			</TouchableOpacity>
+			</View>
 		)
 	}
 }
 
 const styles = StyleSheet.create({
 	tripContainer: {
-		height: 50,
-		width: '96%',
-		alignSelf: 'center',
+		flexDirection: 'column',
+		backgroundColor: white,
 		borderBottomColor: gray,
 		borderBottomWidth: StyleSheet.hairlineWidth,
+		marginBottom: 15
+	},
+	touchableContainer: {
+		width: '96%',
+		alignSelf: 'center',
 		alignItems: 'center',
-		padding: 5,
 		flexDirection: 'row',
-		justifyContent: 'space-between'
+		justifyContent: 'space-between',
+	},
+	informationContainer: {
+		flexDirection: 'column',
+		justifyContent: 'space-between',
+		paddingBottom: 10,
+		paddingTop: 10
+	},
+	progressBar: {
+		height: 3,
+		backgroundColor: '#26c940'
+ 	},
+	locationIcon: {
+		marginRight: 5,
+		marginTop: 5,
+		padding: 2,
+		borderColor:
+		primary,
+		borderRadius: 50,
+		borderWidth: 2
 	}
 })
