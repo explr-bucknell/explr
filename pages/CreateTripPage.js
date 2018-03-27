@@ -69,7 +69,6 @@ export default class CreateTripPage extends Component {
       return
     }
     let { adding, uid, locationId, locationName } = this.props.nav.state.params
-    console.log(this.props.nav.state.params)
     this.setState({ name: '' })
     if (!adding) {
       createTrip(uid, name, tags, selectedOption)

@@ -11,12 +11,12 @@ export default class UserTrips extends Component {
 
 	constructor (props) {
 		super(props)
+		this.state = {
+			newTripName: '',
+			trips: []
+		}
 	}
 
-	state = {
-		newTripName: '',
-		trips: []
-	}
 
 	componentDidMount () {
 		this.retrieveTrips()
@@ -54,32 +54,39 @@ export default class UserTrips extends Component {
 		let { adding, uid, locationId, locationName, closeModal } = this.props
 		return (
 			<View style={styles.tripsContainer}>
-				<TouchableOpacity
-					style={styles.createTripContainer}
-					onPress={() => {
-						adding && closeModal()
-						this.props.navigate('CreateTripPage', { adding, uid, locationId, locationName })
-					}}>
-					<View style={{width: '100%', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
-						<View style={{width: '80%'}}>
-						{!this.props.adding &&
-							<Text style={{fontSize: 16, fontWeight: 'bold', color: white}}>Create new trip</Text>
-						}
-						{this.props.adding &&
-							<Text style={{fontSize: 16, fontWeight: 'bold', color: white}}>
-								Create new trip containing {this.props.locationName}
-							</Text>
-						}
+				{this.props.user &&
+					<View style={{width: '100%'}}>
+						<View style={{width: '100%', justifyContent: 'center', alignItems: 'center', height: 50}}>
+							<Text style={{fontSize: 16}}>Create trips for yourself or share with friends!</Text>
 						</View>
-						<Ionicons
-							name='ios-add-circle-outline'
-							size={25}
-							style={{ color: white }}
-						/>
+						<TouchableOpacity
+							style={styles.createTripContainer}
+							onPress={() => {
+								adding && closeModal()
+								this.props.navigate('CreateTripPage', { adding, uid, locationId, locationName })
+							}}>
+							<View style={{width: '100%', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
+								<View style={{width: '80%'}}>
+								{!this.props.adding &&
+									<Text style={{fontSize: 16, fontWeight: 'bold', color: white}}>Create new trip</Text>
+								}
+								{this.props.adding &&
+									<Text style={{fontSize: 16, fontWeight: 'bold', color: white}}>
+										Create new trip containing {this.props.locationName}
+									</Text>
+								}
+								</View>
+								<Ionicons
+									name='ios-add-circle-outline'
+									size={25}
+									style={{ color: white }}
+								/>
+							</View>
+						</TouchableOpacity>
 					</View>
-				</TouchableOpacity>
+				}
 				{this.state.trips && this.state.trips.length > 0 &&
-					<View style={{width: '100%', paddingBottom: 3}}>
+					<View style={{width: '100%', paddingBottom: 3, marginTop: 15}}>
 						{this.state.trips.map(item =>
 							<TripContainer
 								key={item.tripId}
@@ -105,15 +112,13 @@ export default class UserTrips extends Component {
 const styles = StyleSheet.create({
 	tripsContainer: {
 		flex: 1,
-		backgroundColor: white,
+		backgroundColor: '#f4f4f4',
 		alignItems: 'center',
 		height: '100%'
 	},
 	createTripContainer: {
 		width: '100%',
 		backgroundColor: primary,
-		borderTopColor: white,
-		borderTopWidth: 1,
 		alignSelf: 'center',
 		alignItems: 'center',
 		padding: 10,

@@ -50,7 +50,7 @@ export default class TripMapPage extends Component {
   }
 
   componentWillMount () {
-    getTrip(this.props.nav.state.params.uid, this.props.nav.state.params.trip.tripId)
+    getTrip(this.props.nav.state.params.trip.tripId)
     .then((trip) =>
       {trip.locations && Object.keys(trip.locations).length > 0 &&
         this.normalizeLocations(trip.locations)

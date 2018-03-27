@@ -39,10 +39,12 @@ export default class extends Component {
   }
 
   handleTextChange (text) {
+    console.log(text)
 		if (!text) {
 			this.setState({ locations: [] })
 		} else {
 			getPOIAutocomplete(text).then((data) => {
+        console.log(data)
 				var locations = []
 				data.forEach((poi) => {
 					locations.push({
