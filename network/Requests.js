@@ -298,22 +298,21 @@ export async function optimizeTrip(trip, uid, tripID, tripName) {
     }
 
 
-    recreateTrip(uid, tripName, tripID);
-    addAllLocations(uid, tripID, tripName, resArray);
+    recreateTrip(tripID);
+    addAllLocations(tripID, tripName, resArray);
   })
 }
 
-export async function recreateTrip(uid, tripName, tripID) {
-  await firebase.database().ref(`users/main/${uid}/trips/${tripId}`).update({
-    name: tripName,
-    numLocs: 0,
-    creator: uid,
+
+
+export async function recreateTrip(tripID) {
+  await firebase.database().ref('trips/${tripId}').update({
     locations: {}
   })
 }
 
-export async function addAllLocations(uid, tripId, tripName, locationArray) {  
+export async function addAllLocations(tripId, tripName, locationArray) {  
   for (var i = 0; i < locationArray.length; i++) {
-    addLocationToTrip(uid, tripID, locationArray[i].locID, locationArray[i].name)
+    addLocationToTrip(tripID, locationArray[i].locID, locationArray[i].name)
   }
 }
