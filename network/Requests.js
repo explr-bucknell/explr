@@ -230,7 +230,6 @@ export async function uploadNewProfilePic(base64, uid) {
   })
 }
 
-//incomplete, only needs the get request for completion
 export async function calculateDistance(trip) {
   var urlStart = "";
   var urlEnd = "&destinations=";
@@ -246,23 +245,23 @@ export async function calculateDistance(trip) {
   var urlFinal = "https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&" + urlWaypoints + "&key=AIzaSyBbEBNs_oq5jkeq2rRkSd1mKBkVGX7RjGg";
   console.log(urlFinal);
 
-  //TODO
-  //googleRet = GET request with urlFinal
+  fetch(urlFinal).then(function(response) {
+    googleRet = response.json();
   
-  var arr = googleRet.rows[0].elements;
-  var distance = 0;
-  var parsed = "";
+    var arr = googleRet.rows[0].elements;
+    var distance = 0;
+    var parsed = "";
 
-  for (var i = 0; i < arr.length; i++) {
-    parsed = (arr[i].distance.text);
-    parsed = parseFloat(parsed.replace(",","").replace(" mi",""));
-    distance += parsed; 
-  }
-  
-  return distance;
+    for (var i = 0; i < arr.length; i++) {
+      parsed = (arr[i].distance.text);
+      parsed = parseFloat(parsed.replace(",","").replace(" mi",""));
+      distance += parsed; 
+    }
+    
+    return distance;
+  })
 }
   
-//incomplete, only needs the get request for completion
 export async function optimizeTrip(trip, uid, tripID, tripName) {
    var urlStart = "";
    var urlEnd = "&waypoints=";
@@ -280,26 +279,28 @@ export async function optimizeTrip(trip, uid, tripID, tripName) {
    var urlFinal = "https://maps.googleapis.com/maps/api/directions/json?" + urlWaypoints + "&key=AIzaSyBbEBNs_oq5jkeq2rRkSd1mKBkVGX7RjGg";
    console.log(urlFinal);
   
-  //TODO
-  //googleRet = GET request with urlFinal
+  fetch(urlFinal).then(function(response) {
+    googleRet = response.json();
 
-   var waypointArr = googleRet.routes[0].waypoint_order;
-   console.log(waypointArr[1]);
-   var dist = googleRet.routes[0].legs[0].distance.text;
-   var parsed = parseFloat(dist.replace(",","").replace(" mi",""));
-   console.log(parsed);
+    var waypointArr = googleRet.routes[0].waypoint_order;
+    console.log(waypointArr[1]);
+    var dist = googleRet.routes[0].legs[0].distance.text;
+    var parsed = parseFloat(dist.replace(",","").replace(" mi",""));
+    console.log(parsed);
 
-   var resArray = [];
-   for (var i = 0; i < trip.length; i++) {
+    var resArray = [];
+    for (var i = 0; i < trip.length; i++) {
      if (i != 0 && i != trip.length - 1) {
        resArray.push(trip[waypointArr[i-1]+1]);
      } else {
        resArray.push(trip[i]);    
      }
-   }
+    }
 
-   recreateTrip(uid, tripName, tripID);
-   addAllLocations(uid, tripID, tripName, resArray);
+
+    recreateTrip(uid, tripName, tripID);
+    addAllLocations(uid, tripID, tripName, resArray);
+  })
 }
 
 export async function recreateTrip(uid, tripName, tripID) {
