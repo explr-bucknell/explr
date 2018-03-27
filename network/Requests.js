@@ -307,6 +307,7 @@ export async function optimizeTrip(trip, uid, tripID, tripName) {
 
 export async function recreateTrip(tripID) {
   await firebase.database().ref('trips/${tripId}').update({
+    numLocs: 0,
     locations: {}
   })
 }
