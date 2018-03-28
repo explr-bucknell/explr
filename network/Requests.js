@@ -298,18 +298,19 @@ export async function optimizeTrip(trip, uid, tripID, tripName) {
     }
 
 
-    recreateTrip(tripID);
-    addAllLocations(tripID, tripName, resArray);
+    recreateTrip(tripID, tripName, resArray);
   })
 }
 
 
 
-export async function recreateTrip(tripID) {
+export async function recreateTrip(tripID, tripName, resArray) {
   await firebase.database().ref('trips/${tripId}').update({
     numLocs: 0,
     locations: {}
   })
+  
+  addAllLocations(tripID, tripName, resArray);
 }
 
 export async function addAllLocations(tripId, tripName, locationArray) {  
