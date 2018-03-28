@@ -59,6 +59,7 @@ export async function createTripWithLocation(uid, tripName, tripTags, permission
 
 //Add a new location to a trip
 export async function addLocationToTrip(tripId, locationId, locationName) {
+  console.log(tripId, locationId, locationName)
   var numLocations = 0;
   await firebase.database().ref(`trips/${tripId}/numLocs/`).transaction(function(numLocs) {
     numLocations = numLocs;
@@ -149,38 +150,6 @@ export async function getPOIAutocomplete (query) {
   return results
 }
 
-/*
-// This is the old version of autocomplete using Google Places API
-export async function getPOIAutocomplete (query) {
-  try {
-    var results = []
-    let poi = await fetch(
-      `https://maps.googleapis.com/maps/api/place/textsearch/json?query=${query}&key=${config.apiKey}`
-    )
-    let poiJson = await poi.json()
-    for (i in poiJson.results) {
-      var id = poiJson.results[i].place_id
-      //console.log("id", id)
-      var firebaseInstance = await fetch(
-        `https://senior-design-explr.firebaseio.com/pois.json?orderBy="id"&equalTo="${id}"`
-      )
-      var firebaseJson = await firebaseInstance.json()
-      //console.log(firebaseJson)
-      if (Object.keys(firebaseJson).length > 0) {
-        results.push({
-          name: poiJson.results[i].name,
-          placeId: poiJson.results[i].place_id
-        })
-      }
-    }
-    //console.log("results", results)
-    return results
-  } catch (error) {
-    console.error(error)
-  }
-}
-*/
-
 export async function makePhotoRequest (photoReference) {
   try {
     let photoUrl = await fetch(
@@ -243,78 +212,75 @@ export async function calculateDistance(trip) {
 
   var urlWaypoints = urlStart + urlEnd;
   var urlFinal = "https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&" + urlWaypoints + "&key=AIzaSyBbEBNs_oq5jkeq2rRkSd1mKBkVGX7RjGg";
-  console.log(urlFinal);
 
-  fetch(urlFinal).then(function(response) {
-    googleRet = response.json();
-  
-    var arr = googleRet.rows[0].elements;
-    var distance = 0;
-    var parsed = "";
-
-    for (var i = 0; i < arr.length; i++) {
-      parsed = (arr[i].distance.text);
-      parsed = parseFloat(parsed.replace(",","").replace(" mi",""));
-      distance += parsed; 
-    }
-    
-    return distance;
+  return fetch(urlFinal).then(function(response) {
+    var googleRet = response.json()
+    return googleRet.then((data) => {
+      var arr = data.rows[0].elements;
+      var distance = 0;
+      var parsed = "";
+      for (var i = 0; i < arr.length; i++) {
+        parsed = (arr[i].distance.text);
+        parsed = parseFloat(parsed.replace(",","").replace(" mi",""));
+        distance += parsed; 
+      }
+      return distance
+    })    
   })
 }
   
-export async function optimizeTrip(trip, uid, tripID, tripName) {
-   var urlStart = "";
-   var urlEnd = "&waypoints=";
-   for (var i = 0; i < trip.length; i++) {
-     if (i == 0) {
-       urlStart += "origin=place_id:" + trip[i].locId;
-     } else if (i == trip.length - 1) {
-       urlStart += "&destination=place_id:" + trip[i].locId;    
-     } else {
-       urlEnd += "place_id:" + trip[i].locId + "|"
-     }
-   }
+export async function optimizeTrip(trip, tripID, tripName) {
+  var urlStart = "";
+  var urlEnd = "&waypoints=";
+  for (var i = 0; i < trip.length; i++) {
+    if (i == 0) {
+      urlStart += "origin=place_id:" + trip[i].locId;
+    } else if (i == trip.length - 1) {
+      urlStart += "&destination=place_id:" + trip[i].locId;    
+    } else {
+      urlEnd += "place_id:" + trip[i].locId + "|"
+    }
+  }
 
-   var urlWaypoints = urlStart + urlEnd;
-   var urlFinal = "https://maps.googleapis.com/maps/api/directions/json?" + urlWaypoints + "&key=AIzaSyBbEBNs_oq5jkeq2rRkSd1mKBkVGX7RjGg";
-   console.log(urlFinal);
+  var urlWaypoints = urlStart + urlEnd;
+  var urlFinal = "https://maps.googleapis.com/maps/api/directions/json?" + urlWaypoints + "&key=AIzaSyBbEBNs_oq5jkeq2rRkSd1mKBkVGX7RjGg";
   
   fetch(urlFinal).then(function(response) {
-    googleRet = response.json();
-
-    var waypointArr = googleRet.routes[0].waypoint_order;
-    console.log(waypointArr[1]);
-    var dist = googleRet.routes[0].legs[0].distance.text;
+    googleRet = response.json()
+    googleRet.then((data) => {
+    var waypointArr = data.routes[0].waypoint_order;
+    var dist = data.routes[0].legs[0].distance.text;
     var parsed = parseFloat(dist.replace(",","").replace(" mi",""));
-    console.log(parsed);
 
     var resArray = [];
     for (var i = 0; i < trip.length; i++) {
-     if (i != 0 && i != trip.length - 1) {
-       resArray.push(trip[waypointArr[i-1]+1]);
-     } else {
-       resArray.push(trip[i]);    
-     }
+      if (i != 0 && i != trip.length - 1) {
+      resArray.push(trip[waypointArr[i-1]+1]);
+      } else {
+      resArray.push(trip[i]);    
+      }
     }
-
-
     recreateTrip(tripID, tripName, resArray);
+    })
   })
 }
 
 
 
-export async function recreateTrip(tripID, tripName, resArray) {
-  await firebase.database().ref('trips/${tripId}').update({
+
+
+export async function recreateTrip(tripId, tripName, resArray) {
+  console.log(tripName)
+  await firebase.database().ref(`trips/${tripId}`).update({
     numLocs: 0,
     locations: {}
   })
-  
-  addAllLocations(tripID, tripName, resArray);
+  console.log('done')
+  addAllLocations(tripId, tripName, resArray);
 }
 
 export async function addAllLocations(tripId, tripName, locationArray) {  
   for (var i = 0; i < locationArray.length; i++) {
-    addLocationToTrip(tripID, locationArray[i].locID, locationArray[i].name)
+    addLocationToTrip(tripId, locationArray[i].locId, locationArray[i].name)
   }
 }
