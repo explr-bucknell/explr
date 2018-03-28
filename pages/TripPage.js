@@ -3,7 +3,7 @@ import { StyleSheet, Text, View, ScrollView, TouchableOpacity, TextInput, Button
 import Modal from 'react-native-modal'
 import { white, primary, transparentWhite, gray } from '../utils/colors'
 import { FontAwesome, Ionicons } from '@expo/vector-icons'
-import { getTrip, getPOIAutocomplete, addLocationToTrip } from '../network/Requests'
+import { getTrip, getPOIAutocomplete, addLocationToTrip, calculateDistance, recreateTrip, optimizeTrip } from '../network/Requests'
 
 const { StatusBarManager } = NativeModules
 const STATUSBAR_HEIGHT = Platform.OS === 'ios' ? 20 : StatusBarManager.HEIGHT
@@ -19,18 +19,24 @@ export default class extends Component {
       addingLocation: false,
       locations: [],
       uid: '',
-      editing: false
+      editing: false,
+      distance: 0
     }
   }
 
   componentWillMount () {
     let locs = this.props.nav.state.params.trip.locations
     var tripLocations = locs ? Object.keys(locs).map(
-      function(locId) {
+      function(locId, index) {
         locs[locId].locId = locId
+        locs[locId].index = index
         return locs[locId]
       }
     ) : []
+    if (tripLocations.length > 0) {
+      calculateDistance(tripLocations).then((distance) => {this.setState({distance})})
+    }
+    
     this.setState({
       trip: this.props.nav.state.params.trip,
       uid: this.props.nav.state.params.uid,
@@ -39,12 +45,10 @@ export default class extends Component {
   }
 
   handleTextChange (text) {
-    console.log(text)
 		if (!text) {
 			this.setState({ locations: [] })
 		} else {
 			getPOIAutocomplete(text).then((data) => {
-        console.log(data)
 				var locations = []
 				data.forEach((poi) => {
 					locations.push({
@@ -71,7 +75,14 @@ export default class extends Component {
           return trip.locations[locId] }
       ) : []
       trip.tripId = this.state.trip.tripId
-      this.setState({ trip, addingLocation: false, tripLocations })
+      calculateDistance(tripLocations).then((distance) => {
+        this.setState({
+          distance,
+          tripLocations,
+          trip,
+          addingLocation: false
+        })
+      })
     })
   }
 
@@ -105,7 +116,10 @@ export default class extends Component {
       for (i = 0; i < updatedLocations.length; i++) {
         newLocations[i] = Object.assign({}, updatedLocations[i], {index: i})
       }
-      this.setState({ tripLocations: newLocations })
+      console.log(newLocations)
+      calculateDistance(newLocations).then((distance) => {
+        this.setState({distance, tripLocations: newLocations})
+      })
     }
   }
 
@@ -121,26 +135,35 @@ export default class extends Component {
       for (i = 0; i < updatedLocations.length; i++) {
         newLocations[i] = Object.assign({}, updatedLocations[i], {index: i})
       }
-      this.setState({ tripLocations: newLocations })
+      calculateDistance(newLocations).then((distance) => {
+        this.setState({distance, tripLocations: newLocations})
+      })
     }
   }
 
   editOrSubmit () {
+    let { trip } = this.state
     if (!this.state.editing) {
       console.log('editing')
     } else {
-      console.log('submitting') // call to update db here
+      recreateTrip(trip.tripId, trip.name, this.state.tripLocations)
     }
     this.setState({
       oldTripLocations: this.state.tripLocations,
       editing: !this.state.editing
     })
   }
+  
+  optimizeTrip () {
+    let { trip } = this.state
+    console.log('blah')
+    optimizeTrip(this.state.tripLocations, trip.tripId, trip.name)
+  }
 
   render () {
     let {trip, tripLocations} = this.state
     return (
-      <View style={{backgroundColor: white, height: '100%'}}>
+      <View style={{backgroundColor: white, height: '100%', position: 'relative'}}>
         <Modal
           isVisible={this.state.addingLocation}
           backdropColor={'black'}
@@ -218,11 +241,12 @@ export default class extends Component {
             tripLocations.map((location) =>
             <View key={location.index} style={styles.tripLocation}>
               {this.state.editing &&
-                <TouchableOpacity style={{marginRight: 10}} onPress={() => this.deleteLocation(location.index)}>
+                <TouchableOpacity
+                  onPress={() => this.deleteLocation(location.index)}>
                   <Text style={{color: 'red'}}>Delete</Text>
                 </TouchableOpacity>
               }
-              <View style={{justifyContent: 'center', alignItems: 'flex-start'}}>
+              <View style={[this.state.editing && {width: '60%'}, styles.locationNameContainer]}>
                 <Text style={{fontSize: 15}}>
                   {location.name.split(',')[0]}
                 </Text>
@@ -256,6 +280,12 @@ export default class extends Component {
           }
           </ScrollView>
         </View>
+        <View style={styles.distanceContainer}>
+          <Text style={{color: white, fontSize: 16}}>Distance: {this.state.distance} miles</Text>
+          <TouchableOpacity style={styles.optimizeButton} onPress={() => this.optimizeTrip()}>
+            <Text style={{color: white}}>Optimize Route</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     )
   }
@@ -272,18 +302,19 @@ const styles = StyleSheet.create({
   tripLocationsContainer: {
     borderTopWidth: 1,
     borderColor: primary,
-    height: '100%'
+    height: '100%',
+    marginBottom: 50
   },
   tripLocation: {
     width: '96%',
     alignSelf: 'center',
     borderBottomColor: gray,
     borderBottomWidth: StyleSheet.hairlineWidth,
-    padding: 15,
-    paddingLeft: 10,
+    paddingTop: 15,
+    paddingBottom: 15,
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   moveTrip: {
     padding: 5,
@@ -334,5 +365,30 @@ const styles = StyleSheet.create({
     color: white,
     fontSize: 15,
     paddingLeft: 10
+  },
+  locationNameContainer: {
+    justifyContent: 'center',
+    alignItems: 'flex-start',
+  },
+  distanceContainer: {
+    height: 50,
+    flexDirection: 'row',
+    backgroundColor: primary,
+    position: 'absolute',
+    bottom: 0,
+    width: '100%',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingLeft: 10
+  },
+  optimizeButton: {
+    backgroundColor: primary,
+    borderRadius: 5,
+    borderColor: 'white',
+    borderWidth: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 10,
+    marginRight: 10
   }
 })

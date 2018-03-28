@@ -42,7 +42,6 @@ export default class ProfilePage extends React.Component {
   		uid: this.props.uid ? this.props.uid : this.props.nav.state.params.uid,
   		nav: this.props.navigate ? this.props.navigate : this.props.nav.navigate
   	})
-    console.log(this.props)
   }
 
   componentDidMount() {
