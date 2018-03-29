@@ -200,6 +200,8 @@ export async function uploadNewProfilePic(base64, uid) {
 }
 
 export async function calculateDistance(trip) {
+  console.log("calculateDistance");
+  console.log(trip);
   var urlStart = "";
   var urlEnd = "&waypoints=";
   for (var i = 0; i < trip.length; i++) {
@@ -234,6 +236,10 @@ export async function calculateDistance(trip) {
 }
   
 export async function optimizeTrip(trip, tripID, tripName) {
+  console.log("optimizing");
+  console.log(trip);
+  console.log(tripID);
+  console.log(tripName);
   var urlStart = "";
   var urlEnd = "&waypoints=optimize:true|";
   for (var i = 0; i < trip.length; i++) {
@@ -248,6 +254,7 @@ export async function optimizeTrip(trip, tripID, tripName) {
 
   var urlWaypoints = urlStart + urlEnd;
   var urlFinal = "https://maps.googleapis.com/maps/api/directions/json?" + urlWaypoints + "&key=AIzaSyBbEBNs_oq5jkeq2rRkSd1mKBkVGX7RjGg";
+  console.log(urlFinal);
   
   fetch(urlFinal).then(function(response) {
     googleRet = response.json()
@@ -270,17 +277,30 @@ export async function optimizeTrip(trip, tripID, tripName) {
 }
 
 export async function recreateTrip(tripId, tripName, resArray) {
-  console.log(tripName)
-  await firebase.database().ref(`trips/${tripId}`).update({
+  await resetTrip(tripId, tripName, resArray);
+
+  var numLocations = -1;
+  await firebase.database().ref(`trips/${tripId}/numLocs/`).transaction(function(numLocs) {
+    numLocations = numLocs;
+  });
+
+  console.log(numLocations)
+  console.log('done')
+  await addAllLocations(tripId, tripName, resArray);
+}
+
+export async function resetTrip(tripId, tripName, resArray) {
+  await firebase.database().ref('trips/' + tripId).update({
     numLocs: 0,
     locations: {}
   })
-  console.log('done')
-  addAllLocations(tripId, tripName, resArray);
+  return;
 }
 
-export async function addAllLocations(tripId, tripName, locationArray) {  
+export async function addAllLocations(tripId, tripName, locationArray) {
   for (var i = 0; i < locationArray.length; i++) {
-    addLocationToTrip(tripId, locationArray[i].locId, locationArray[i].name)
+    await addLocationToTrip(tripId, locationArray[i].locId, locationArray[i].name)
   }
+  return;
 }
+
