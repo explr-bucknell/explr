@@ -201,29 +201,33 @@ export async function uploadNewProfilePic(base64, uid) {
 
 export async function calculateDistance(trip) {
   var urlStart = "";
-  var urlEnd = "&destinations=";
+  var urlEnd = "&waypoints=";
   for (var i = 0; i < trip.length; i++) {
     if (i == 0) {
-      urlStart += "origins=place_id:" + trip[i].locId;
+      urlStart += "origin=place_id:" + trip[i].locId;
+    } else if (i == trip.length - 1) {
+      urlStart += "&destination=place_id:" + trip[i].locId;    
     } else {
       urlEnd += "place_id:" + trip[i].locId + "|"
     }
   }
 
   var urlWaypoints = urlStart + urlEnd;
-  var urlFinal = "https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&" + urlWaypoints + "&key=AIzaSyBbEBNs_oq5jkeq2rRkSd1mKBkVGX7RjGg";
+  var urlFinal = "https://maps.googleapis.com/maps/api/directions/json?" + urlWaypoints + "&key=AIzaSyBbEBNs_oq5jkeq2rRkSd1mKBkVGX7RjGg";
+  console.log(urlFinal);
 
   return fetch(urlFinal).then(function(response) {
     var googleRet = response.json()
     return googleRet.then((data) => {
-      var arr = data.rows[0].elements;
       var distance = 0;
       var parsed = "";
-      for (var i = 0; i < arr.length; i++) {
-        parsed = (arr[i].distance.text);
+      for (var i = 0; i < (trip.length - 1); i++) {
+        parsed = (data.routes[0].legs[i].distance.text);
+        console.log(parsed);
         parsed = parseFloat(parsed.replace(",","").replace(" mi",""));
         distance += parsed; 
       }
+      console.log(distance);
       return distance
     })    
   })
@@ -231,7 +235,7 @@ export async function calculateDistance(trip) {
   
 export async function optimizeTrip(trip, tripID, tripName) {
   var urlStart = "";
-  var urlEnd = "&waypoints=";
+  var urlEnd = "&waypoints=optimize:true|";
   for (var i = 0; i < trip.length; i++) {
     if (i == 0) {
       urlStart += "origin=place_id:" + trip[i].locId;
@@ -264,10 +268,6 @@ export async function optimizeTrip(trip, tripID, tripName) {
     })
   })
 }
-
-
-
-
 
 export async function recreateTrip(tripId, tripName, resArray) {
   console.log(tripName)
