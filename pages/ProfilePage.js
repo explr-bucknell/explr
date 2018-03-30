@@ -203,7 +203,7 @@ export default class ProfilePage extends React.Component {
       			<Animated.View
           		style={{transform: [{translateY: this.tabY}], zIndex: 1, width: "100%", backgroundColor: white, borderBottomWidth: 2, borderColor: white}}>
           		<ScrollableTab {...props}
-          			style={{borderBottomWidth: 0, height: 50}}
+          			style={{borderBottomWidth: 0, height: 50, shadowOffset: { width: 0, height: 4 }, shadowColor: 'rgba(0,0,0,0.2)', shadowOpacity: 0.5}}
 								renderTab={(name, page, active, onPress, onLayout) => (
 								<TouchableOpacity
 									key={page}

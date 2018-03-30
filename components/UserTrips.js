@@ -112,7 +112,7 @@ export default class UserTrips extends Component {
 const styles = StyleSheet.create({
 	tripsContainer: {
 		flex: 1,
-		backgroundColor: '#f4f4f4',
+		backgroundColor: white,
 		alignItems: 'center',
 		height: '100%'
 	},

@@ -108,9 +108,13 @@ const styles = StyleSheet.create({
 	tripContainer: {
 		flexDirection: 'column',
 		backgroundColor: white,
-		borderBottomColor: gray,
-		borderBottomWidth: StyleSheet.hairlineWidth,
-		marginBottom: 15
+		borderRadius: 5,
+		marginLeft: 10,
+		marginRight: 10,
+		marginBottom: 15,
+		shadowOffset: { width: 1, height: 2 },
+		shadowColor: 'rgba(0,0,0,0.2)',
+		shadowOpacity: 0.5
 	},
 	touchableContainer: {
 		width: '96%',
@@ -133,8 +137,7 @@ const styles = StyleSheet.create({
 		marginRight: 5,
 		marginTop: 5,
 		padding: 2,
-		borderColor:
-		primary,
+		borderColor: primary,
 		borderRadius: 50,
 		borderWidth: 2
 	}

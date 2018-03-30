@@ -84,13 +84,16 @@ export default class ContentGrid extends Component {
 			<View>
 				<View style={styles.contentGrid}>
 					{this.state.names ? (this.state.names.map((name, i) => 
-						<View key={i} style={styles.photoWrap}>
-							<Image style={styles.photo} source={{ uri: this.state.images[i] }}>
-								<Text style={styles.title}>{name}</Text>
-								<TouchableOpacity style={styles.iconWrapper} onPress={() => {this.state.liked[i] ? this.removeLiked(i) : this.addLiked(i)}}>
-			            <FontAwesome name={this.state.liked[i] ? "heart" : 'heart-o'} style={styles.icon}/>
-			          </TouchableOpacity>
-							</Image>
+						<View key={i} style={ i%2 ? styles.photoWrapRight : styles.photoWrapLeft }>
+							<Image style={styles.photo} source={{ uri: this.state.images[i] }} />
+              <View style={styles.row}>
+                <TouchableOpacity style={styles.titleWrap}>
+                  <Text style={styles.title}>{name}</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.iconWrapper} onPress={() => {this.state.liked[i] ? this.removeLiked(i) : this.addLiked(i)}}>
+                  <FontAwesome name={this.state.liked[i] ? "heart" : 'heart-o'} style={styles.icon}/>
+                </TouchableOpacity>
+              </View>
 						</View>
 					)) : (<Text style={styles.noText}>No saved locations yet</Text>)}
 				</View>
@@ -114,34 +117,56 @@ const styles = StyleSheet.create({
 		fontSize: 16,
 		fontWeight: 'bold',
 	},
-	photoWrap: {
-		margin: 2,
-		height: 120,
-		width: (Dimensions.get('window').width / 2) - 4
+	photoWrapLeft: {
+		margin: 5,
+    marginRight: 3,
+    padding: 3,
+		width: (Dimensions.get('window').width / 2) - 8,
+    borderRadius: 5,
+    shadowOffset: { width: 1, height: 2 },
+    shadowColor: 'rgba(0,0,0,0.2)',
+    shadowOpacity: 0.5
 	},
+  photoWrapRight: {
+    margin: 5,
+    marginLeft: 3,
+    padding: 3,
+    width: (Dimensions.get('window').width / 2) - 8,
+    borderRadius: 5,
+    shadowOffset: { width: 1, height: 2 },
+    shadowColor: 'rgba(0,0,0,0.2)',
+    shadowOpacity: 0.5
+  },
 	photo: {
 		flex: 1,
 		width: null,
-		alignSelf: 'stretch',
-		justifyContent: 'center',
-		alignItems: 'center'
+    height: 120,
+    borderRadius: 5
 	},
+  row: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    height: 50,
+    overflow: 'hidden'
+  },
+  titleWrap: {
+    left: 5,
+    flex: 4
+  },
 	title: {
-    margin: 24,
     fontSize: 15,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    color: transparentWhite,
+    color: black,
     backgroundColor: 'transparent'
 	},
 	icon: {
     fontSize: 20,
-    color: liked
+    color: liked,
+    right: 5
   },
   iconWrapper: {
   	backgroundColor: 'transparent',
-  	position: 'absolute',
-  	right: 5,
-  	bottom: 5
+    flex: 1,
+    alignItems: 'flex-end'
   }
 });
