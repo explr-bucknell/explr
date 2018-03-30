@@ -54,6 +54,7 @@ export default class MapPage extends Component {
 
   componentDidMount () {
     // Center map at chosen poi if exists
+    console.log(this.props)
     if (this.props.state.params && this.props.state.params.id) {
       let place_id = this.props.state.params.id
       this.centerChosenPOI = true

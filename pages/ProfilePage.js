@@ -155,7 +155,7 @@ export default class ProfilePage extends React.Component {
   }
 
   settings = () => {
-    this.state.nav('SettingsPage', {loginNav: this.props.loginNav, navigate: this.props.navigate})
+    this.state.nav('SettingsPage', {loginNav: this.props.loginNav, uid: this.state.uid})
   }
 
   render() {

@@ -1,8 +1,10 @@
 import React, { Component } from 'react'
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Image } from 'react-native'
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Image, Dimensions } from 'react-native'
 import { Ionicons } from '@expo/vector-icons'
 import { primary, white, transparentWhite, gray } from '../utils/colors'
 import { getLocation } from '../network/Requests'
+
+var Scroll_Width = Dimensions.get('window').width * 0.85
 
 export default class TripContainer extends Component {
 
@@ -42,11 +44,7 @@ export default class TripContainer extends Component {
 		const { tripIcons } = this.state
 		return (
 			<View style={styles.tripContainer}>
-				<TouchableOpacity
-					onPress={
-						this.props.adding ? () => this.props.selectLocation() :
-						() => this.props.navigate('TripPage', {trip: trip, uid: this.props.uid})
-					}
+				<View
 					style={styles.touchableContainer}>
 					<View style={styles.informationContainer}>
 						<Text style={{fontSize: 18, color: 'black'}}>
@@ -56,7 +54,7 @@ export default class TripContainer extends Component {
 							<Text style={{fontSize: 15}}>Who can see: {trip.permission}</Text>
 						</View>
 						{tripIcons.length > 0 &&
-							<View style={{flexDirection: 'row'}}>
+							<ScrollView horizontal={true} style={{flexDirection: 'row', width: Scroll_Width}} showsHorizontalScrollIndicator={false}>
 								{tripIcons.map((url, index) =>
 									<View key={index} style={styles.locationIcon}>
 										<Image
@@ -66,24 +64,36 @@ export default class TripContainer extends Component {
 										/>
 									</View>
 								)}
-							</View>
+							</ScrollView>
 						}
 					</View>
 					{!this.props.adding &&
-						<Ionicons
-							name='ios-arrow-dropright'
-							size={25}
-							style={{ color: primary }}
-						/>
+						<TouchableOpacity 
+							onPress={
+								this.props.adding ? () => this.props.selectLocation() :
+								() => this.props.navigate('TripPage', {trip: trip, uid: this.props.uid})
+							}>
+							<Ionicons
+								name='ios-arrow-dropright'
+								size={25}
+								style={{ color: primary }}
+							/>
+						</TouchableOpacity>
 					}
 					{this.props.adding &&
-						<Ionicons
-							name='ios-add-circle-outline'
-							size={25}
-							style={{ color: primary }}
-						/>
+						<TouchableOpacity 
+							onPress={
+								this.props.adding ? () => this.props.selectLocation() :
+								() => this.props.navigate('TripPage', {trip: trip, uid: this.props.uid})
+							}>
+							<Ionicons
+								name='ios-add-circle-outline'
+								size={25}
+								style={{ color: primary }}
+							/>
+						</TouchableOpacity>
 					}
-				</TouchableOpacity>
+				</View>
 				{trip.numLocs > 0 &&
 					<View style={{flexDirection: 'row', justifyContent: 'flex-start'}}>
 						<View style={[{width: `${(this.state.completed/trip.numLocs) * 100}%`}, styles.progressBar]}/>

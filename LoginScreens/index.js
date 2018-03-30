@@ -144,41 +144,42 @@ const LoginNavigator = StackNavigator({
 	Login: {
 		screen: LoginScreen,
 		navigationOptions: {
-    		headerStyle: {
-			backgroundColor: white,
-			borderBottomWidth: 0,
-		},
-		headerTintColor: primary,
+    	headerStyle: {
+				backgroundColor: white,
+				borderBottomWidth: 0,
+			},
+			headerTintColor: primary,
   	},
 	},
 	ForgotPwd: {
 		screen: ForgotScreen,
 		navigationOptions: {
 			headerTitle: "Forgot Password",
-		headerStyle: {
-			backgroundColor: primary,
-			borderBottomWidth: 0,
-		},
-		headerTintColor: white,
-		headerBackTitle: null,
+			headerStyle: {
+				backgroundColor: primary,
+				borderBottomWidth: 0,
+			},
+			headerTintColor: white,
+			headerBackTitle: null,
 		}
 	},
 	ResetPwd: {
 		screen: ResetScreen,
 		navigationOptions: {
 			headerTitle: "Reset Password",
-		headerStyle: {
-			backgroundColor: primary,
-			borderBottomWidth: 0,
-		},
-		headerTintColor: white,
-		headerBackTitle: null,
+			headerStyle: {
+				backgroundColor: primary,
+				borderBottomWidth: 0,
+			},
+			headerTintColor: white,
+			headerBackTitle: null,
 		}
 	},
 	MainPage: {
 		screen: MainPage,
 		navigationOptions: {
-    		header: null,
+    	header: null,
+    	gesturesEnabled: false,
   	},
 	}
 }, );
