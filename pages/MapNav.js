@@ -52,14 +52,14 @@ const MapNav = TabNavigator({
 		screen: props => TripsScreen(props),
 		navigationOptions: navOpts('Trips', 'list')
 	},
-	ProfilePage: {
-		screen: props => ProfileScreen(props),
-    navigationOptions: navOpts('Profile', 'user')
-	},
   NotificationPage: {
     screen: props => NotificationScreen(props),
     navigationOptions: navOpts('Notifications', 'bell')
   },
+	ProfilePage: {
+		screen: props => ProfileScreen(props),
+    navigationOptions: navOpts('Profile', 'user')
+	},
 }
 , {
 	animationEnabled: true,
