@@ -1,5 +1,5 @@
 import React from 'react'
-import { Platform } from 'react-native'
+import { Platform, ScrollView } from 'react-native'
 import { TabNavigator, navigationOptions } from 'react-navigation'
 import Dimensions from 'Dimensions'
 import MapPage from './MapPage'
@@ -17,7 +17,9 @@ const MapScreen = (props) => (
 )
 
 const TripsScreen = (props) => (
-	<UserTrips {...props.screenProps} user/>
+  <ScrollView style={{ flex: 1, backgroundColor: white }}>
+	 <UserTrips {...props.screenProps} user/>
+  </ScrollView>
 )
 
 const ProfileScreen = (props) => (
