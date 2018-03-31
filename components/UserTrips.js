@@ -95,6 +95,7 @@ export default class UserTrips extends Component {
 								uid={this.props.uid}
 								adding={this.props.adding}
 								selectLocation={() => this.props.addLocation(item)}
+								user={this.props.user}
 							/>
 						)}
 					</View>

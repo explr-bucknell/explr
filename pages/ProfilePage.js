@@ -266,14 +266,14 @@ const styles = StyleSheet.create({
 		height: 90,
 		borderRadius: 50,
 		borderColor: gray,
-		borderWidth: 3,
+		borderWidth: 2,
 		marginBottom: 40
 	},
 	profilePic: {
 		flex: 1,
-		width: 83,
-		height: 83,
-		borderRadius: 41.5,
+		width: 86,
+		height: 86,
+		borderRadius: 43,
 		borderWidth: 0
 	},
 	textContainer: {

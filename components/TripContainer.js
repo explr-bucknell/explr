@@ -71,7 +71,7 @@ export default class TripContainer extends Component {
 						<TouchableOpacity 
 							onPress={
 								this.props.adding ? () => this.props.selectLocation() :
-								() => this.props.navigate('TripPage', {trip: trip, uid: this.props.uid})
+								() => this.props.navigate(this.props.user ? 'TripPage' : 'TripPage', {trip: trip, uid: this.props.uid})
 							}>
 							<Ionicons
 								name='ios-arrow-dropright'
@@ -131,7 +131,8 @@ const styles = StyleSheet.create({
 	},
 	progressBar: {
 		height: 3,
-		backgroundColor: '#26c940'
+		backgroundColor: '#26c940',
+		borderBottomLeftRadius: 5,
  	},
 	locationIcon: {
 		marginRight: 5,
