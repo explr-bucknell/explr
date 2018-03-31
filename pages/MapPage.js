@@ -43,6 +43,7 @@ export default class MapPage extends Component {
         longitudeDelta: 0.0421,
       },
       locations: {},
+      types: {},
       customPinSearchCoords: {},
       editingCustomPin: false,
       customPinSearchResults: [],
@@ -129,6 +130,22 @@ export default class MapPage extends Component {
           }
         });
         self.setState({ locations })
+
+        var POIs = {};
+        for (var key in locations) {
+          var retTypes = locations[key].type;
+          if (POIs.hasOwnProperty(retTypes) == false) {
+            POIs[retTypes] = 1;
+          } else {
+            POIs[retTypes] += 1;;
+          }
+        }
+        var keysSorted = Object.keys(POIs).sort(function(a,b){return POIs[a]-POIs[b]})
+        var types = {};
+        for (var i = 0; i < keysSorted.length; i++) {
+          types[keysSorted[i]] = POIs[keysSorted[i]];
+        }
+        self.setState({ types });
       } else {
       }
     })
