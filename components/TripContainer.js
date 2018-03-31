@@ -40,7 +40,7 @@ export default class TripContainer extends Component {
 	}
 
 	render () {
-		let trip = this.props.trip
+		let { trip, currUser } = this.props
 		const { tripIcons } = this.state
 		return (
 			<View style={styles.tripContainer}>
@@ -71,7 +71,7 @@ export default class TripContainer extends Component {
 						<TouchableOpacity 
 							onPress={
 								this.props.adding ? () => this.props.selectLocation() :
-								() => this.props.navigate(this.props.user ? 'TripPage' : 'TripPage', {trip: trip, uid: this.props.uid})
+								() => this.props.navigate(this.props.user ? 'TripPage' : 'TripProfilePage', { trip: trip, currUser: currUser })
 							}>
 							<Ionicons
 								name='ios-arrow-dropright'
@@ -84,7 +84,7 @@ export default class TripContainer extends Component {
 						<TouchableOpacity 
 							onPress={
 								this.props.adding ? () => this.props.selectLocation() :
-								() => this.props.navigate('TripPage', {trip: trip, uid: this.props.uid})
+								() => this.props.navigate('TripPage', { trip: trip, currUser: currUser })
 							}>
 							<Ionicons
 								name='ios-add-circle-outline'

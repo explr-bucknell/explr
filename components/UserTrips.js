@@ -17,7 +17,6 @@ export default class UserTrips extends Component {
 		}
 	}
 
-
 	componentDidMount () {
 		this.retrieveTrips()
 	}
@@ -92,10 +91,10 @@ export default class UserTrips extends Component {
 								key={item.tripId}
 								trip={item}
 								navigate={this.props.navigate}
-								uid={this.props.uid}
 								adding={this.props.adding}
 								selectLocation={() => this.props.addLocation(item)}
 								user={this.props.user}
+								currUser={this.props.currUser}
 							/>
 						)}
 					</View>

@@ -8,6 +8,7 @@ import MapNav from './pages/MapNav'
 import SearchPage from './pages/SearchPage'
 import ProfilePage from './pages/ProfilePage'
 import LocationProfile from './pages/LocationProfile'
+import TripProfilePage from './pages/TripProfilePage'
 import TripPage from './pages/TripPage'
 import CreateTripPage from './pages/CreateTripPage'
 import TripMapPage from './pages/TripMapPage'
@@ -57,6 +58,33 @@ const LocationPageOpts = ({ navigation }) => ({
 				/>
 		</TouchableOpacity>,
 	headerTintColor: white,
+})
+
+const TripProfilePageOpts = ({ navigation }) => ({
+	headerTitle: 'Trip',
+	headerStyle: {
+		backgroundColor: primary,
+		borderBottomWidth: 0,
+	},
+	headerTintColor: white,
+	headerLeft:
+		<TouchableOpacity onPress={() => navigation.goBack(null)} style={{ paddingLeft: 10, paddingRight: 10 }}>
+			<FontAwesome
+		      name='angle-left'
+		      size={35}
+		      style={{ color: white }}
+		    />
+		</TouchableOpacity>,
+	headerRight:
+		<TouchableOpacity onPress={
+			() => navigation.navigate('TripMapPage',
+			{trip: navigation.state.params.trip, uid: navigation.state.params.uid})} style={{ marginRight: 10 }}>
+			<FontAwesome
+					name='map'
+					size={25}
+					style={{ color: white }}
+				/>
+		</TouchableOpacity>
 })
 
 const TripPageOpts = ({ navigation }) => ({
@@ -255,6 +283,10 @@ const LocationScreen = ({ navigation }) => (
 	<LocationProfile nav={navigation}/>
 )
 
+const TripProfileScreen = ({ navigation }) => (
+	<TripProfilePage nav={navigation} />
+)
+
 const TripScreen = ({ navigation }) => (
 	<TripPage nav={navigation} />
 )
@@ -295,6 +327,10 @@ const MainNavigator = StackNavigator({
 	FollowingPage: {
 		screen: FollowingScreen,
 		navigationOptions: FollowingNavOpts
+	},
+	TripProfilePage: {
+		screen: TripProfileScreen,
+		navigationOptions: TripProfilePageOpts
 	},
 	TripPage: {
 		screen: TripScreen,
