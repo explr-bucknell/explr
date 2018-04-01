@@ -44,60 +44,64 @@ export default class TripContainer extends Component {
 		const { tripIcons } = this.state
 		return (
 			<View style={styles.tripContainer}>
-				<View
-					style={styles.touchableContainer}>
-					<View style={styles.informationContainer}>
-						<Text style={{fontSize: 18, color: 'black'}}>
-							{trip.name} ({this.state.completed}/{trip.numLocs} completed)
-						</Text>
-						<View style={{marginTop: 10}}>
-							<Text style={{fontSize: 15}}>Who can see: {trip.permission}</Text>
+				<View style={{flexDirection: 'column'}}>
+					<View
+						style={styles.touchableContainer}>
+						<View style={styles.informationContainer}>
+							<Text style={{fontSize: 18, color: 'black'}}>
+								{trip.name} ({this.state.completed}/{trip.numLocs} completed)
+							</Text>
+							<View style={{marginTop: 10}}>
+								<Text style={{fontSize: 15}}>Who can see: {trip.permission}</Text>
+							</View>
+							{tripIcons.length > 0 &&
+								<ScrollView horizontal={true} style={{flexDirection: 'row', width: Scroll_Width}} showsHorizontalScrollIndicator={false}>
+									{tripIcons.map((url, index) =>
+										<View key={index} style={styles.locationIcon}>
+											<Image
+												source={{uri: url}}
+												style={{height: 50, width: 50, borderRadius: 25}}
+												key={index}
+											/>
+										</View>
+									)}
+								</ScrollView>
+							}
 						</View>
-						{tripIcons.length > 0 &&
-							<ScrollView horizontal={true} style={{flexDirection: 'row', width: Scroll_Width}} showsHorizontalScrollIndicator={false}>
-								{tripIcons.map((url, index) =>
-									<View key={index} style={styles.locationIcon}>
-										<Image
-											source={{uri: url}}
-											style={{height: 50, width: 50, borderRadius: 25}}
-											key={index}
-										/>
-									</View>
-								)}
-							</ScrollView>
-						}
 					</View>
-					{!this.props.adding &&
-						<TouchableOpacity 
-							onPress={
-								this.props.adding ? () => this.props.selectLocation() :
-								() => this.props.navigate(this.props.user ? 'TripPage' : 'TripProfilePage', { trip: trip, currUser: currUser })
-							}>
-							<Ionicons
-								name='ios-arrow-dropright'
-								size={25}
-								style={{ color: primary }}
-							/>
-						</TouchableOpacity>
-					}
-					{this.props.adding &&
-						<TouchableOpacity 
-							onPress={
-								this.props.adding ? () => this.props.selectLocation() :
-								() => this.props.navigate('TripPage', { trip: trip, currUser: currUser })
-							}>
-							<Ionicons
-								name='ios-add-circle-outline'
-								size={25}
-								style={{ color: primary }}
-							/>
-						</TouchableOpacity>
+					{trip.numLocs > 0 &&
+						<View style={{flexDirection: 'row', justifyContent: 'flex-start', borderBottomRightRadius: 5, marginRight: 30}}>
+							<View style={[{width: `${(this.state.completed/trip.numLocs) * 100}%`}, styles.progressBar]}/>
+						</View>
 					}
 				</View>
-				{trip.numLocs > 0 &&
-					<View style={{flexDirection: 'row', justifyContent: 'flex-start'}}>
-						<View style={[{width: `${(this.state.completed/trip.numLocs) * 100}%`}, styles.progressBar]}/>
-					</View>
+				{!this.props.adding &&
+					<TouchableOpacity
+						onPress={
+							this.props.adding ? () => this.props.selectLocation() :
+							() => this.props.navigate(this.props.user ? 'TripPage' : 'TripProfilePage', { trip: trip, currUser: currUser })
+						}
+						style={styles.selectButtonContainer}
+					>
+						<Ionicons
+							name='ios-arrow-dropright'
+							size={25}
+							style={{ color: white }}
+						/>
+					</TouchableOpacity>
+				}
+				{this.props.adding &&
+					<TouchableOpacity
+						onPress={
+							this.props.adding ? () => this.props.selectLocation() :
+							() => this.props.navigate('TripPage', { trip: trip, currUser: currUser })
+						}>
+						<Ionicons
+							name='ios-add-circle-outline'
+							size={25}
+							style={{ color: primary }}
+						/>
+					</TouchableOpacity>
 				}
 			</View>
 		)
@@ -106,18 +110,19 @@ export default class TripContainer extends Component {
 
 const styles = StyleSheet.create({
 	tripContainer: {
-		flexDirection: 'column',
+		flexDirection: 'row',
+		justifyContent: 'space-between',
 		backgroundColor: white,
 		borderRadius: 5,
 		marginLeft: 10,
 		marginRight: 10,
 		marginBottom: 15,
 		shadowOffset: { width: 1, height: 2 },
-		shadowColor: 'rgba(0,0,0,0.2)',
-		shadowOpacity: 0.5
+		shadowColor: 'rgba(0,0,0,0.3)',
+		shadowOpacity: 0.5,
+		maxHeight: 156
 	},
 	touchableContainer: {
-		width: '96%',
 		alignSelf: 'center',
 		alignItems: 'center',
 		flexDirection: 'row',
@@ -127,11 +132,13 @@ const styles = StyleSheet.create({
 		flexDirection: 'column',
 		justifyContent: 'space-between',
 		paddingBottom: 10,
-		paddingTop: 10
+		paddingTop: 10,
+		paddingLeft: 10
 	},
 	progressBar: {
 		height: 3,
 		backgroundColor: '#26c940',
+		borderBottomRightRadius: 5,
 		borderBottomLeftRadius: 5,
  	},
 	locationIcon: {
@@ -141,5 +148,14 @@ const styles = StyleSheet.create({
 		borderColor: primary,
 		borderRadius: 50,
 		borderWidth: 2
+	},
+	selectButtonContainer: {
+		height: '100%',
+		width: 30,
+		borderBottomRightRadius: 5,
+		borderTopRightRadius: 5,
+		backgroundColor: primary,
+		justifyContent: 'center',
+		alignItems: 'center',
 	}
 })

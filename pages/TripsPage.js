@@ -24,7 +24,7 @@ export default class SearchPage extends React.Component {
           <Tab heading="Joined" tabStyle={{backgroundColor: white}} activeTabStyle={{backgroundColor: white}} textStyle={{color: gray, fontSize: 16}} activeTextStyle={{color: primary, fontSize: 15}}>
             <TripsList joined={true} uid={uid} navigate={navigate} />
           </Tab>
-          <Tab heading="Followed" tabStyle={{backgroundColor: white}} activeTabStyle={{backgroundColor: white}} textStyle={{color: gray, fontSize: 16}} activeTextStyle={{color: primary, fontSize: 15}}>
+          <Tab heading="Following" tabStyle={{backgroundColor: white}} activeTabStyle={{backgroundColor: white}} textStyle={{color: gray, fontSize: 16}} activeTextStyle={{color: primary, fontSize: 15}}>
             <TripsList joined={false} uid={uid} navigate={navigate} />
           </Tab>
         </Tabs>
