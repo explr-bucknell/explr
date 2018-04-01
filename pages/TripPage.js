@@ -25,23 +25,10 @@ export default class extends Component {
   }
 
   componentWillMount () {
-    let locs = this.props.nav.state.params.trip.locations
-    var tripLocations = locs ? Object.keys(locs).map(
-      function(locId, index) {
-        locs[locId].locId = locId
-        locs[locId].index = index
-        return locs[locId]
-      }
-    ) : []
-    if (tripLocations.length > 0) {
-      calculateDistance(tripLocations).then((distance) => {this.setState({distance})})
-    }
-    
     this.setState({
       trip: this.props.nav.state.params.trip,
       uid: this.props.nav.state.params.uid,
-      tripLocations: tripLocations
-    })
+    }, () => {this.updateTrip()})
   }
 
   handleTextChange (text) {
@@ -69,11 +56,11 @@ export default class extends Component {
   updateTrip () {
     getTrip(this.state.trip.tripId)
     .then((trip) => {
-      var tripLocations = trip.locations ? Object.keys(trip.locations).map(
-        function(locId) {
-          trip.locations[locId].locId = locId
-          return trip.locations[locId] }
-      ) : []
+      var tripLocations = []
+      trip.locations && Object.keys(trip.locations).forEach((locId) => {
+        trip.locations[locId].locId = locId
+        tripLocations[trip.locations[locId].index] = trip.locations[locId]
+      })
       trip.tripId = this.state.trip.tripId
       calculateDistance(tripLocations).then((distance) => {
         this.setState({
@@ -116,7 +103,6 @@ export default class extends Component {
       for (i = 0; i < updatedLocations.length; i++) {
         newLocations[i] = Object.assign({}, updatedLocations[i], {index: i})
       }
-      console.log(newLocations)
       calculateDistance(newLocations).then((distance) => {
         this.setState({distance, tripLocations: newLocations})
       })
@@ -153,11 +139,24 @@ export default class extends Component {
       editing: !this.state.editing
     })
   }
-  
+
   optimizeTrip () {
     let { trip } = this.state
-    console.log('blah')
     optimizeTrip(this.state.tripLocations, trip.tripId, trip.name)
+    setTimeout(function () {
+      getTrip(this.state.trip.tripId)
+      .then((trip) => {
+        var optimizedLocations = []
+        Object.keys(trip.locations).forEach((locId) => {
+          let index = trip.locations[locId].index
+          trip.locations[locId].locId = locId
+          optimizedLocations[index] = trip.locations[locId]
+        })
+        calculateDistance(optimizedLocations).then((distance) => {
+          this.setState({distance, tripLocations: optimizedLocations})
+        })
+      })
+    }.bind(this), 2000)
   }
 
   render () {
@@ -282,9 +281,11 @@ export default class extends Component {
         </View>
         <View style={styles.distanceContainer}>
           <Text style={{color: white, fontSize: 16}}>Distance: {this.state.distance} miles</Text>
-          <TouchableOpacity style={styles.optimizeButton} onPress={() => this.optimizeTrip()}>
-            <Text style={{color: white}}>Optimize Route</Text>
-          </TouchableOpacity>
+          {!this.state.editing &&
+            <TouchableOpacity style={styles.optimizeButton} onPress={() => this.optimizeTrip()}>
+              <Text style={{color: white}}>Optimize Route</Text>
+            </TouchableOpacity>
+          }
         </View>
       </View>
     )
