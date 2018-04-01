@@ -3,6 +3,8 @@ import { View, StyleSheet } from 'react-native'
 import firebase from 'firebase'
 import FollowRequest from '../components/Notifications/FollowRequest'
 import FollowApproval from '../components/Notifications/FollowApproval'
+import JoinTripRequest from '../components/Notifications/JoinTripRequest'
+import JoinTripApproval from '../components/Notifications/JoinTripApproval'
 import { white } from '../utils/colors'
 
 export default class NotificationPage extends React.Component {
@@ -51,7 +53,7 @@ export default class NotificationPage extends React.Component {
 		return (
 			<View style={styles.container}>
 				{Object.keys(notifications).map((id, i) => (
-					(notifications[id].type == 'FOLLOW_REQUEST' && <FollowRequest 
+					(notifications[id].type === 'FOLLOW_REQUEST' && <FollowRequest 
 						key={i} 
 						notificationId={id} 
 						data={notifications[id].data} 
@@ -59,15 +61,29 @@ export default class NotificationPage extends React.Component {
 						nav={nav} 
 						complete={this.removeNotification}
 					/>) ||
-					(notifications[id].type == 'FOLLOW_APPROVAL' && <FollowApproval
+					(notifications[id].type === 'FOLLOW_APPROVAL' && <FollowApproval
 						key={i}
 						notificationId={id}
 						data={notifications[id].data}
 						nav={nav}
 						complete={this.removeNotification}
-					/>)
+					/>) ||
+          (notifications[id].type === 'JOIN_TRIP_REQUEST' && <JoinTripRequest
+            key={i} 
+            notificationId={id} 
+            data={notifications[id].data} 
+            uid={uid} 
+            nav={nav} 
+            complete={this.removeNotification}
+          />) ||
+          (notifications[id].type === 'JOIN_TRIP_APPROVAL' && <JoinTripApproval
+            key={i}
+            notificationId={id}
+            data={notifications[id].data}
+            nav={nav}
+            complete={this.removeNotification}
+          />)
 				))}
-				{ /*followRequest({ name: "Jingya Wu", handle: "jw057" }, this.state.nav)*/ }
 			</View>
 		)
 	}

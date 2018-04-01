@@ -14,17 +14,31 @@ export default class TripProfilePage extends Component {
     this.state = {
       trip: {},
       locations: [],
-      handle: ''
+      handle: '',
+      followed: false,
+      joined: false
     }
   }
 
   currUser = this.props.nav.state.params.currUser
 
   componentWillMount() {
-    let locs = this.props.nav.state.params.trip.locations
+    let trip = this.props.nav.state.params.trip
+    let locs = trip.locations
     var locations = Object.keys(locs).map(loc => Object.assign({id: loc}, locs[loc]))
+
+    var followed = false
+    var joined = false
+    if (trip.followers && Object.keys(trip.followers).indexOf(this.currUser) != -1) {
+      followed = true
+    }
+    if (trip.participants && Object.keys(trip.participants).indexOf(this.currUser) != -1) {
+      joined = true
+    }
     this.setState({
-      trip: this.props.nav.state.params.trip
+      trip,
+      followed,
+      joined
     })
     this.getHandle(this.props.nav.state.params.trip.creator)
     this.getLocationDetail(locations)
@@ -87,6 +101,53 @@ export default class TripProfilePage extends Component {
     })
   }
 
+  joinTrip = () => {
+    var tripId = this.state.trip.tripId
+    if (this.state.joined) {
+      firebase.database().ref(`users/main/${this.currUser}/joinedTrips`).child(tripId).remove()
+      firebase.database().ref(`trips/${tripId}/participants`).child(this.currUser).remove()
+      this.setState({ joined: false })
+    }
+    else {
+      var self = this
+      var ref = firebase.database().ref('users/notifications/' + this.state.trip.creator)
+      ref.orderByChild('data/requester').equalTo(this.currUser).once('value', function(snapshot) {
+        if (snapshot.numChildren() == 0) {
+          self.sendJoinTripRequest()
+        }
+      })
+    }
+  }
+
+  sendJoinTripRequest = () => {
+    var { creator, tripId } = this.state.trip
+    var ref = firebase.database().ref('users/notifications/')
+    var newKey = ref.child(creator).push().key
+    var newRequest = {}
+    newRequest[newKey + '/data/requester'] = this.currUser
+    newRequest[newKey + '/data/tripId'] = tripId
+    newRequest[newKey + '/time'] = Date.now()
+    newRequest[newKey + '/type'] = 'JOIN_TRIP_REQUEST'
+    ref.child(creator).update(newRequest).then(function() {
+      console.log("join trip request sent")
+    })
+  }
+
+  followTrip = () => {
+    var tripId = this.state.trip.tripId
+    if (this.state.followed) {
+      firebase.database().ref(`users/main/${this.currUser}/followedTrips`).child(tripId).remove()
+      firebase.database().ref(`trips/${tripId}/followers`).child(this.currUser).remove()
+      this.setState({ followed: false })
+    }
+    else {
+      var timestamp = Date.now()
+      firebase.database().ref(`users/main/${this.currUser}/followedTrips`).child(tripId).set(timestamp)
+      firebase.database().ref(`trips/${tripId}/followers`).child(this.currUser).set(timestamp)
+      this.setState({ followed: true })
+    }
+  }
+
   _renderItem = ({item, index}) => {
     return (
       <View style={styles.locationCard}>
@@ -105,9 +166,9 @@ export default class TripProfilePage extends Component {
 
   render() {
     const { name, numLocs, tags, followers, participants, creator } = this.state.trip
-    const { handle, locations } = this.state
-    var numFollowers = followers ? followers.length : 0
-    var numParticipants = participants ? participants.length : 0
+    const { handle, locations, followed, joined } = this.state
+    var numFollowers = followers ? Object.keys(followers).length : 0
+    var numParticipants = participants ? Object.keys(participants).length : 0
     return (
       <ScrollView style={styles.container}>
         <View style={styles.profileContainer}>
@@ -146,11 +207,11 @@ export default class TripProfilePage extends Component {
             </TouchableOpacity> 
           </View> :
           <View style={styles.buttonContainer}>
-            <TouchableOpacity style={[styles.btn, styles.shortBtn, styles.joinBtn]}>
-              <Text style={styles.btnText}>Request to join</Text>
+            <TouchableOpacity style={[styles.btn, styles.shortBtn, styles.joinBtn]} onPress={this.joinTrip}>
+              <Text style={styles.btnText}>{ joined ? 'Leave trip' : 'Request to join' }</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={[styles.btn, styles.shortBtn, styles.followBtn]}>
-              <Text style={styles.btnText}>Follow trip</Text>
+            <TouchableOpacity style={[styles.btn, styles.shortBtn, styles.followBtn]} onPress={this.followTrip}>
+              <Text style={styles.btnText}>{ followed ? 'Unfollow trip' : 'Follow trip' }</Text>
             </TouchableOpacity>
           </View>
         }

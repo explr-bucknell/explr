@@ -44,13 +44,13 @@ export default class LoginForm extends Component {
 	loginSubmit() {
 		var email = this.state.email;
 		var password = this.state.pwd;
-		var navigate = this.props.nav.navigate;
+		var nav = this.props.nav;
 
 		firebase.auth().signInWithEmailAndPassword(email, password).then(function() {
 			var user = firebase.auth().currentUser;
 			var uid = user.uid;
 			registerForPushNotificationsAsyc(uid);
-			navigate("MainPage", {uid: uid});
+			nav.navigate("MainPage", {uid: uid, loginNav: nav});
 		}).catch(function(error) {
 			// Handle Errors here.
 			var errorCode = error.code;

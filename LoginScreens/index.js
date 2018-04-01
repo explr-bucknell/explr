@@ -108,6 +108,7 @@ const SignUpNavOpts = {
 	},
 	headerTintColor: white,
 	headerBackTitle: null,
+	gesturesEnabled: false,
 }
 
 const LoginNavigator = StackNavigator({
@@ -115,6 +116,7 @@ const LoginNavigator = StackNavigator({
   	screen: StartScreen,
   	navigationOptions: {
     		header: null,
+    		gesturesEnabled: false,
   	},
 	},
 	SignUpName: {
@@ -149,6 +151,7 @@ const LoginNavigator = StackNavigator({
 				borderBottomWidth: 0,
 			},
 			headerTintColor: primary,
+			gesturesEnabled: false,
   	},
 	},
 	ForgotPwd: {
@@ -161,6 +164,7 @@ const LoginNavigator = StackNavigator({
 			},
 			headerTintColor: white,
 			headerBackTitle: null,
+			gesturesEnabled: false,
 		}
 	},
 	ResetPwd: {
@@ -173,6 +177,7 @@ const LoginNavigator = StackNavigator({
 			},
 			headerTintColor: white,
 			headerBackTitle: null,
+			gesturesEnabled: false,
 		}
 	},
 	MainPage: {
