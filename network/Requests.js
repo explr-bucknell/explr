@@ -215,7 +215,7 @@ export async function calculateDistance(trip) {
     if (i == 0) {
       urlStart += "origin=place_id:" + trip[i].locId;
     } else if (i == trip.length - 1) {
-      urlStart += "&destination=place_id:" + trip[i].locId;    
+      urlStart += "&destination=place_id:" + trip[i].locId;
     } else {
       urlEnd += "place_id:" + trip[i].locId + "|"
     }
@@ -232,13 +232,13 @@ export async function calculateDistance(trip) {
       for (var i = 0; i < (trip.length - 1); i++) {
         parsed = (data.routes[0].legs[i].distance.text);
         parsed = parseFloat(parsed.replace(",","").replace(" mi",""));
-        distance += parsed; 
+        distance += parsed;
       }
       return distance
-    })    
+    })
   })
 }
-  
+
 export async function optimizeTrip(trip, tripID, tripName) {
   var urlStart = "";
   var urlEnd = "&waypoints=optimize:true|";
@@ -246,7 +246,7 @@ export async function optimizeTrip(trip, tripID, tripName) {
     if (i == 0) {
       urlStart += "origin=place_id:" + trip[i].locId;
     } else if (i == trip.length - 1) {
-      urlStart += "&destination=place_id:" + trip[i].locId;    
+      urlStart += "&destination=place_id:" + trip[i].locId;
     } else {
       urlEnd += "place_id:" + trip[i].locId + "|"
     }
@@ -254,23 +254,23 @@ export async function optimizeTrip(trip, tripID, tripName) {
 
   var urlWaypoints = urlStart + urlEnd;
   var urlFinal = "https://maps.googleapis.com/maps/api/directions/json?" + urlWaypoints + "&key=AIzaSyBbEBNs_oq5jkeq2rRkSd1mKBkVGX7RjGg";
-  
+
   fetch(urlFinal).then(function(response) {
     googleRet = response.json()
     googleRet.then((data) => {
-    var waypointArr = data.routes[0].waypoint_order;
-    var dist = data.routes[0].legs[0].distance.text;
-    var parsed = parseFloat(dist.replace(",","").replace(" mi",""));
+      var waypointArr = data.routes[0].waypoint_order;
+      var dist = data.routes[0].legs[0].distance.text;
+      var parsed = parseFloat(dist.replace(",","").replace(" mi",""));
 
-    var resArray = [];
-    for (var i = 0; i < trip.length; i++) {
-      if (i != 0 && i != trip.length - 1) {
-      resArray.push(trip[waypointArr[i-1]+1]);
-      } else {
-      resArray.push(trip[i]);    
+      var resArray = [];
+      for (var i = 0; i < trip.length; i++) {
+        if (i != 0 && i != trip.length - 1) {
+        resArray.push(trip[waypointArr[i-1]+1]);
+        } else {
+        resArray.push(trip[i]);
+        }
       }
-    }
-    recreateTrip(tripID, tripName, resArray);
+      recreateTrip(tripID, tripName, resArray);
     })
   })
 }
@@ -282,7 +282,6 @@ export async function recreateTrip(tripId, tripName, resArray) {
   await firebase.database().ref(`trips/${tripId}/numLocs/`).transaction(function(numLocs) {
     numLocations = numLocs;
   });
-
   await addAllLocations(tripId, tripName, resArray);
 }
 
@@ -300,4 +299,3 @@ export async function addAllLocations(tripId, tripName, locationArray) {
   }
   return;
 }
-
