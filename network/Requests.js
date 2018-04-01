@@ -68,7 +68,7 @@ export async function addLocationToTrip(tripId, locationId, locationName) {
   if (exist) {
     return;
   }
-  
+
   var numLocations = 0;
   await firebase.database().ref(`trips/${tripId}/numLocs/`).transaction(function(numLocs) {
     numLocations = numLocs;
@@ -239,7 +239,7 @@ export async function calculateDistance(trip) {
   })
 }
 
-export async function optimizeTrip(trip, tripID, tripName) {
+export async function optimizeTrip(trip, tripID, tripName, callback) {
   var urlStart = "";
   var urlEnd = "&waypoints=optimize:true|";
   for (var i = 0; i < trip.length; i++) {
@@ -271,8 +271,10 @@ export async function optimizeTrip(trip, tripID, tripName) {
         }
       }
       recreateTrip(tripID, tripName, resArray);
+      callback(resArray)
     })
   })
+
 }
 
 export async function recreateTrip(tripId, tripName, resArray) {

@@ -141,21 +141,40 @@ export default class TripPage extends Component {
 
   optimizeTrip () {
     let { trip } = this.state
-    optimizeTrip(this.state.tripLocations, trip.tripId, trip.name)
-    setTimeout(function () {
-      getTrip(this.state.trip.tripId)
-      .then((trip) => {
-        var optimizedLocations = []
-        Object.keys(trip.locations).forEach((locId) => {
-          let index = trip.locations[locId].index
-          trip.locations[locId].locId = locId
-          optimizedLocations[index] = trip.locations[locId]
-        })
-        calculateDistance(optimizedLocations).then((distance) => {
-          this.setState({distance, tripLocations: optimizedLocations})
-        })
-      })
-    }.bind(this), 2000)
+    optimizeTrip(this.state.tripLocations, trip.tripId, trip.name, this.optimizeTripCallback)
+    // setTimeout(function () {
+    //   getTrip(this.state.trip.tripId)
+    //   .then((trip) => {
+    //     var optimizedLocations = []
+    //     Object.keys(trip.locations).forEach((locId) => {
+    //       let index = trip.locations[locId].index
+    //       trip.locations[locId].locId = locId
+    //       optimizedLocations[index] = trip.locations[locId]
+    //     })
+    //     calculateDistance(optimizedLocations).then((distance) => {
+    //       this.setState({distance, tripLocations: optimizedLocations})
+    //     })
+    //   })
+    // }.bind(this), 2000)
+  }
+
+  optimizeTripCallback = (newTripArray) => {
+    console.log(newTripArray)
+    calculateDistance(newTripArray).then((distance) => {
+      this.setState({distance, tripLocations: newTripArray})
+    })
+    // getTrip(this.state.trip.tripId)
+    // .then((trip) => {
+    //   var optimizedLocations = []
+    //   Object.keys(trip.locations).forEach((locId) => {
+    //     let index = trip.locations[locId].index
+    //     trip.locations[locId].locId = locId
+    //     optimizedLocations[index] = trip.locations[locId]
+    //   })
+    //   calculateDistance(optimizedLocations).then((distance) => {
+    //     this.setState({distance, tripLocations: optimizedLocations})
+    //   })
+    // })
   }
 
   render () {
