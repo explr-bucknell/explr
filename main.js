@@ -161,6 +161,7 @@ const SearchNavOpts = ({ navigation }) => ({
         autoFocus={ true }
         selectionColor={ Platform.OS === 'android' ? transparentWhite : white }
         underlineColorAndroid='rgba(0,0,0,0)'
+				autoCorrect={ false }
         style={{
        		width: DEVICE_WIDTH * 0.6,
 					height: 40,
