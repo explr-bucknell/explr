@@ -66,9 +66,6 @@ export default class UserTrips extends Component {
 			<View style={styles.tripsContainer}>
 				{this.props.user &&
 					<View style={{width: '100%'}}>
-						<View style={{width: '100%', justifyContent: 'center', alignItems: 'center', height: 50}}>
-							<Text style={{fontSize: 16}}>Create trips for yourself or share with friends!</Text>
-						</View>
 						<TouchableOpacity
 							style={styles.createTripContainer}
 							onPress={() => {

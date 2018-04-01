@@ -6,20 +6,18 @@ import MapPage from './MapPage'
 import ProfilePage from './ProfilePage'
 import SettingsPage from './SettingsPage'
 import NotificationPage from './NotificationPage'
-import UserTrips from '../components/UserTrips'
+import TripsPage from './TripsPage'
 import { FontAwesome } from '@expo/vector-icons'
 import { primary, white, gray } from '../utils/colors'
 
 const DEVICE_HEIGHT = Dimensions.get('window').height;
 
 const MapScreen = (props) => (
-	<MapPage {...props.screenProps}/>
+	<MapPage {...props.screenProps} />
 )
 
 const TripsScreen = (props) => (
-  <ScrollView style={{ flex: 1, backgroundColor: white }}>
-    <UserTrips {...props.screenProps} isMyProfile={true} isFollowing={null} user />
-  </ScrollView>
+  <TripsPage {...props.screenProps} />
 )
 
 const ProfileScreen = (props) => (
