@@ -25,7 +25,7 @@ export default class TripProfilePage extends Component {
   componentWillMount() {
     let trip = this.props.nav.state.params.trip
     let locs = trip.locations
-    var locations = Object.keys(locs).map(loc => Object.assign({id: loc}, locs[loc]))
+    var locations = locs ? Object.keys(locs).map(loc => Object.assign({id: loc}, locs[loc])) : []
 
     var followed = false
     var joined = false
