@@ -59,6 +59,16 @@ export async function createTripWithLocation(uid, tripName, tripTags, permission
 
 //Add a new location to a trip
 export async function addLocationToTrip(tripId, locationId, locationName) {
+  var exist = false
+  await firebase.database().ref(`trips/${tripId}/locations/${locationId}`).once('value', function(snapshot) {
+    if (snapshot.numChildren()) {
+      exist = true;
+    }
+  });
+  if (exist) {
+    return;
+  }
+  
   var numLocations = 0;
   await firebase.database().ref(`trips/${tripId}/numLocs/`).transaction(function(numLocs) {
     numLocations = numLocs;

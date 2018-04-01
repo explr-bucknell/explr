@@ -4,7 +4,7 @@ import firebase from 'firebase'
 import { Ionicons } from '@expo/vector-icons'
 import { primary, white, gray, black } from '../../utils/colors'
 
-export default class FollowRequest extends React.Component {
+export default class FollowApproval extends React.Component {
 	constructor(props) {
 		// props.nav
 		// props.notificationId

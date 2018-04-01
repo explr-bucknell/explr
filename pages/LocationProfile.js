@@ -1,5 +1,5 @@
 import React from "react";
-import { Animated, Dimensions, Image, Platform, StyleSheet, Text, TouchableOpacity, View, Modal, Button } from "react-native"
+import { Animated, Dimensions, Image, Platform, StyleSheet, Text, TouchableOpacity, View, ScrollView, Modal, Button } from "react-native"
 import { Body, Header, List, ListItem as Item, ScrollableTab, Tab, TabHeading, Tabs, Title } from "native-base"
 import firebase from 'firebase'
 import { FontAwesome } from '@expo/vector-icons'
@@ -128,17 +128,18 @@ export default class LocationProfile extends React.Component {
     let { locationName, imageUrl } = this.state
     let { navigate } = this.props.nav
     return (
-        <View style={{backgroundColor: white}}>
-          <Modal
-            visible={this.state.addingLocationToTrip}
-            animationType={'slide'}
-          >
-            <View style={{marginTop: 20, padding: 10, height: 70, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
-              <View style={{width: '60%'}}>
-                <Text style={{fontSize: 20, fontWeight: 'bold'}}>Adding: {locationName}</Text>
-              </View>
-              <Button title='cancel' onPress={(() => this.toggleAddLocation())}/>
+      <View style={styles.container}>
+        <Modal
+          visible={this.state.addingLocationToTrip}
+          animationType={'slide'}
+        >
+          <View style={{marginTop: 20, padding: 10, height: 70, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
+            <View style={{width: '60%'}}>
+              <Text style={{fontSize: 20, fontWeight: 'bold'}}>Adding: {locationName}</Text>
             </View>
+            <Button title='cancel' onPress={(() => this.toggleAddLocation())}/>
+          </View>
+          <ScrollView>
             <UserTrips
               uid={this.state.uid}
               navigate={navigate}
@@ -146,117 +147,62 @@ export default class LocationProfile extends React.Component {
               locationName={this.state.locationName}
               addLocation={(trip) => this.addLocation(trip)}
               closeModal={this.closeModal}
+              isMyProfile={true}
+              isFollowing={null}
               adding
             />
-          </Modal>
-          <Animated.ScrollView
-            scrollEventThrottle={1}
-            showsVerticalScrollIndicator={false}
-            onScroll={Animated.event([{nativeEvent: {contentOffset: {y: this.scroll}}}], {useNativeDriver: true})}
-            style={{zIndex: 0}}>
-
-              <View style={styles.header}>
-                <View style={styles.headerContentContainer}>
-                  <Text style={{fontSize: 22, color: black, fontWeight: 'bold'}}>{locationName}</Text>
-                  <View style={{flexDirection: 'row', justifyContent: 'flex-start'}}>
-                    <TouchableOpacity
-                      onPress={() => {this.state.liked ? this.removeLiked() : this.addLiked()}}
-                      style={{marginRight: 20}}>
-                      <FontAwesome
-                        name={this.state.liked ? "heart" : 'heart-o'}
-                        size={35}
-                        style={styles.heartIcon}/>
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                      style={{flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'space-between'}}
-                      onPress={() => this.toggleAddLocation()}>
-                  		<FontAwesome
-                  				name='location-arrow'
-                  				size={35}
-                  				style={{ color: primary, marginRight: 5 }}
-                  			/>
-                      <Text style={{fontWeight: 'bold', fontSize: 16, color: primary, textDecorationLine: 'underline'}}>Add to trip</Text>
-                  	</TouchableOpacity>
-                  </View>
-                </View>
-                <View style={styles.imageContainer}>
-                  <Image source={{uri: imageUrl}} style={{width: '100%', height: '100%', borderRadius: 10}}/>
-                </View>
-              </View>
-
-              <Tabs
-                renderTabBar={(props) =>
-                  <Animated.View
-                    style={{transform: [{translateY: this.tabY}], zIndex: 1, width: "100%", backgroundColor: white}}>
-                    <ScrollableTab {...props}
-                      style={{borderBottomWidth: 0}}
-                      renderTab={(name, page, active, onPress, onLayout) => (
-                        <TouchableOpacity
-                          key={page}
-                          onPress={() => onPress(page)}
-                          onLayout={onLayout}
-                          activeOpacity={0.4}>
-                          <TabHeading
-                            scrollable
-                            style={{
-                              backgroundColor: "transparent",
-                              width: SCREEN_WIDTH / 2,
-                              borderBottomWidth: 0
-                            }}
-                            active={active}>
-                            <Text style={{
-                              justifyContent: 'center',
-                              alignItems: 'center',
-                              fontWeight: "bold",
-                              color: active ? this.textColor : gray,
-                              fontSize: active ? 16 : 15
-                            }}>
-                              {name}
-                            </Text>
-                          </TabHeading>
-                        </TouchableOpacity>
-                      )}
-                      underlineStyle={{backgroundColor: this.textColor, borderWidth: 0}}
-                    />
-                  </Animated.View>
-                }
-              >
-            <Tab heading="Reviews">
-              <View />
-            </Tab>
-            <Tab heading="Gallery">
-              <View />
-            </Tab>
-          </Tabs>
-        </Animated.ScrollView>
+          </ScrollView>
+        </Modal>
+        <View style={styles.imageContainer}>
+          <Image source={{uri: imageUrl}} style={{width: '100%', height: '100%', borderRadius: 5}}/>
+        </View>
+        <View style={styles.contentContainer}>
+          <Text style={{fontSize: 22, color: black, fontWeight: 'bold', marginBottom: 10}}>{locationName}</Text>
+          <View style={{flexDirection: 'row', justifyContent: 'flex-start'}}>
+            <TouchableOpacity
+              onPress={() => {this.state.liked ? this.removeLiked() : this.addLiked()}}
+              style={{marginRight: 20}}>
+              <FontAwesome
+                name={this.state.liked ? "heart" : 'heart-o'}
+                size={35}
+                style={styles.heartIcon}/>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={{flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'space-between'}}
+              onPress={() => this.toggleAddLocation()}>
+              <FontAwesome
+                  name='location-arrow'
+                  size={35}
+                  style={{ color: primary, marginRight: 5 }}
+                />
+              <Text style={{fontWeight: 'bold', fontSize: 16, color: primary, textDecorationLine: 'underline'}}>Add to trip</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
       </View>
     )
   }
 }
 
 const styles = StyleSheet.create({
-  header: {
+  container: {
     flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    padding: 20,
+    backgroundColor: white
   },
   imageContainer: {
-    width: 100,
-    height: 100,
+    width: '90%',
+    height: 240,
+    marginTop: '5%',
     borderWidth: 2,
-    borderRadius: 13,
+    borderRadius: 7,
     borderColor: gray,
     padding: 2,
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
+    alignSelf: 'center'
   },
-  headerContentContainer: {
-    flexDirection: 'column',
-    width: '60%',
-    height: '100%',
-    justifyContent: 'space-between'
+  contentContainer: {
+    margin: '7%'
   },
   heartIcon: {
     color: liked,

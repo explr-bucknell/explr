@@ -8,7 +8,7 @@ import { getTrip, getPOIAutocomplete, addLocationToTrip, calculateDistance, recr
 const { StatusBarManager } = NativeModules
 const STATUSBAR_HEIGHT = Platform.OS === 'ios' ? 20 : StatusBarManager.HEIGHT
 
-export default class extends Component {
+export default class TripPage extends Component {
 
   constructor (props) {
     super(props)
@@ -18,7 +18,6 @@ export default class extends Component {
       oldTripLocations: [],
       addingLocation: false,
       locations: [],
-      uid: '',
       editing: false,
       distance: 0
     }

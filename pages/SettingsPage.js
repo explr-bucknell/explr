@@ -1,6 +1,6 @@
 import React from 'react'
 import { ScrollView, View, Text, TouchableOpacity, StyleSheet } from 'react-native'
-import { Card, CardItem, Switch } from 'native-base'
+import { Container, Content, Card, CardItem, Right, Switch } from 'native-base'
 import firebase from 'firebase'
 import { FontAwesome, Ionicons } from '@expo/vector-icons'
 import { primary, white, gray, black, transparentWhite, facebook, twitter, google } from '../utils/colors'
@@ -19,7 +19,7 @@ export default class SettingsPage extends React.Component {
   }
 
   componentDidMount() {
-    var nav = this.props.loginNav
+    var nav = this.props.nav.state.params.loginNav
     firebase.auth().onAuthStateChanged(function(user) {
       if (user) {
         // User is signed in.
@@ -31,7 +31,7 @@ export default class SettingsPage extends React.Component {
   }
 
   userSignOut = () => {
-    var nav = this.props.loginNav
+    var nav = this.props.nav.state.params.loginNav
     firebase.auth().signOut().then(() => {
       nav.navigate('Start')
     })
@@ -69,7 +69,7 @@ export default class SettingsPage extends React.Component {
 
 	render() {
 		return (
-			<View style={styles.container}>
+			<ScrollView style={styles.container}>
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>SOCIAL</Text>
           <TouchableOpacity style={[styles.button, styles.facebook]} onPress={() => this.facebookSignin()}>
@@ -117,38 +117,48 @@ export default class SettingsPage extends React.Component {
         </View>
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>ACCOUNT SETTINGS</Text>
-          <Card>
+          <Card style={styles.card}>
             <CardItem style={styles.row}>
               <Text style={styles.rowText}>Edit Profile</Text>
-              <TouchableOpacity onPress={() => this.props.navigate('ProfileEditPage', {uid: this.props.uid})}>
-                <Ionicons style={styles.icon} name='ios-arrow-forward'/>
-              </TouchableOpacity>
+              <Right>
+                <TouchableOpacity onPress={() => this.props.nav.navigate('ProfileEditPage', {uid: this.props.nav.state.params.uid})}>
+                  <Ionicons style={styles.icon} name='ios-arrow-forward'/>
+                </TouchableOpacity>
+              </Right>
             </CardItem>
             <CardItem style={styles.row}>
               <Text style={styles.rowText}>Change Password</Text>
-              <TouchableOpacity onPress={() => this.props.navigate('ChangePwdPage', {uid: this.props.uid})}>
-                <Ionicons style={styles.icon} name='ios-arrow-forward'/>
-              </TouchableOpacity>
+              <Right>
+                <TouchableOpacity onPress={() => this.props.nav.navigate('ChangePwdPage', {uid: this.props.nav.state.params.uid})}>
+                  <Ionicons style={styles.icon} name='ios-arrow-forward'/>
+                </TouchableOpacity>
+              </Right>
             </CardItem>
             <CardItem style={styles.row}>
               <Text style={styles.rowText}>Private Account</Text>
-              <Switch value={this.state.privateAccount} onValueChange={(value) => this.setState({ privateAccount: value })} onTintColor={primary}/>
+              <Right>
+                <Switch value={this.state.privateAccount} onValueChange={(value) => this.setState({ privateAccount: value })} onTintColor={primary}/>
+              </Right>
             </CardItem>
             <CardItem style={styles.row}>
               <Text style={styles.rowText}>Push Notifications</Text>
-              <Switch value={this.state.pushNotifications} onValueChange={(value) => this.setState({ pushNotifications: value })} onTintColor={primary}/>
+              <Right>
+                <Switch value={this.state.pushNotifications} onValueChange={(value) => this.setState({ pushNotifications: value })} onTintColor={primary}/>
+              </Right>
             </CardItem>
           </Card>
-          <Card style={{ marginTop: 10 }}>
+          <Card style={[styles.card, {marginTop: 10}]}>
             <CardItem style={styles.row}>
               <Text style={styles.rowText}>Sign out</Text>
-              <TouchableOpacity onPress={() => this.userSignOut()}>
-                <FontAwesome name='sign-out' style={styles.signoutIcon}/>
-              </TouchableOpacity>
+              <Right>
+                <TouchableOpacity onPress={() => this.userSignOut()}>
+                  <FontAwesome name='sign-out' style={styles.signoutIcon}/>
+                </TouchableOpacity>
+              </Right>
             </CardItem>
           </Card>
         </View>
-      </View>
+      </ScrollView>
 		)
 	}
 }
@@ -159,7 +169,7 @@ const styles = StyleSheet.create({
     paddingLeft: 20,
     paddingRight: 20,
     paddingTop: 20,
-    paddingBottom: 10,
+    paddingBottom: 10
   },
   section: {
     marginBottom: 20
@@ -231,6 +241,11 @@ const styles = StyleSheet.create({
     fontSize: 20,
     marginLeft: 10
   },
+  card: {
+    flexWrap: 'nowrap',
+    paddingTop: 5,
+    paddingBottom: 5
+  },
   row: {
     flexDirection: 'row'
   },
@@ -244,14 +259,10 @@ const styles = StyleSheet.create({
   },
   icon: {
     color: gray,
-    fontSize: 20,
-    textAlign: 'right'
+    fontSize: 20
   },
   signoutIcon: {
     color: primary,
-    fontSize: 22,
-    textAlign: 'right',
-    marginTop: 2,
-    marginBottom: 2
+    fontSize: 22
   }
 })

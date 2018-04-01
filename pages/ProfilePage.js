@@ -155,10 +155,11 @@ export default class ProfilePage extends React.Component {
   }
 
   settings = () => {
-    this.state.nav('SettingsPage', {loginNav: this.props.loginNav, navigate: this.props.navigate})
+    this.state.nav('SettingsPage', {loginNav: this.props.loginNav, uid: this.state.uid})
   }
 
   render() {
+    const { uid, currUid, nav, isMyProfile, isFollowing, displayName, handle, numFollowers, numFollowing, imageUrl } = this.state
     return (
     	<View style={{backgroundColor: white, height: '100%'}}>
       	<Animated.ScrollView
@@ -171,30 +172,30 @@ export default class ProfilePage extends React.Component {
 	      		<View style={styles.textContainer}>
 		      		<View style={styles.nameContainer}>
 		      			<View style={{flexDirection: 'row'}}>
-		      				<Text style={styles.name}>{ this.state.displayName.length < 16 ? this.state.displayName: (this.state.displayName.slice(0,13) + "...") }</Text>
-		      				<TouchableOpacity onPress={() => (this.state.isMyProfile ? this.settings() : (this.state.isFollowing ? this.stopFollowing() : this.sendFollowRequest()))}>
+		      				<Text style={styles.name}>{ displayName.length < 16 ? displayName: (displayName.slice(0,13) + "...") }</Text>
+		      				<TouchableOpacity onPress={() => (isMyProfile ? this.settings() : (isFollowing ? this.stopFollowing() : this.sendFollowRequest()))}>
 				            <FontAwesome
-				            	name={this.state.isMyProfile ? 'cogs' : 'user-plus'}
-				            	style={this.state.isFollowing ? styles.iconFollowing : styles.icon}
+				            	name={isMyProfile ? 'cogs' : 'user-plus'}
+				            	style={isFollowing ? styles.iconFollowing : styles.icon}
 				            />
 				          </TouchableOpacity>
 				        </View>
-		      			<Text style={styles.handle}>{'@' + this.state.handle}</Text>
+		      			<Text style={styles.handle}>{'@' + handle}</Text>
 		      		</View>
 		      		<View style={styles.followContainer}>
-		      			<TouchableOpacity style={styles.followers} onPress={() => this.state.nav('FollowersPage', {uid: this.state.uid, type: "followers"})}>
-		      				<Text style={styles.followValue}>{this.state.numFollowers}</Text>
+		      			<TouchableOpacity style={styles.followers} onPress={() => nav('FollowersPage', {uid: uid, type: "followers"})}>
+		      				<Text style={styles.followValue}>{numFollowers}</Text>
 		      				<Text style={styles.followLabel}>Followers</Text>
 		      			</TouchableOpacity>
-		      			<TouchableOpacity style={styles.following} onPress={() => this.state.nav('FollowingPage', {uid: this.state.uid, type: "following"})}>
-		      				<Text style={styles.followValue}>{this.state.numFollowing}</Text>
+		      			<TouchableOpacity style={styles.following} onPress={() => nav('FollowingPage', {uid: uid, type: "following"})}>
+		      				<Text style={styles.followValue}>{numFollowing}</Text>
 		      				<Text style={styles.followLabel}>Following</Text>
 		      			</TouchableOpacity>
 		      		</View>
 	      		</View>
       			<View style={styles.profileContainer}>
 							<View style={styles.profilePicHolder}>
-								<Image style={styles.profilePic} key={ this.state.imageUrl ? this.state.imageUrl : 0 } source={ this.state.imageUrl ? {uri: this.state.imageUrl} : (require('../assets/images/profilePic.png')) } />
+								<Image style={styles.profilePic} key={ imageUrl ? imageUrl : 0 } source={ imageUrl ? {uri: imageUrl} : (require('../assets/images/profilePic.png')) } />
 							</View>
 						</View>
 					</View>
@@ -203,7 +204,7 @@ export default class ProfilePage extends React.Component {
       			<Animated.View
           		style={{transform: [{translateY: this.tabY}], zIndex: 1, width: "100%", backgroundColor: white, borderBottomWidth: 2, borderColor: white}}>
           		<ScrollableTab {...props}
-          			style={{borderBottomWidth: 0, height: 50}}
+          			style={{borderBottomWidth: 0, height: 50, shadowOffset: { width: 0, height: 4 }, shadowColor: 'rgba(0,0,0,0.2)', shadowOpacity: 0.5}}
 								renderTab={(name, page, active, onPress, onLayout) => (
 								<TouchableOpacity
 									key={page}
@@ -235,10 +236,10 @@ export default class ProfilePage extends React.Component {
         		</Animated.View>
         	}>
 						<Tab heading="Liked Places">
-							<SavedLocations uid={this.state.uid}/>
+							<SavedLocations uid={uid}/>
 						</Tab>
 	  				<Tab heading="Trips">
-							<UserTrips uid={this.state.uid} navigate={this.props.navigate}/>
+							<UserTrips uid={uid} currUser={currUid} navigate={nav} isMyProfile={isMyProfile} isFollowing={isFollowing} />
 						</Tab>
 			    </Tabs>
 				</Animated.ScrollView>
@@ -266,14 +267,14 @@ const styles = StyleSheet.create({
 		height: 90,
 		borderRadius: 50,
 		borderColor: gray,
-		borderWidth: 3,
+		borderWidth: 2,
 		marginBottom: 40
 	},
 	profilePic: {
 		flex: 1,
-		width: 83,
-		height: 83,
-		borderRadius: 41.5,
+		width: 86,
+		height: 86,
+		borderRadius: 43,
 		borderWidth: 0
 	},
 	textContainer: {

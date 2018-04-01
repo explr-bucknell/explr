@@ -17,7 +17,6 @@ export default class UserTrips extends Component {
 		}
 	}
 
-
 	componentDidMount () {
 		this.retrieveTrips()
 	}
@@ -32,8 +31,19 @@ export default class UserTrips extends Component {
 
 	loadTrips = (trips) => {
 		const updatedTrips = []
+		const { isMyProfile, isFollowing } = this.props
 		if (trips && Object.keys(trips).length > 0) {
 			Object.keys(trips).forEach((tripId) => {
+				if (!isMyProfile) {
+					if (trips[tripId].permission === 'Only you') {
+						return
+					}
+				}
+				if (!isMyProfile && !isFollowing) {
+					if (trips[tripId].permission === 'Followers') {
+						return
+					}
+				}
 				trips[tripId].tripId = tripId
 				updatedTrips.push(trips[tripId])
 			})
@@ -56,9 +66,6 @@ export default class UserTrips extends Component {
 			<View style={styles.tripsContainer}>
 				{this.props.user &&
 					<View style={{width: '100%'}}>
-						<View style={{width: '100%', justifyContent: 'center', alignItems: 'center', height: 50}}>
-							<Text style={{fontSize: 16}}>Create trips for yourself or share with friends!</Text>
-						</View>
 						<TouchableOpacity
 							style={styles.createTripContainer}
 							onPress={() => {
@@ -92,9 +99,10 @@ export default class UserTrips extends Component {
 								key={item.tripId}
 								trip={item}
 								navigate={this.props.navigate}
-								uid={this.props.uid}
 								adding={this.props.adding}
 								selectLocation={() => this.props.addLocation(item)}
+								user={this.props.user}
+								currUser={this.props.currUser}
 							/>
 						)}
 					</View>
@@ -112,7 +120,7 @@ export default class UserTrips extends Component {
 const styles = StyleSheet.create({
 	tripsContainer: {
 		flex: 1,
-		backgroundColor: '#f4f4f4',
+		backgroundColor: white,
 		alignItems: 'center',
 		height: '100%'
 	},

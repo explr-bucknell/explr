@@ -108,6 +108,7 @@ const SignUpNavOpts = {
 	},
 	headerTintColor: white,
 	headerBackTitle: null,
+	gesturesEnabled: false,
 }
 
 const LoginNavigator = StackNavigator({
@@ -115,6 +116,7 @@ const LoginNavigator = StackNavigator({
   	screen: StartScreen,
   	navigationOptions: {
     		header: null,
+    		gesturesEnabled: false,
   	},
 	},
 	SignUpName: {
@@ -144,41 +146,45 @@ const LoginNavigator = StackNavigator({
 	Login: {
 		screen: LoginScreen,
 		navigationOptions: {
-    		headerStyle: {
-			backgroundColor: white,
-			borderBottomWidth: 0,
-		},
-		headerTintColor: primary,
+    	headerStyle: {
+				backgroundColor: white,
+				borderBottomWidth: 0,
+			},
+			headerTintColor: primary,
+			gesturesEnabled: false,
   	},
 	},
 	ForgotPwd: {
 		screen: ForgotScreen,
 		navigationOptions: {
 			headerTitle: "Forgot Password",
-		headerStyle: {
-			backgroundColor: primary,
-			borderBottomWidth: 0,
-		},
-		headerTintColor: white,
-		headerBackTitle: null,
+			headerStyle: {
+				backgroundColor: primary,
+				borderBottomWidth: 0,
+			},
+			headerTintColor: white,
+			headerBackTitle: null,
+			gesturesEnabled: false,
 		}
 	},
 	ResetPwd: {
 		screen: ResetScreen,
 		navigationOptions: {
 			headerTitle: "Reset Password",
-		headerStyle: {
-			backgroundColor: primary,
-			borderBottomWidth: 0,
-		},
-		headerTintColor: white,
-		headerBackTitle: null,
+			headerStyle: {
+				backgroundColor: primary,
+				borderBottomWidth: 0,
+			},
+			headerTintColor: white,
+			headerBackTitle: null,
+			gesturesEnabled: false,
 		}
 	},
 	MainPage: {
 		screen: MainPage,
 		navigationOptions: {
-    		header: null,
+    	header: null,
+    	gesturesEnabled: false,
   	},
 	}
 }, );

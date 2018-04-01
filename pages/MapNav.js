@@ -1,23 +1,23 @@
 import React from 'react'
-import { Platform } from 'react-native'
+import { Platform, ScrollView } from 'react-native'
 import { TabNavigator, navigationOptions } from 'react-navigation'
 import Dimensions from 'Dimensions'
 import MapPage from './MapPage'
 import ProfilePage from './ProfilePage'
 import SettingsPage from './SettingsPage'
 import NotificationPage from './NotificationPage'
-import UserTrips from '../components/UserTrips'
+import TripsPage from './TripsPage'
 import { FontAwesome } from '@expo/vector-icons'
 import { primary, white, gray } from '../utils/colors'
 
 const DEVICE_HEIGHT = Dimensions.get('window').height;
 
 const MapScreen = (props) => (
-	<MapPage {...props.screenProps}/>
+	<MapPage {...props.screenProps} />
 )
 
 const TripsScreen = (props) => (
-	<UserTrips {...props.screenProps} user/>
+  <TripsPage {...props.screenProps} />
 )
 
 const ProfileScreen = (props) => (
@@ -52,14 +52,14 @@ const MapNav = TabNavigator({
 		screen: props => TripsScreen(props),
 		navigationOptions: navOpts('Trips', 'list')
 	},
-	ProfilePage: {
-		screen: props => ProfileScreen(props),
-    navigationOptions: navOpts('Profile', 'user')
-	},
   NotificationPage: {
     screen: props => NotificationScreen(props),
     navigationOptions: navOpts('Notifications', 'bell')
   },
+	ProfilePage: {
+		screen: props => ProfileScreen(props),
+    navigationOptions: navOpts('Profile', 'user')
+	},
 }
 , {
 	animationEnabled: true,
