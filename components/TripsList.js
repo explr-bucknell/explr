@@ -50,6 +50,7 @@ export default class TripsList extends Component {
             navigate={this.props.navigate}
             adding={false}
             currUser={this.props.uid}
+            user={this.props.joined}
           />
         ) : <Text style={styles.emptyText}>{this.props.joined ? 'No joined trips yet!' : 'No followed trips yet!'}</Text> }
       </ScrollView>
