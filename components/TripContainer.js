@@ -71,7 +71,7 @@ export default class TripContainer extends Component {
 						</View>
 					</View>
 					{trip.numLocs > 0 &&
-						<View style={{flexDirection: 'row', justifyContent: 'flex-start', borderBottomRightRadius: 5, marginRight: 30}}>
+						<View style={{flexDirection: 'row', justifyContent: 'flex-start', borderBottomRightRadius: 5, marginRight: Btn_Width}}>
 							<View style={[{width: `${(this.state.completed/trip.numLocs) * 100}%`}, styles.progressBar]}/>
 						</View>
 					}
@@ -140,7 +140,6 @@ const styles = StyleSheet.create({
 	progressBar: {
 		height: 3,
 		backgroundColor: '#26c940',
-		borderBottomRightRadius: 5,
 		borderBottomLeftRadius: 5,
  	},
 	locationIcon: {
