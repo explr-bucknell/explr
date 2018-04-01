@@ -22,7 +22,7 @@ export default class SearchPage extends React.Component {
           <Tab heading="Users" tabStyle={{backgroundColor: white}} activeTabStyle={{backgroundColor: white}} textStyle={{color: gray, fontSize: 14}} activeTextStyle={{color: primary, fontSize: 15}}>
             <SearchUsers nav={this.props.nav} />
           </Tab>
-          <Tab heading="Contents" tabStyle={{backgroundColor: white}} activeTabStyle={{backgroundColor: white}} textStyle={{color: gray, fontSize: 14}} activeTextStyle={{color: primary, fontSize: 15}}>
+          <Tab heading="Trips" tabStyle={{backgroundColor: white}} activeTabStyle={{backgroundColor: white}} textStyle={{color: gray, fontSize: 14}} activeTextStyle={{color: primary, fontSize: 15}}>
             <SearchTags nav={this.props.nav} />
           </Tab>
         </Tabs>

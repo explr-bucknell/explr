@@ -4,7 +4,8 @@ import { Ionicons } from '@expo/vector-icons'
 import { primary, white, transparentWhite, gray } from '../utils/colors'
 import { getLocation } from '../network/Requests'
 
-var Scroll_Width = Dimensions.get('window').width * 0.85
+var Scroll_Width = Dimensions.get('window').width * 0.83
+var Btn_Width = Dimensions.get('window').width * 0.15 - 25
 
 export default class TripContainer extends Component {
 
@@ -127,6 +128,7 @@ const styles = StyleSheet.create({
 		alignItems: 'center',
 		flexDirection: 'row',
 		justifyContent: 'space-between',
+		maxWidth: Scroll_Width
 	},
 	informationContainer: {
 		flexDirection: 'column',
@@ -151,7 +153,7 @@ const styles = StyleSheet.create({
 	},
 	selectButtonContainer: {
 		height: '100%',
-		width: 30,
+		width: Btn_Width,
 		borderBottomRightRadius: 5,
 		borderTopRightRadius: 5,
 		backgroundColor: primary,
