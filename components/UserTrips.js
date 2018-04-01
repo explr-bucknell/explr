@@ -31,8 +31,19 @@ export default class UserTrips extends Component {
 
 	loadTrips = (trips) => {
 		const updatedTrips = []
+		const { isMyProfile, isFollowing } = this.props
 		if (trips && Object.keys(trips).length > 0) {
 			Object.keys(trips).forEach((tripId) => {
+				if (!isMyProfile) {
+					if (trips[tripId].permission === 'Only you') {
+						return
+					}
+				}
+				if (!isMyProfile && !isFollowing) {
+					if (trips[tripId].permission === 'Followers') {
+						return
+					}
+				}
 				trips[tripId].tripId = tripId
 				updatedTrips.push(trips[tripId])
 			})

@@ -115,6 +115,19 @@ export default class TripProfilePage extends Component {
         if (snapshot.numChildren() == 0) {
           self.sendJoinTripRequest()
         }
+        else {
+          var data = snapshot.val()
+          var found = false
+          for (let item of Object.keys(data)) {
+            if (data[item].data.tripId === tripId) {
+              found = true
+              break
+            }
+          }
+          if (!found) {
+            self.sendJoinTripRequest()
+          }
+        }
       })
     }
   }

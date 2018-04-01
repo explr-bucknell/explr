@@ -11,8 +11,7 @@ export default class SearchTags extends Component {
 
   state = {
     tagOrder: [],
-    tags: {},
-    expanded: null
+    tags: {}
   }
 
   componentDidMount() {
@@ -59,25 +58,12 @@ export default class SearchTags extends Component {
     })
   }
 
-  handleExpandCollapse = tag => {
-    if (this.state.expanded === tag) {
-      this.setState({
-        expanded: null
-      })
-    }
-    else {
-      this.setState({
-        expanded: tag
-      })
-    }
-  }
-
   render() {
     const { tags, tagOrder, expanded } = this.state
     return (
       <ScrollView style={styles.container}>
         {tagOrder.map((tag, i) => (
-          <TouchableOpacity key={i} style={styles.profileCard} onPress={() => {this.handleExpandCollapse(tag)}}>
+          <TouchableOpacity key={i} style={styles.profileCard} onPress={() => this.props.nav.navigate('TagPage', {tag: tag})}>
             <View style={styles.textWrapper}>
               <Text style={styles.name}>{'#' + tag}</Text>
               <Text style={styles.handle}>{tags[tag].count + ' trips total'}</Text>

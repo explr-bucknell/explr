@@ -16,14 +16,11 @@ import ConnectionsPage from './pages/ConnectionsPage'
 import ProfileEditPage from './pages/ProfileEditPage'
 import ChangePwdPage from './pages/ChangePwdPage'
 import SettingsPage from './pages/SettingsPage'
+import TagPage from './pages/TagPage'
 import { primary, white, transparentWhite } from './utils/colors'
 
 const DEVICE_WIDTH = Dimensions.get('window').width
 var searchEntry = ""
-
-const MapScreen = (props) => (
-	<MapNav screenProps={Object.assign({}, props.navigation, props.screenProps)}/>
-)
 
 const MapNavOpts = ({ navigation }) => ({
 	headerTitle: "EXPLR",
@@ -131,9 +128,21 @@ const TripMapPageOpts = ({ navigation }) => ({
 		</TouchableOpacity>,
 })
 
-const SearchScreen = ({ navigation }) => (
-	<SearchPage nav={navigation}/>
-)
+const CreateTripNavOpts = ({ navigation }) => ({
+	headerTitle: "New Trip",
+	headerStyle: {
+		backgroundColor: primary,
+		borderBottomWidth: 0,
+	},
+	headerTintColor: white,
+	headerRight:
+		<TouchableOpacity onPress={() => navigation.state.params.finishNewTrip && navigation.state.params.finishNewTrip()}>
+			<Ionicons
+					name='ios-checkmark'
+					style={{ color: white, marginRight: 15, fontSize: 45 }}
+		  	/>
+		</TouchableOpacity>
+})
 
 const SearchNavOpts = ({ navigation }) => ({
 	headerStyle: {
@@ -172,10 +181,6 @@ const SearchNavOpts = ({ navigation }) => ({
 		</TouchableOpacity>
 })
 
-const FollowersScreen = ({ navigation }) => (
-	<ConnectionsPage nav={navigation}/>
-)
-
 const FollowersNavOpts = ({ navigation }) => ({
 	headerTitle: "Followers",
 	headerStyle: {
@@ -185,10 +190,6 @@ const FollowersNavOpts = ({ navigation }) => ({
 	headerTintColor: white
 })
 
-const FollowingScreen = ({ navigation }) => (
-	<ConnectionsPage nav={navigation}/>
-)
-
 const FollowingNavOpts = ({ navigation }) => ({
 	headerTitle: "Following",
 	headerStyle: {
@@ -197,14 +198,6 @@ const FollowingNavOpts = ({ navigation }) => ({
 	},
 	headerTintColor: white
 })
-
-const ProfileScreen = ({ navigation }) => (
-	<ProfilePage nav={navigation}/>
-)
-
-const ProfileEditScreen = ({ navigation }) => (
-	<ProfileEditPage nav={navigation}/>
-)
 
 const ProfileEditNavOpts = ({ navigation }) => ({
 	headerTitle: "Edit Profile",
@@ -221,30 +214,6 @@ const ProfileEditNavOpts = ({ navigation }) => ({
 		  	/>
 		</TouchableOpacity>
 })
-
-const CreateTripScreen = ({ navigation }) => (
-	<CreateTripPage nav={navigation}/>
-)
-
-const CreateTripNavOpts = ({ navigation }) => ({
-	headerTitle: "New Trip",
-	headerStyle: {
-		backgroundColor: primary,
-		borderBottomWidth: 0,
-	},
-	headerTintColor: white,
-	headerRight:
-		<TouchableOpacity onPress={() => navigation.state.params.finishNewTrip && navigation.state.params.finishNewTrip()}>
-			<Ionicons
-					name='ios-checkmark'
-					style={{ color: white, marginRight: 15, fontSize: 45 }}
-		  	/>
-		</TouchableOpacity>
-})
-
-const ChangePwdScreen = ({ navigation }) => (
-	<ChangePwdPage nav={navigation}/>
-)
 
 const ChangePwdNavOpts = ({ navigation }) => ({
 	headerTitle: "Change Password",
@@ -279,6 +248,27 @@ const SettingsPageOpts = ({ navigation }) => ({
 		</TouchableOpacity>,
 })
 
+const TagPageOpts = ({ navigation }) => ({
+	headerTitle: `#${navigation.state.params.tag}`,
+	headerStyle: {
+		backgroundColor: primary,
+		borderBottomWidth: 0,
+	},
+	headerTintColor: white,
+	headerLeft:
+		<TouchableOpacity onPress={() => navigation.goBack(null)} style={{ paddingLeft: 10 }}>
+			<FontAwesome
+		      name='angle-left'
+		      size={35}
+		      style={{ color: white }}
+		    />
+		</TouchableOpacity>,
+})
+
+const MapScreen = (props) => (
+	<MapNav screenProps={Object.assign({}, props.navigation, props.screenProps)}/>
+)
+
 const LocationScreen = ({ navigation }) => (
 	<LocationProfile nav={navigation}/>
 )
@@ -295,8 +285,40 @@ const TripMapScreen = ({ navigation }) => (
 	<TripMapPage nav={navigation} />
 )
 
+const CreateTripScreen = ({ navigation }) => (
+	<CreateTripPage nav={navigation}/>
+)
+
+const SearchScreen = ({ navigation }) => (
+	<SearchPage nav={navigation}/>
+)
+
+const FollowersScreen = ({ navigation }) => (
+	<ConnectionsPage nav={navigation}/>
+)
+
+const FollowingScreen = ({ navigation }) => (
+	<ConnectionsPage nav={navigation}/>
+)
+
+const ProfileScreen = ({ navigation }) => (
+	<ProfilePage nav={navigation}/>
+)
+
+const ProfileEditScreen = ({ navigation }) => (
+	<ProfileEditPage nav={navigation}/>
+)
+
+const ChangePwdScreen = ({ navigation }) => (
+	<ChangePwdPage nav={navigation}/>
+)
+
 const SettingsScreen = ({ navigation }) => (
 	<SettingsPage nav={navigation} />
+)
+
+const TagScreen = ({ navigation }) => (
+	<TagPage nav={navigation} />
 )
 
 const MainNavigator = StackNavigator({
@@ -351,6 +373,10 @@ const MainNavigator = StackNavigator({
 	SettingsPage: {
 		screen: SettingsScreen,
 		navigationOptions: SettingsPageOpts
+	},
+	TagPage: {
+		screen: TagScreen,
+		navigationOptions: TagPageOpts
 	}
 })
 

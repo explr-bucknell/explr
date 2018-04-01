@@ -18,7 +18,7 @@ const MapScreen = (props) => (
 
 const TripsScreen = (props) => (
   <ScrollView style={{ flex: 1, backgroundColor: white }}>
-    <UserTrips {...props.screenProps} user/>
+    <UserTrips {...props.screenProps} isMyProfile={true} isFollowing={null} user />
   </ScrollView>
 )
 

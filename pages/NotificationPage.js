@@ -52,7 +52,7 @@ export default class NotificationPage extends React.Component {
 		var { uid, nav } = this.state
 		return (
 			<View style={styles.container}>
-				{Object.keys(notifications).map((id, i) => (
+				{Object.keys(notifications).sort((a,b) => notifications[a].time > notifications[b].time ? -1 : 1).map((id, i) => (
 					(notifications[id].type === 'FOLLOW_REQUEST' && <FollowRequest 
 						key={i} 
 						notificationId={id} 
