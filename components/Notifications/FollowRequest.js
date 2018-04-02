@@ -3,7 +3,7 @@ import { View, Image, Text, TouchableOpacity, StyleSheet } from 'react-native'
 import firebase from 'firebase'
 import { Ionicons } from '@expo/vector-icons'
 import { primary, white, gray, black } from '../../utils/colors'
-
+const APPROVED_ENDPOINT = 'https:///us-central1-senior-design-explr.cloudfunctions.net/sendFollowApprovalNotification/'
 export default class FollowRequest extends React.Component {
 	constructor(props) {
 		// props.uid
@@ -92,6 +92,18 @@ export default class FollowRequest extends React.Component {
   	ref.child(uid).update(newApproval).then(function() {
   		console.log("follow approval sent")
   	})
+		// SEND PUSH NOTIFICATION HERE
+		fetch(APPROVED_ENDPOINT, {
+			method: 'POST',
+			headers: {
+				Accept: 'application/json',
+				'Content-Type': 'application/json',
+			},
+			body:JSON.stringify({
+				newFollower:this.state.sender.uid, //sent the follow request
+				sendingApproval:this.props.uid //accepted the request
+			}),
+		})
 	}
 
 	render() {
