@@ -7,7 +7,8 @@ import { getTrip, getPOIAutocomplete, addLocationToTrip, calculateDistance, recr
 
 const { StatusBarManager } = NativeModules
 const STATUSBAR_HEIGHT = Platform.OS === 'ios' ? 20 : StatusBarManager.HEIGHT
-
+const REQUEST_JOIN = 'https:///us-central1-senior-design-explr.cloudfunctions.net/sendTripJoinRequestNotification/'
+const FOLLOW_TRIP = 'https:///us-central1-senior-design-explr.cloudfunctions.net/sendTripFollowNotification/'
 export default class TripPage extends Component {
 
   constructor (props) {
