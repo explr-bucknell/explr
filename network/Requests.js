@@ -307,3 +307,26 @@ export async function addAllLocations(tripId, tripName, locationArray) {
   }
   return;
 }
+
+//Delete a trip
+export async function deleteTrip(tripId) {
+	await firebase.database().ref(`trips/${tripID}`).set(null);
+}
+
+//Remove a location
+export async function removeLocation(tripId, locationID) {
+	await firebase.database().ref(`trips/${tripId}/locations/${locationID}`).set(null);
+
+	var numLocations = 0;
+	await firebase.database().ref(`trips/${tripId}/numLocs/`).transaction(function(numLocs) {
+		numLocations = numLocs;
+		return numLocs - 1;
+	});
+}
+
+//Mark a location as visited
+export async function markVisited(tripId, locationID) {
+  await firebase.database().ref(`trips/${tripId}/locations/${locationID}`).update({
+    visited: true
+  });
+}
