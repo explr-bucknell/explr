@@ -82,6 +82,12 @@ export async function addLocationToTrip(tripId, locationId, locationName) {
   });
 }
 
+export async function toggleVisited(tripId, locationId, visited) {
+  firebase.database().ref(`trips/${tripId}/locations/${locationId}`).update({
+    visited: visited
+  })
+}
+
 export async function getTrips(uid, callback) {
   firebase.database().ref('trips/').orderByChild('creator').equalTo(uid).on('value', function(snapshot) {
     if (snapshot.numChildren()) {

@@ -11,3 +11,4 @@ export const twitter = '#48B3FE';
 export const google = '#F2766A';
 export const liked = '#FF5A5F';
 export const compass = '#3E82F7';
+export const progress = '#26c940';

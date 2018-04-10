@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Image, Dimensions } from 'react-native'
 import { Ionicons } from '@expo/vector-icons'
-import { primary, white, transparentWhite, gray } from '../utils/colors'
+import { primary, white, transparentWhite, gray, progress } from '../utils/colors'
 import { getLocation } from '../network/Requests'
 
 var Scroll_Width = Dimensions.get('window').width * 0.83
@@ -139,7 +139,7 @@ const styles = StyleSheet.create({
 	},
 	progressBar: {
 		height: 3,
-		backgroundColor: '#26c940',
+		backgroundColor: progress,
 		borderBottomLeftRadius: 5,
  	},
 	locationIcon: {
