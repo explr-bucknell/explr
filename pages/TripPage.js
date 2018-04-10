@@ -62,10 +62,12 @@ export default class TripPage extends Component {
         tripLocations[trip.locations[locId].index] = trip.locations[locId]
       })
       trip.tripId = this.state.trip.tripId
+      this.setState({
+        tripLocations
+      })
       calculateDistance(tripLocations).then((distance) => {
         this.setState({
           distance,
-          tripLocations,
           trip,
           addingLocation: false
         })
@@ -146,7 +148,6 @@ export default class TripPage extends Component {
   }
 
   optimizeTripCallback = (newTripArray) => {
-    console.log(newTripArray)
     calculateDistance(newTripArray).then((distance) => {
       this.setState({distance, tripLocations: newTripArray})
     })
@@ -195,19 +196,24 @@ export default class TripPage extends Component {
           { this.state.editing ?
             <View style={styles.editSubmitContainer}>
               <View style={{position: 'absolute', left: 0}}>
-                <Button title='cancel'
+                <TouchableOpacity
                   onPress={() => this.setState({
                     tripLocations: this.state.oldTripLocations,
                     editing: !this.state.editing
                   })}
-                  color={white}
-                />
+                  style={styles.cancelSubmitButtonContainer}
+                >
+                  <Text style={{color: white, fontSize: 16}}>Cancel</Text>
+                </TouchableOpacity>
               </View>
               <View style={{position: 'absolute', right: 0}}>
-                <Button title={'submit'}
+                <TouchableOpacity
                   onPress={() => this.editOrSubmit()}
                   color={white}
-                />
+                  style={styles.cancelSubmitButtonContainer}
+                >
+                  <Text style={{color: white, fontSize: 16}}>Submit</Text>
+                </TouchableOpacity>
               </View>
             </View> :
             <View style={styles.toolbarContainer}>
@@ -363,6 +369,7 @@ const styles = StyleSheet.create({
   locationNameContainer: {
     justifyContent: 'center',
     alignItems: 'flex-start',
+    paddingLeft: 2
   },
   distanceContainer: {
     height: 50,
@@ -384,5 +391,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 10,
     marginRight: 10
+  },
+  cancelSubmitButtonContainer: {
+    backgroundColor: primary,
+    padding: 10,
+    justifyContent: 'center',
+    alignItems: 'center'
   }
 })
