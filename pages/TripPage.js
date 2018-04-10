@@ -1,9 +1,17 @@
 import React, { Component } from "react";
 import { StyleSheet, Text, View, ScrollView, TouchableOpacity, TextInput, Button, Platform, NativeModules } from 'react-native'
 import Modal from 'react-native-modal'
-import { white, primary, transparentWhite, gray } from '../utils/colors'
+import { white, primary, transparentWhite, gray, progress } from '../utils/colors'
 import { FontAwesome, Ionicons } from '@expo/vector-icons'
-import { getTrip, getPOIAutocomplete, addLocationToTrip, calculateDistance, recreateTrip, optimizeTrip } from '../network/Requests'
+import {
+  getTrip,
+  getPOIAutocomplete,
+  addLocationToTrip,
+  calculateDistance,
+  recreateTrip,
+  optimizeTrip,
+  toggleVisited
+} from '../network/Requests'
 
 const { StatusBarManager } = NativeModules
 const STATUSBAR_HEIGHT = Platform.OS === 'ios' ? 20 : StatusBarManager.HEIGHT
@@ -153,6 +161,13 @@ export default class TripPage extends Component {
     })
   }
 
+  toggleVisited (locId, index, visited) {
+    let { tripLocations } = this.state
+    tripLocations[index].visited = !visited
+    this.setState({ tripLocations })
+    toggleVisited(this.state.trip.tripId, locId, !visited)
+  }
+
   render () {
     let {trip, tripLocations} = this.state
     return (
@@ -244,11 +259,30 @@ export default class TripPage extends Component {
                   <Text style={{color: 'red'}}>Delete</Text>
                 </TouchableOpacity>
               }
+
+              {/* Location Name */}
+
               <View style={[this.state.editing && {width: '60%'}, styles.locationNameContainer]}>
-                <Text style={{fontSize: 15}}>
-                  {location.name.split(',')[0]}
-                </Text>
+                <TouchableOpacity style={!this.state.editing && {width: '75%'}}>
+                  <Text style={{fontSize: 15}}>
+                    {location.name.split(',')[0]}
+                  </Text>
+                </TouchableOpacity>
+                {!this.state.editing &&
+                  <TouchableOpacity
+                    style={styles.progressIndicator}
+                    onPress={() => this.toggleVisited(location.locId, location.index, location.visited)}>
+                      <View style={[location.visited ? {backgroundColor : progress} : {backgroundColor : white}, styles.visitedButton]}>
+                        <Text style={location.visited ? {color: white} : {color: progress}}>
+                          {location.visited ? 'visited' : 'not visited'}
+                        </Text>
+                      </View>
+                  </TouchableOpacity>
+                }
               </View>
+
+              {/* Editing */}
+
               {this.state.editing &&
                 <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
                   <TouchableOpacity style={[{marginRight: 10}, styles.moveTrip]}
@@ -302,8 +336,8 @@ const styles = StyleSheet.create({
   tripLocationsContainer: {
     borderTopWidth: 1,
     borderColor: primary,
-    height: '100%',
-    marginBottom: 50
+    paddingBottom: 200,
+    marginBottom: 100
   },
   tripLocation: {
     width: '96%',
@@ -367,9 +401,11 @@ const styles = StyleSheet.create({
     paddingLeft: 10
   },
   locationNameContainer: {
-    justifyContent: 'center',
-    alignItems: 'flex-start',
-    paddingLeft: 2
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingLeft: 5,
+    paddingRight: 5,
+    flexDirection: 'row'
   },
   distanceContainer: {
     height: 50,
@@ -397,5 +433,16 @@ const styles = StyleSheet.create({
     padding: 10,
     justifyContent: 'center',
     alignItems: 'center'
+  },
+  progressIndicator: {
+    width: '25%',
+    justifyContent: 'center',
+    alignItems: 'flex-end'
+  },
+  visitedButton: {
+    padding: 5,
+    borderWidth: 2,
+    borderColor: progress,
+    borderRadius: 5
   }
 })
