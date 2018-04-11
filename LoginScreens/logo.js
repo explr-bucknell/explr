@@ -12,7 +12,7 @@ export default class Logo extends Component {
 		return (
 			<View style={styles.container}>
 				<FontAwesome name="map" style={styles.logo}/>
-				<Text style={styles.text}>EXPLR</Text>
+				<Text style={styles.text}>XPLOR</Text>
 			</View>
 		);
 	}

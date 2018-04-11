@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { StyleSheet, Text, View, ScrollView, TouchableOpacity, TextInput, Button, Platform, NativeModules } from 'react-native'
 import Modal from 'react-native-modal'
-import { white, primary, transparentWhite, gray, progress } from '../utils/colors'
+import { white, primary, transparentWhite, gray, black, progress } from '../utils/colors'
 import { FontAwesome, Ionicons } from '@expo/vector-icons'
 import {
   getTrip,
@@ -169,7 +169,10 @@ export default class TripPage extends Component {
   }
 
   render () {
-    let {trip, tripLocations} = this.state
+    let { trip, tripLocations } = this.state
+    let { tripId, name, numLocs, tags, followers, participants, creator, permission } = trip
+    var numFollowers = followers ? Object.keys(followers).length : 0
+    var numParticipants = participants ? Object.keys(participants).length : 0
     return (
       <View style={{backgroundColor: white, height: '100%', position: 'relative'}}>
         <Modal
@@ -208,6 +211,26 @@ export default class TripPage extends Component {
           </View>
         </Modal>
         <View>
+          <View style={styles.profileContainer}>
+            <View style={styles.titleWrapper}>
+              <Text style={styles.name}>
+                { name.length < 25 ? name: (name.slice(0,22) + "...") }
+              </Text>
+              <TouchableOpacity onPress={() => this.props.nav.navigate('EditTripPage', { tripId: tripId, name: name, tags: tags, perm: permission })}>
+                <FontAwesome name='pencil-square-o' style={styles.handle}/>
+              </TouchableOpacity>
+            </View>
+            <Text style={styles.subTitle}>
+              { numLocs + ' locations \u00b7 ' + numFollowers + ' followers \u00b7 ' + numParticipants + ' participants' }
+            </Text>
+            { tags ? <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={styles.tagsContainer}>
+              { tags.map((tag, index) => (
+                <TouchableOpacity style={styles.tag} key={index}>
+                  <Text style={styles.tagTitle}>{'#' + tag}</Text>
+                </TouchableOpacity>
+              ))}
+            </ScrollView> : <View />}
+          </View>
           { this.state.editing ?
             <View style={styles.editSubmitContainer}>
               <View style={{position: 'absolute', left: 0}}>
@@ -326,6 +349,49 @@ export default class TripPage extends Component {
 }
 
 const styles = StyleSheet.create({
+  profileContainer: {
+    padding: 20
+  },
+  titleWrapper: {
+    flexDirection: 'row'
+  },
+  name: {
+    marginTop: 5,
+    fontSize: 20,
+    color: black,
+    fontWeight: 'bold'
+  },
+  handle: {
+    marginTop: 7,
+    fontSize: 20,
+    color: gray,
+    fontWeight: 'bold',
+    marginLeft: 10
+  },
+  subTitle: {
+    marginTop: 10,
+    color: black
+  },
+  tagsContainer: {
+    flexDirection: 'row',
+    marginTop: 20
+  },
+  tag: {
+    alignItems: 'center',
+    backgroundColor: primary + '77',
+    borderColor: primary + '55',
+    borderRadius: 20,
+    borderWidth: 1,
+    paddingHorizontal: 10,
+    paddingVertical: 3,
+    marginBottom: 8,
+    marginRight: 6,
+  },
+  tagTitle: {
+    color: black,
+    fontSize: 15,
+    fontWeight: 'normal',
+  },
   editSubmitContainer: {
     width: '100%',
     height: 50,

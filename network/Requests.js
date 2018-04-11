@@ -57,6 +57,36 @@ export async function createTripWithLocation(uid, tripName, tripTags, permission
   })
 }
 
+export async function editTrip(tripId, name, tags, permission, oldTags) {
+  await firebase.database().ref(`trips/${tripId}/`).update({
+    name: name,
+    tags: tags,
+    permission: permission
+  })
+
+  tags.forEach(tag => {
+    if (oldTags.indexOf(tag) === -1) {
+      firebase.database().ref(`tags/${tag}/trips`).update({
+        [tripId]: Date.now()
+      })
+      firebase.database().ref(`tags/${tag}/count`).transaction(function(count) {
+        count = count ? count + 1 : 1
+        return count
+      })
+    }
+  })
+
+  oldTags.forEach(tag => {
+    if (tags.indexOf(tag) === -1) {
+      firebase.database().ref(`tags/${tag}/trips/${tripId}`).set(null)
+      firebase.database().ref(`tags/${tag}/count`).transaction(function(count) {
+        count = count > 0 ? count - 1 : 0
+        return count
+      })
+    }
+  })
+}
+
 //Add a new location to a trip
 export async function addLocationToTrip(tripId, locationId, locationName) {
   var exist = false

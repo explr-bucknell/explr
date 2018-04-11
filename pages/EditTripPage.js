@@ -3,25 +3,28 @@ import { View, Text, StyleSheet, TouchableOpacity, TextInput } from 'react-nativ
 import Modal from 'react-native-modal'
 import { SegmentedControls } from 'react-native-radio-buttons'
 import Tags from '../components/Tags'
-import { createTrip, createTripWithLocation } from '../network/Requests'
+import { editTrip } from '../network/Requests'
 import { white, primary, transparentWhite } from '../utils/colors'
 
 const options = ["Only you", "Followers", "Everyone"]
 
-export default class CreateTripPage extends Component {
+export default class EditTripPage extends Component {
   constructor(props) {
     super(props)
   }
 
+  oldTags = this.props.nav.state.params.tags
+  tripId = this.props.nav.state.params.tripId
+
   state = {
-    name: '',
-    tags: [],
-    selectedOption: options[0],
+    name: this.props.nav.state.params.name,
+    tags: this.props.nav.state.params.tags,
+    selectedOption: this.props.nav.state.params.perm,
     showAlert: false
   }
 
   componentDidMount() {
-    this.props.nav.setParams({ finishNewTrip: this.finishNewTrip })
+    this.props.nav.setParams({ finishEditTrip: this.finishEditTrip })
   }
 
   handleNameChange = name => {
@@ -60,7 +63,7 @@ export default class CreateTripPage extends Component {
     })
   }
 
-  finishNewTrip = () => {
+  finishEditTrip = () => {
     let { name, tags, selectedOption } = this.state
     if (!name) {
       this.setState({
@@ -68,39 +71,31 @@ export default class CreateTripPage extends Component {
       })
       return
     }
-    let { adding, uid, locationId, locationName } = this.props.nav.state.params
-    if (!adding) {
-      createTrip(uid, name, tags, selectedOption)
-      .then(() => {
-        this.props.nav.goBack()
-      })
-    } else {
-      createTripWithLocation (
-        uid,
-        name,
-        tags,
-        selectedOption,
-        locationId,
-        locationName
-      )
-      .then(() => {
-        this.props.nav.goBack()
-      })
-    }
+    editTrip(
+      this.tripId, 
+      name, 
+      tags, 
+      selectedOption, 
+      this.oldTags
+    ).then(() => {
+      this.props.nav.goBack()
+    })
   }
 
   render() {
+    let { name, tags, selectedOption, showAlert } = this.state
     return (
       <View style={styles.container}>
-        <Text style={styles.text}>Enter Trip Name:</Text>
+        <Text style={styles.text}>Edit Trip Name:</Text>
         <TextInput
           style={styles.input}
+          value={name}
           onChangeText={(name) => this.handleNameChange(name)}
         />
-        <Text style={this.state.showAlert ? styles.showAlert : styles.hideAlert}>Please enter a name!</Text>
-        <Text style={styles.text}>Add Trip Tags (separate by a space):</Text>
+        <Text style={showAlert ? styles.showAlert : styles.hideAlert}>Please enter a name!</Text>
+        <Text style={styles.text}>Edit Trip Tags (separate by a space):</Text>
         <Tags
-          tags={this.state.tags}
+          tags={tags}
           addNewTag={this.addNewTag}
           removeTag={this.removeTag}
         />
@@ -109,7 +104,7 @@ export default class CreateTripPage extends Component {
           containerStyle={ styles.segmentSelect }
           options={ options }
           onSelection={ this.setSelectedOption.bind(this) }
-          selectedOption={ this.state.selectedOption }
+          selectedOption={ selectedOption }
           tint={ white }
           backTint={ primary }
           selectedTint={ primary }

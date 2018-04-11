@@ -11,6 +11,7 @@ import LocationProfile from './pages/LocationProfile'
 import TripProfilePage from './pages/TripProfilePage'
 import TripPage from './pages/TripPage'
 import CreateTripPage from './pages/CreateTripPage'
+import EditTripPage from './pages/EditTripPage'
 import TripMapPage from './pages/TripMapPage'
 import ConnectionsPage from './pages/ConnectionsPage'
 import ProfileEditPage from './pages/ProfileEditPage'
@@ -23,7 +24,7 @@ const DEVICE_WIDTH = Dimensions.get('window').width
 var searchEntry = ""
 
 const MapNavOpts = ({ navigation }) => ({
-	headerTitle: "EXPLR",
+	headerTitle: "XPLOR",
 	headerStyle: {
 		backgroundColor: primary,
 		borderBottomWidth: 0,
@@ -41,7 +42,7 @@ const MapNavOpts = ({ navigation }) => ({
 })
 
 const LocationPageOpts = ({ navigation }) => ({
-	headerTitle: "EXPLR",
+	headerTitle: "XPLOR",
 	headerStyle: {
 		backgroundColor: primary,
 		borderBottomWidth: 0,
@@ -112,7 +113,7 @@ const TripPageOpts = ({ navigation }) => ({
 })
 
 const TripMapPageOpts = ({ navigation }) => ({
-	headerTitle: `EXPLR: ${navigation.state.params.trip.name}`,
+	headerTitle: `XPLOR: ${navigation.state.params.trip.name}`,
 	headerStyle: {
 		backgroundColor: primary,
 		borderBottomWidth: 0,
@@ -137,6 +138,22 @@ const CreateTripNavOpts = ({ navigation }) => ({
 	headerTintColor: white,
 	headerRight:
 		<TouchableOpacity onPress={() => navigation.state.params.finishNewTrip && navigation.state.params.finishNewTrip()}>
+			<Ionicons
+					name='ios-checkmark'
+					style={{ color: white, marginRight: 15, fontSize: 45 }}
+		  	/>
+		</TouchableOpacity>
+})
+
+const EditTripNavOpts = ({ navigation }) => ({
+	headerTitle: "Edit Trip",
+	headerStyle: {
+		backgroundColor: primary,
+		borderBottomWidth: 0,
+	},
+	headerTintColor: white,
+	headerRight:
+		<TouchableOpacity onPress={() => navigation.state.params.finishEditTrip && navigation.state.params.finishEditTrip()}>
 			<Ionicons
 					name='ios-checkmark'
 					style={{ color: white, marginRight: 15, fontSize: 45 }}
@@ -290,6 +307,10 @@ const CreateTripScreen = ({ navigation }) => (
 	<CreateTripPage nav={navigation}/>
 )
 
+const EditTripScreen = ({ navigation }) => (
+	<EditTripPage nav={navigation}/>
+)
+
 const SearchScreen = ({ navigation }) => (
 	<SearchPage nav={navigation}/>
 )
@@ -362,6 +383,10 @@ const MainNavigator = StackNavigator({
 	CreateTripPage: {
 		screen: CreateTripScreen,
 		navigationOptions: CreateTripNavOpts
+	},
+	EditTripPage: {
+		screen: EditTripScreen,
+		navigationOptions: EditTripNavOpts
 	},
 	TripMapPage: {
 		screen: TripMapScreen,
