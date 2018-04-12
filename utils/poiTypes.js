@@ -10,8 +10,8 @@ export const types = {
     defaultPic: 'http://www.documenta14.de/images/d14_Karlsaue_%C2%A9_Mathias_Voelzke-web-001.jpg,1440'
   },
   'National Monument': {
-    color: 'white',
-    name: 'National Monument',
+    color: 'gray',
+    name: 'National Monuments',
     defaultPic: 'https://fthmb.tqn.com/tfJOLgbh4KvCvLyMvZztg3UJ3pI=/960x0/filters:no_upscale()/GettyImages-117480544-56d897c83df78c5ba022fac4.jpg'
   },
   museum: {
@@ -35,7 +35,7 @@ export const types = {
     defaultPic: 'https://media.timeout.com/images/101850531/630/472/image.jpg'
   },
   bar: {
-    color: 'brown',
+    color: '#a56c10',
     name: 'Bars',
     defaultPic: 'https://en.wikipedia.org/wiki/Bar#/media/File:Bar-P1030319.jpg'
   },
@@ -45,8 +45,8 @@ export const types = {
     defaultPic: 'https://www.fs.usda.gov/Internet/FSE_MEDIA/stelprdb5115421.jpg'
   },
   library: {
-    color: 'yellow',
-    name: 'Library',
+    color: '#e8c727',
+    name: 'Libraries',
     defaultPic: 'https://www.sciencenewsforstudents.org/sites/default/files/2017/05/main/blogposts/860_main_library_bacteria.png'
   },
   movie_theater: {
@@ -70,6 +70,7 @@ export const types = {
     defaultPic: 'https://res.klook.com/images/fl_lossy.progressive,q_65/c_fill,w_1295,h_720,f_auto/w_80,x_15,y_15,g_south_west,l_klook_water/activities/51985f29-Singapore-Zoo-Breakfast/SingaporeZooBreakfast.jpg'
   },
   'undefined': {
-    color: 'orange'
+    color: 'orange',
+    name: 'Other'
   }
 }

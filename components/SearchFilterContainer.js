@@ -1,84 +1,43 @@
 import React, { Component } from 'react'
 import { StyleSheet, ScrollView } from 'react-native'
 import SearchFilterOption from './SearchFilterOption'
+import { types } from '../utils/poiTypes'
 
 export default class SearchFilterContainer extends Component {
 
   constructor () {
     super ()
     this.state = {
-      filterOptions: {
-        park: {
-          color: 'green',
-          name: 'Parks'
-        },
-        museum: {
-          color: 'blue',
-          name: 'Museums'
-        },
-        amusement_park: {
-          color: 'purple',
-          name: 'Amusement Parks'
-        },
-        aquarium: {
-          color: 'lightblue',
-          name: 'Aquariums'
-        },
-        art_gallery: {
-          color: 'red',
-          name: 'Art Galleries'
-        },
-        bar: {
-          color: 'brown',
-          name: 'Bars'
-        },
-        campground: {
-          color: '#b22222',
-          name: 'Campgrounds'
-        },
-        library: {
-          color: 'yellow',
-          name: 'Library'
-        },
-        movie_theater: {
-          color: '#a30b0b',
-          name: 'Movie Theaters'
-        },
-        restaurant: {
-          color: '#d36a02',
-          name: 'Restaurants'
-        },
-        stadium: {
-          color: 'silver',
-          name: 'Stadiums'
-        },
-        zoo: {
-          color: 'black',
-          name: 'Zoos'
-        }
-      },
-      selectedFilter: 'park'
+      selectedFilters: []
     }
   }
 
-  handleFilterPress (selectedFilter) {
-    if (this.state.selectedFilter != selectedFilter) {
-      this.setState({ selectedFilter })
-      this.props.handleFilterPress(selectedFilter)
+  toggleFilter (filterType) {
+    let { selectedFilters } = this.state
+    let newFilters = []
+    if (selectedFilters.includes(filterType)){
+      const index = selectedFilters.indexOf(filterType)
+      newFilters = selectedFilters.slice(0, index).concat(selectedFilters.slice(index + 1, selectedFilters.length))
+    } else {
+      newFilters = selectedFilters.concat([filterType])
     }
+    this.setState({ selectedFilters: newFilters})
+    this.props.updateFilters(newFilters)
   }
 
   render () {
+    let { filters } = this.props
     return (
       <ScrollView horizontal style={styles.filterContainer}>
         {
-          Object.keys(this.state.filterOptions).map((categoryName, index) =>
+          Object.keys(filters).map((filterType, index) =>
             <SearchFilterOption
-              color={this.state.filterOptions[categoryName].color}
-              filterName={this.state.filterOptions[categoryName].name}
               key={index}
-              selected={categoryName === this.state.selectedFilter ? true : false}
-              handleFilterPress={() => this.handleFilterPress(categoryName)}
+              color={types[filterType].color}
+              filterName={types[filterType].name}
+              selected={this.state.selectedFilters.includes(filterType)}
+              handleFilterPress={() => this.toggleFilter(filterType)}
+              quantity={filters[filterType]}
             />
           )
         }
