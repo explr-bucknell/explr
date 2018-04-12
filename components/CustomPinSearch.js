@@ -50,10 +50,11 @@ class CustomPinSearchContainer extends React.Component {
 }
 
 export default class CustomPinSearch extends Component {
-  constructor () {
-    super()
+  constructor (props) {
+    super(props)
     this.state = {
       customPinSearchResults: [],
+      selectedFilters: [],
       selectedOption: 'blah'
     }
   }
@@ -81,7 +82,8 @@ export default class CustomPinSearch extends Component {
     return (
       <CustomPinSearchContainer style={styles.customPinSearchContainer}>
         <SearchFilterContainer
-          handleFilterPress={(selectedFilter) => this.props.handleFilterPress(selectedFilter)}
+          filters={this.props.types}
+          updateFilters={(selectedFilters) => this.props.updateSelectedFilters(selectedFilters)}
         />
         <View style={styles.customPinBanner}>
           <TouchableOpacity
@@ -96,10 +98,10 @@ export default class CustomPinSearch extends Component {
           <TouchableOpacity
             onPress={() => {this.state.selectedOption != 'blah' && this.props.poiSubmit()}}>
       			<Ionicons
-      		      name='md-checkmark'
-      		      size={25}
-      		      style={{ color: 'white', marginRight: 15, marginTop: 3 }}
-      		    />
+    		      name='md-checkmark'
+    		      size={25}
+    		      style={{ color: 'white', marginRight: 15, marginTop: 3 }}
+    		    />
       		</TouchableOpacity>
         </View>
         <ScrollView style={styles.resultsContainer}>

@@ -158,7 +158,26 @@ export async function getLocation (locationId) {
   }
 }
 
-export async function getPOIFromLatLng (lat, lng, selectedFilter) {
+export async function getPOIFromLatLng (lat, lng) {
+  let results = []
+  try {
+    let pointsOfInterest = await fetch(
+      `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${lat},${lng}&radius=500&key=${config.apiKey}`
+    )
+    let poiJson = await pointsOfInterest.json();
+    poiJson.results.forEach((poi) => {
+      var type = getMatchingType(poi['types'])
+      if (type != 'undefined') {
+        results.push(poi)
+      }
+    })
+    return results
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+export async function getPOIFromLatLngWithFilter (lat, lng, selectedFilter) {
   try {
     let pointsOfInterest = await fetch(
       `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${lat},${lng}&radius=500&type=${selectedFilter}&key=${config.apiKey}`
@@ -206,13 +225,13 @@ export async function makePhotoRequest (photoReference) {
   }
 }
 
-function getMatchingType (poiTypes) {
+export function getMatchingType (poiTypes) {
   for (i = 0; i < poiTypes.length; i++) {
     if (Object.keys(types).includes(poiTypes[i])) {
       return poiTypes[i]
     }
   }
-  return 'park'
+  return 'undefined'
 }
 
 export async function submitPoiToFirebase (poi, photoUrl) {

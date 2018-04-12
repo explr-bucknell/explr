@@ -22,10 +22,11 @@ import {
   getPOIFromLatLng,
   getPOIDetails,
   makePhotoRequest,
-  submitPoiToFirebase
+  submitPoiToFirebase,
+  getMatchingType
 } from '../network/Requests'
-import SearchFilterOption from '../components/SearchFilterOption'
 import CustomPinSearch from '../components/CustomPinSearch'
+import CategoryFilter from '../components/CategoryFilter'
 import { primary, white, gray, compass } from '../utils/colors'
 import { types } from '../utils/poiTypes'
 
@@ -43,13 +44,18 @@ export default class MapPage extends Component {
         longitudeDelta: 0.0421,
       },
       locations: {},
+      filteredLocations: {},
       types: {},
+      customPinFilterTypes: {},
+      customPinSelectedFilters: [],
       customPinSearchCoords: {},
       editingCustomPin: false,
       customPinSearchResults: [],
+      filteredCustomPinSearchResults: [],
       selectedFilter: 'park',
       selectedPOI: {},
-      atCurrentLocation: false
+      atCurrentLocation: false,
+      filters: []
     }
   }
 
@@ -75,26 +81,6 @@ export default class MapPage extends Component {
     else {
       this.getCurrentLocation()
     }
-
-    /*
-    getLocations("pois").then((data) => {
-      locations = data
-      this.setState({
-        locations: locations
-      })
-    })
-
-    let locations = this.state.locations
-    Object.keys(this.state.locationTypes).forEach((locationType) => (
-      getLocations (locationType)
-        .then((data) => {
-          locations[locationType] = data
-          this.setState({
-            locations: locations
-          })
-        })
-    ))
-    */
   }
 
   async getCurrentLocation() {
@@ -129,7 +115,7 @@ export default class MapPage extends Component {
             locations[poiSnapshot.key] = poiSnapshot.val()
           }
         });
-        self.setState({ locations })
+        self.setState({ locations, filteredLocations: locations })
 
         var POIs = {};
         for (var key in locations) {
@@ -149,6 +135,24 @@ export default class MapPage extends Component {
       } else {
       }
     })
+    this.filterLocations()
+  }
+
+  filterLocations () {
+    let { filters, locations } = this.state
+    let filteredLocations = {}
+    if (filters.length > 0) {
+      Object.keys(locations).forEach((locId) => {
+        if (filters.includes(locations[locId].type)) {
+          filteredLocations[locId] = locations[locId]
+        } else if (locations[locId].type === undefined && filters.includes('undefined')) {
+          filteredLocations[locId] = locations[locId]
+        }
+      })
+    } else {
+      filteredLocations = locations
+    }
+    this.setState({ filteredLocations })
   }
 
   dropPin (coords) {
@@ -162,11 +166,22 @@ export default class MapPage extends Component {
   }
 
   searchForPOI (coords) {
-    getPOIFromLatLng(coords.latitude, coords.longitude, this.state.selectedFilter)
-      .then((data) => {
+    getPOIFromLatLng(coords.latitude, coords.longitude)
+      .then((locations) => {
+        var POIs = {}
+        locations.forEach((location) => {
+          var locType = getMatchingType(location['types'])
+          if (POIs.hasOwnProperty(locType)) {
+            POIs[locType] += 1
+          } else {
+            POIs[locType] = 1
+          }
+        })
         this.setState({
-          customPinSearchResults: data.results,
-          customPinSearchCoords: coords
+          customPinSearchResults: locations,
+          filteredCustomPinSearchResults: locations,
+          customPinSearchCoords: coords,
+          customPinFilterTypes: POIs
         })
       })
   }
@@ -187,6 +202,23 @@ export default class MapPage extends Component {
     }, () => {
       this.searchForPOI(this.state.customPinSearchCoords)
     })
+  }
+
+  filterCustomPinResults (customPinSelectedFilters) {
+    let { customPinSearchResults } = this.state
+    let filteredResults = []
+    if (customPinSelectedFilters.length > 0) {
+      customPinSearchResults.forEach((location) => {
+        var type = getMatchingType(location['types'])
+        if (customPinSelectedFilters.includes(type)) {
+          filteredResults.push(location)
+        }
+      })
+    } else {
+      filteredResults = customPinSearchResults
+    }
+    console.log(filteredResults)
+    this.setState({ filteredCustomPinSearchResults: filteredResults })
   }
 
   cancelCustomPin () {
@@ -240,8 +272,12 @@ export default class MapPage extends Component {
     })
   }
 
+  updateFilters (filters) {
+    this.setState({ filters }, () => this.filterLocations())
+  }
+
   render() {
-    var locations = this.state.locations
+    let { locations, filteredLocations } = this.state
     return (
       <View style={styles.container}>
         <MapView
@@ -251,8 +287,8 @@ export default class MapPage extends Component {
           onRegionChangeComplete={(region) => this.onRegionChangeComplete(region)}
           onLongPress={e => this.dropPin(e.nativeEvent.coordinate)}
         >
-          { Object.keys(locations).length > 0 &&
-            Object.keys(locations).map((locationId, index) =>
+          { Object.keys(filteredLocations).length > 0 &&
+            Object.keys(filteredLocations).map((locationId, index) =>
               <MapView.Marker
                 key={index}
                 coordinate={{
@@ -282,15 +318,34 @@ export default class MapPage extends Component {
             />
           }
         </MapView>
+
+        {/* Category Filter */}
+
+        <View style={{position: 'absolute', top: 0, width: '100%', height: 50}}>
+          <CategoryFilter
+            types={this.state.types}
+            updateFilters={(filters) => this.updateFilters(filters)}
+          />
+        </View>
+
+
         { this.state.editingCustomPin &&
           <CustomPinSearch
-            handleFilterPress={(categoryName) => this.handleFilterPress(categoryName)}
+            types={this.state.customPinFilterTypes}
+            updateSelectedFilters={(selectedFilters) => this.filterCustomPinResults(selectedFilters)}
             handleOptionSelect={(selectedOption) => this.handlePOISelect(selectedOption)}
-            customPinSearchResults={this.state.customPinSearchResults}
+            customPinSearchResults={this.state.filteredCustomPinSearchResults}
             onCancel={() => this.cancelCustomPin()}
             poiSubmit={() => this.submitPoi()}
           />
         }
+        <TouchableOpacity style={styles.customPinButtonWrapper}
+          onPress={() => this.dropPin({
+            latitude: this.state.region.latitude,
+            longitude: this.state.region.longitude
+          })}>
+          <FontAwesome name='map-pin' style={styles.compass}/>
+        </TouchableOpacity>
         <TouchableOpacity style={styles.compassWrapper} onPress={() => { this.getCurrentLocation() }}>
           <FontAwesome name='location-arrow' style={styles.compass}/>
         </TouchableOpacity>
@@ -364,6 +419,22 @@ const styles = StyleSheet.create({
     backgroundColor: white,
     position: 'absolute',
     right: 15,
+    bottom: 15,
+    shadowColor: gray,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.8,
+    shadowRadius: 2,
+    elevation: 1
+  },
+  customPinButtonWrapper: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: white,
+    position: 'absolute',
+    left: 15,
     bottom: 15,
     shadowColor: gray,
     shadowOffset: { width: 0, height: 2 },
