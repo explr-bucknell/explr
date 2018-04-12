@@ -217,7 +217,6 @@ export default class MapPage extends Component {
     } else {
       filteredResults = customPinSearchResults
     }
-    console.log(filteredResults)
     this.setState({ filteredCustomPinSearchResults: filteredResults })
   }
 
