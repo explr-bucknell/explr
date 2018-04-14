@@ -80,8 +80,10 @@ export async function editTrip(tripId, name, tags, permission, oldTags) {
     if (tags.indexOf(tag) === -1) {
       firebase.database().ref(`tags/${tag}/trips/${tripId}`).set(null)
       firebase.database().ref(`tags/${tag}/count`).transaction(function(count) {
-        count = count > 0 ? count - 1 : 0
-        return count
+        if (count > 1) {
+          return count - 1
+        }
+        return null
       })
     }
   })
@@ -358,8 +360,35 @@ export async function addAllLocations(tripId, tripName, locationArray) {
 }
 
 //Delete a trip
-export async function deleteTrip(tripId) {
-	await firebase.database().ref(`trips/${tripID}`).set(null);
+export function deleteTrip(tripId) {
+	firebase.database().ref(`trips/${tripId}`).once('value', function(snapshot) {
+    if (snapshot.numChildren()) {
+      var trip = snapshot.val()
+      var followers = trip.followers ? Object.keys(trip.followers) : []
+      var participants = trip.participants ? Object.keys(trip.participants) : []
+      var tags = trip.tags ? trip.tags : []
+
+      followers.forEach(follower => {
+        firebase.database().ref(`users/main/${follower}/followedTrips/${tripId}`).set(null)
+      })
+
+      participants.forEach(participant => {
+        firebase.database().ref(`users/main/${participant}/joinedTrips/${tripId}`).set(null)
+      })
+
+      tags.forEach(tag => {
+        firebase.database().ref(`tags/${tag}/trips/${tripId}`).set(null)
+        firebase.database().ref(`tags/${tag}/count`).transaction(function(count) {
+          if (count > 1) {
+            return count - 1
+          }
+          return null
+        })
+      })
+
+      firebase.database().ref(`trips/${tripId}`).set(null)
+    }
+  });
 }
 
 //Remove a location
