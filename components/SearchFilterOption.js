@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { StyleSheet, Text, View, Image, TouchableOpacity, TouchableHighlight } from 'react-native'
-import { primary, white, liked } from '../utils/colors'
+import { primary, white, gray, black, liked, transparentWhite } from '../utils/colors'
 
 export default class SearchFilterOption extends Component {
   render () {
@@ -14,7 +14,7 @@ export default class SearchFilterOption extends Component {
       }
       onPress={this.props.handleFilterPress}
       >
-        <Text style={this.props.selected ? {color: 'white'} : { color: 'black' }}>
+        <Text style={this.props.selected ? {color: white} : { color: black }}>
           {this.props.filterName} ({this.props.quantity})
         </Text>
       </TouchableOpacity>
@@ -24,13 +24,18 @@ export default class SearchFilterOption extends Component {
 
 const styles = StyleSheet.create({
   optionContainer: {
-    borderWidth: 1,
     borderRadius: 7,
-    backgroundColor: white,
     padding: 10,
     margin: 5,
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
+    shadowColor: gray,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.8,
+    shadowRadius: 2,
+    elevation: 1,
+    backgroundColor: transparentWhite,
+    borderWidth: 1
   },
   selectedContainer: {
     borderColor: white,

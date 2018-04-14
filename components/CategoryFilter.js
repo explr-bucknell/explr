@@ -8,7 +8,7 @@ import {
   ScrollView,
   TouchableOpacity
 } from 'react-native'
-import { primary, white } from '../utils/colors'
+import { primary, white, gray } from '../utils/colors'
 import { types } from '../utils/poiTypes'
 import SearchFilterOption from './SearchFilterOption'
 import { Ionicons } from '@expo/vector-icons'
@@ -42,36 +42,35 @@ export default class CategoryFilter extends Component {
   }
 
   render () {
-    let { selectedFilters } = this.state
+    let { selectingFilters, selectedFilters } = this.state
     return (
-      <ScrollView horizontal>
-        {this.state.selectingFilters &&
+      <ScrollView horizontal scrollEnabled={selectingFilters}>
+        {selectingFilters &&
           <TouchableOpacity
             style={styles.selectFilterButton}
             onPress={() =>
               this.setState({
-                selectedFilters: [],
                 selectingFilters: false
-              }, () => this.props.updateFilters([]))
+              })
             }
           >
-            <Text>X</Text>
+            <Ionicons name='ios-arrow-back' size={20}/>
           </TouchableOpacity>
         }
         <TouchableOpacity
           style={styles.selectFilterButton}
-          onPress={() => this.state.selectingFilters ?
+          onPress={() => selectingFilters ?
             this.setState({ selectedFilters: [] }, () => this.props.updateFilters([])) :
             this.setState({selectingFilters: true})}
         >
-          {this.state.selectingFilters ?
+          {selectingFilters ?
             <Text>Clear Filters</Text> :
             <View style={{paddingLeft: 2, paddingRight: 2}}>
               <Ionicons name='ios-options' size={20}/>
             </View>
           }
         </TouchableOpacity>
-        {this.state.selectingFilters && Object.keys(this.state.types).map((filterType, index) =>
+        {selectingFilters && Object.keys(this.state.types).map((filterType, index) =>
           <SearchFilterOption
             handleFilterPress={() => this.toggleFilter(filterType)}
             color={types[filterType].color}
@@ -93,12 +92,16 @@ const styles = StyleSheet.create({
     height: 50
   },
   selectFilterButton: {
-    borderWidth: 1,
     borderRadius: 7,
     backgroundColor: white,
     padding: 10,
     margin: 5,
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
+    shadowColor: gray,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.8,
+    shadowRadius: 2,
+    elevation: 1
   }
 })

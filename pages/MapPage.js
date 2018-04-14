@@ -115,7 +115,7 @@ export default class MapPage extends Component {
             locations[poiSnapshot.key] = poiSnapshot.val()
           }
         });
-        self.setState({ locations, filteredLocations: locations })
+        let { locs, fLocs } = self.filterLocations(locations)
 
         var POIs = {};
         for (var key in locations) {
@@ -126,20 +126,21 @@ export default class MapPage extends Component {
             POIs[retTypes] += 1;;
           }
         }
-        var keysSorted = Object.keys(POIs).sort(function(a,b){return POIs[a]-POIs[b]})
+        var keysSorted = Object.keys(POIs).sort(function(a,b){return POIs[b]-POIs[a]})
         var types = {};
         for (var i = 0; i < keysSorted.length; i++) {
           types[keysSorted[i]] = POIs[keysSorted[i]];
         }
-        self.setState({ types });
-      } else {
+
+        if (self.state.region === region) {
+          self.setState({ locations: locs, filteredLocations: fLocs, types });
+        }
       }
     })
-    this.filterLocations()
   }
 
-  filterLocations () {
-    let { filters, locations } = this.state
+  filterLocations (locations) {
+    let { filters } = this.state
     let filteredLocations = {}
     if (filters.length > 0) {
       Object.keys(locations).forEach((locId) => {
@@ -152,7 +153,7 @@ export default class MapPage extends Component {
     } else {
       filteredLocations = locations
     }
-    this.setState({ filteredLocations })
+    return {locs: locations, fLocs: filteredLocations}
   }
 
   dropPin (coords) {
@@ -191,8 +192,7 @@ export default class MapPage extends Component {
       this.centerChosenPOI = false
     }
     else {
-      this.setState({ region })
-      this.runGeoQuery(region);
+      this.setState({ region }, this.runGeoQuery(region))
     }
   }
 
@@ -272,7 +272,12 @@ export default class MapPage extends Component {
   }
 
   updateFilters (filters) {
-    this.setState({ filters }, () => this.filterLocations())
+    this.setState({ filters }, () => {
+      let { locs, fLocs } = this.filterLocations(this.state.locations)
+      this.setState({
+        filteredLocations: fLocs
+      })
+    })
   }
 
   render() {
