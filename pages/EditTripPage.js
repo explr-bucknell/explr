@@ -1,12 +1,14 @@
 import React, { Component } from 'react'
-import { View, Text, StyleSheet, TouchableOpacity, TextInput } from 'react-native'
+import { View, Text, StyleSheet, TouchableOpacity, TextInput, Dimensions, Alert } from 'react-native'
 import Modal from 'react-native-modal'
 import { SegmentedControls } from 'react-native-radio-buttons'
 import Tags from '../components/Tags'
-import { editTrip } from '../network/Requests'
-import { white, primary, transparentWhite } from '../utils/colors'
+import { editTrip, deleteTrip } from '../network/Requests'
+import { white, primary, transparentWhite, liked } from '../utils/colors'
 
 const options = ["Only you", "Followers", "Everyone"]
+
+const WIDTH = Dimensions.get('window').width
 
 export default class EditTripPage extends Component {
   constructor(props) {
@@ -82,6 +84,12 @@ export default class EditTripPage extends Component {
     })
   }
 
+  onDeletePressed = () => {
+    deleteTrip(this.tripId)
+    this.props.nav.state.params.onDeleteTrip()
+    this.props.nav.goBack()
+  }
+
   render() {
     let { name, tags, selectedOption, showAlert } = this.state
     return (
@@ -113,6 +121,22 @@ export default class EditTripPage extends Component {
           separatorTint={ transparentWhite }
           separatorWidth={ 1 }
         />
+        <TouchableOpacity 
+          style={styles.deleteBtn} 
+          onPress={() => {
+            Alert.alert(
+              `Delete ${name}?`,
+              '',
+              [
+                {text: 'Cancel', onPress: null, style: 'cancel'},
+                {text: 'OK', onPress: () => this.onDeletePressed()},
+              ],
+              { cancelable: false }
+            )
+          }}
+          >
+          <Text style={styles.btnText}>Delete Trip</Text>
+        </TouchableOpacity> 
       </View>
     )
   }
@@ -150,5 +174,18 @@ const styles = StyleSheet.create({
   },
   hideAlert: {
     display: 'none'
+  },
+  deleteBtn: {
+    marginTop: 30,
+    height: 35,
+    borderRadius: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: WIDTH - 40,
+    backgroundColor: liked
+  },
+  btnText: {
+    color: white,
+    fontSize: 15
   }
 })

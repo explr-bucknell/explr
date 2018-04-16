@@ -1,10 +1,6 @@
 import React, { Component } from 'react' // eslint-disable-line no-unused-vars
-import {
-  StyleSheet,
-  Text, // eslint-disable-line no-unused-vars
-  TouchableOpacity, // eslint-disable-line no-unused-vars
-} from 'react-native'
-import { white, gray } from '../utils/colors'
+import { StyleSheet, Text, TouchableOpacity} from 'react-native' // eslint-disable-line no-unused-vars
+import { primary, white, gray, black, liked, transparentWhite } from '../utils/colors'
 
 export default class SearchFilterOption extends Component {
   render () {
@@ -18,7 +14,7 @@ export default class SearchFilterOption extends Component {
       }
       onPress={this.props.handleFilterPress}
       >
-        <Text style={this.props.selected ? {color: 'white'} : { color: 'black' }}>
+        <Text style={this.props.selected ? {color: white} : { color: black }}>
           {this.props.filterName} ({this.props.quantity})
         </Text>
       </TouchableOpacity>
@@ -28,9 +24,7 @@ export default class SearchFilterOption extends Component {
 
 const styles = StyleSheet.create ({
   optionContainer: {
-    borderWidth: 1,
     borderRadius: 7,
-    backgroundColor: white,
     padding: 10,
     margin: 5,
     justifyContent: 'center',
@@ -40,5 +34,7 @@ const styles = StyleSheet.create ({
     shadowOpacity: 0.8,
     shadowRadius: 2,
     elevation: 1,
+    backgroundColor: transparentWhite,
+    borderWidth: 1
   },
 })

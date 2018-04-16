@@ -168,6 +168,10 @@ export default class TripPage extends Component {
     toggleVisited(this.state.trip.tripId, locId, !visited)
   }
 
+  onDeleteTrip = () => {
+    this.props.nav.goBack()
+  }
+
   render () {
     let { trip, tripLocations } = this.state
     let { tripId, name, numLocs, tags, followers, participants, creator, permission } = trip
@@ -216,7 +220,7 @@ export default class TripPage extends Component {
               <Text style={styles.name}>
                 { name.length < 25 ? name: (name.slice(0,22) + "...") }
               </Text>
-              <TouchableOpacity onPress={() => this.props.nav.navigate('EditTripPage', { tripId: tripId, name: name, tags: tags, perm: permission })}>
+              <TouchableOpacity onPress={() => this.props.nav.navigate('EditTripPage', { tripId: tripId, name: name, tags: tags, perm: permission, onDeleteTrip: this.onDeleteTrip })}>
                 <FontAwesome name='pencil-square-o' style={styles.handle}/>
               </TouchableOpacity>
             </View>
