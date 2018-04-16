@@ -5,7 +5,7 @@ import type { NativeMethodsMixinType } from 'react-native/Libraries/Renderer/shi
 
 export default class Tag extends PureComponent {
 
-  container: ?NativeMethodsMixinType
+  tagContainer: ?NativeMethodsMixinType
 
   // Handle tag taps
   onPress = (): void => {
@@ -16,7 +16,7 @@ export default class Tag extends PureComponent {
     const { tag: { title } } = this.props
     return (
       <View
-        ref={el => this.container = el}
+        ref={el => this.tagContainer = el}
         style={styles.container}
       >
         <TouchableOpacity
@@ -33,7 +33,7 @@ export default class Tag extends PureComponent {
 }
 
 const styles = {
-  container: {
+  tagContainer: {
     marginBottom: 8,
     marginRight: 6,
   },

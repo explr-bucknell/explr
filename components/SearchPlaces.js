@@ -6,11 +6,10 @@ import { primary, white, gray, black } from '../utils/colors'
 export default class SearchPlaces extends Component {
 	constructor(props) {
 		super(props)
-	}
-
-	state = {
-		ids: [],
-		names: []
+		this.state = {
+			ids: [],
+			names: []
+		}
 	}
 
 	componentDidMount() {
@@ -23,7 +22,7 @@ export default class SearchPlaces extends Component {
 			return
 		}
 		//console.log(text)
-		
+
 		getPOIAutocomplete(text).then((data) => {
 			var ids = []
 			var names = []
@@ -37,7 +36,7 @@ export default class SearchPlaces extends Component {
 
 	render() {
 		return (
-			<ScrollView style={styles.container}>
+			<ScrollView style={styles.searchContainer}>
 				{this.state.names.map((name, i) => (
 					<TouchableOpacity key={i} style={styles.profileCard} onPress={() => this.props.nav.navigate('MapPage', { id: this.state.ids[i] })}>
 						<View style={styles.textWrapper}>
@@ -51,20 +50,12 @@ export default class SearchPlaces extends Component {
 }
 
 const styles = StyleSheet.create({
-	container: {
+	searchContainer: {
 		flex: 1
 	},
 	profileCard: {
 		flexDirection: 'row',
 		backgroundColor: white
-	},
-	profilePic: {
-		width: 50,
-		height: 50,
-		margin: 10,
-		borderRadius: 25,
-		borderColor: gray,
-		borderWidth: 1
 	},
 	textWrapper: {
 		margin: 10
@@ -75,10 +66,4 @@ const styles = StyleSheet.create({
 		fontSize: 16,
 		fontWeight: 'bold'
 	},
-	handle: {
-		marginTop: 2,
-		color: gray,
-		fontSize: 14,
-		fontWeight: 'bold'
-	}
 })

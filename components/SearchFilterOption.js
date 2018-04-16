@@ -1,16 +1,16 @@
-import React, { Component } from 'react'
-import { StyleSheet, Text, View, Image, TouchableOpacity, TouchableHighlight } from 'react-native'
+import React, { Component } from 'react' // eslint-disable-line no-unused-vars
+import { StyleSheet, Text, TouchableOpacity} from 'react-native' // eslint-disable-line no-unused-vars
 import { primary, white, gray, black, liked, transparentWhite } from '../utils/colors'
 
 export default class SearchFilterOption extends Component {
   render () {
     return (
       <TouchableOpacity style={
-          [
-            styles.optionContainer,
-            {borderColor: this.props.color},
-            this.props.selected && {borderWidth: 0, backgroundColor: this.props.color}
-          ]
+        [
+          styles.optionContainer,
+          {borderColor: this.props.color},
+          this.props.selected && {borderWidth: 0, backgroundColor: this.props.color}
+        ]
       }
       onPress={this.props.handleFilterPress}
       >
@@ -22,7 +22,7 @@ export default class SearchFilterOption extends Component {
   }
 }
 
-const styles = StyleSheet.create({
+const styles = StyleSheet.create ({
   optionContainer: {
     borderRadius: 7,
     padding: 10,
@@ -37,7 +37,4 @@ const styles = StyleSheet.create({
     backgroundColor: transparentWhite,
     borderWidth: 1
   },
-  selectedContainer: {
-    borderColor: white,
-  }
 })

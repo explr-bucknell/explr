@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import {
-  KeyboardAvoidingView,
   StyleSheet,
   Text,
   TextInput,
@@ -14,10 +13,9 @@ export default class NewTagModal extends Component {
 
   constructor(props) {
     super(props)
-  }
-
-  state = {
-    text: ''
+    this.state = {
+      text: ''
+    }
   }
 
   // Update state when input changes
@@ -60,10 +58,6 @@ export default class NewTagModal extends Component {
 }
 
 const styles = StyleSheet.create({
-  modal: {
-    margin: 0,
-    width: '100%'
-  },
   container: {
     flex: 1,                              // take up the whole screen
     justifyContent: 'flex-end',           // position input at the bottom

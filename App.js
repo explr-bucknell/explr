@@ -1,10 +1,9 @@
 import React from 'react'
 import { StyleSheet, Text, View, Platform, NativeModules } from 'react-native'
 import { StackNavigator } from 'react-navigation'
-import LoginNavigator from './LoginScreens/index'
+import LoginNavigator from './navigators/LoginNav'
 import { primary, white } from './utils/colors'
 import firebase from 'firebase'
-import MainNavigator from './main'
 
 const { StatusBarManager } = NativeModules
 

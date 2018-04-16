@@ -6,13 +6,12 @@ import { primary, white, gray, black } from '../utils/colors'
 export default class SearchUsers extends Component {
 	constructor(props) {
 		super(props)
-	}
-
-	state = {
-		uids: [],
-		names: [],
-		handles: [],
-		images: []
+		this.state = {
+			uids: [],
+			names: [],
+			handles: [],
+			images: []
+		}
 	}
 
 	componentDidMount() {
@@ -27,7 +26,7 @@ export default class SearchUsers extends Component {
 		text = text.toLowerCase()
 		var self = this
 		var ref = firebase.database().ref('users/main')
-		ref.orderByChild("handle").startAt(text).endAt(text + '\uf8ff').limitToFirst(100).on("value", function(snapshot) {
+		ref.orderByChild('handle').startAt(text).endAt(text + '\uf8ff').limitToFirst(100).on('value', function(snapshot) {
 			var uids = []
   		var names = []
   		var handles = []
@@ -40,7 +39,7 @@ export default class SearchUsers extends Component {
   			images.push(userVal.imageUrl)
   		})
 	  	self.setState({ uids, names, handles, images })
-		})	
+		})
 	}
 
 	render() {

@@ -1,9 +1,10 @@
-import React, { Component } from 'react'
-import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native'
-import { FontAwesome } from '@expo/vector-icons'
+import React, { Component } from 'react' // eslint-disable-line no-unused-vars
+import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native' // eslint-disable-line no-unused-vars
+import { FontAwesome } from '@expo/vector-icons' // eslint-disable-line no-unused-vars
 import firebase from 'firebase'
-import { primary, white, liked } from '../utils/colors'
+import { primary, white } from '../utils/colors'
 
+//Displays preview of POI above it's pin when pressed
 export default class MapMarkerCallout extends Component {
   constructor(props) {
     super(props)
@@ -20,21 +21,21 @@ export default class MapMarkerCallout extends Component {
     var ref = firebase.database().ref('users/main/' + uid + '/saved')
     var self = this
     var liked
-    ref.child(id).on("value", function(snapshot) {
+    ref.child(id).on('value', function(snapshot) {
       if (snapshot.val()) {
         liked = true
       } else {
         liked = false
       }
       self.setLiked(liked)
-    });
+    })
   }
 
-  setLiked = liked => {
+  setLiked (liked) {
     this.setState({ liked })
   }
 
-  async addLiked() {
+  async addLiked () {
     this.setState({
       liked: true
     })
@@ -55,52 +56,49 @@ export default class MapMarkerCallout extends Component {
 
   render () {
     return (
-      <View style={styles.callout}>
+      <TouchableOpacity
+        style={styles.calloutWrapper}
+        onPress={
+          () => !this.props.trip ?
+          this.props.navigate('LocationPage', {location: this.props}) :
+          this.props.locationPress()
+        }
+      >
         <Image style={styles.image} source={{uri: this.props.imageUrl}} />
-        <View style={styles.wrapper}>
-          <TouchableOpacity
-            style={styles.titleWrap}
-            onPress={() => !this.props.trip && this.props.navigate('LocationPage', {location: this.props})}
+        <View style={styles.detailsWrapper}>
+          <View
+            style={styles.titleWrapper}
           >
             <Text style={styles.title}>
               {this.props.title}
             </Text>
-          </TouchableOpacity>
-          {!this.props.trip &&
-            <TouchableOpacity onPress={() => {this.state.liked ? this.removeLiked() : this.addLiked()}}>
-              <FontAwesome name={this.state.liked ? "heart" : 'heart-o'} style={styles.icon}/>
-            </TouchableOpacity>
-          }
+          </View>
           {this.props.trip &&
-            <TouchableOpacity
-              onPress={() => this.props.locationPress()}
+            <View
               style={{flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'flex-end', flex: 1}}
             >
-              <View style={{marginRight: 10}}>
-                <Text>Route</Text>
-              </View>
-              <FontAwesome name='angle-right' style={{fontSize: 20, color: primary}}/>
-            </TouchableOpacity>
+              <FontAwesome name='angle-right' size={25} style={{color: primary}}/>
+            </View>
           }
         </View>
-      </View>
+      </TouchableOpacity>
     )
   }
 }
 
 const styles = StyleSheet.create({
-  callout: {
+  calloutWrapper: {
     borderRadius: 5,
     borderWidth: 1,
-    borderColor: 'white'
+    borderColor: white
   },
-  wrapper: {
+  detailsWrapper: {
     flex: 1,
     flexDirection: 'row',
     alignItems: 'flex-end',
     maxWidth: 200
   },
-  titleWrap: {
+  titleWrapper: {
     flex: 2,
   },
   title: {
@@ -109,15 +107,6 @@ const styles = StyleSheet.create({
     marginTop: 10,
     maxWidth: 175,
     color: '#3974d3'
-  },
-  icon: {
-    marginTop: 10,
-    fontSize: 25,
-    color: liked
-  },
-  description: {
-    fontSize: 12,
-    color: 'lightskyblue'
   },
   image: {
     width: 200,

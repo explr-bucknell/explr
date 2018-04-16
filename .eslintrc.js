@@ -4,34 +4,42 @@ module.exports = {
         "commonjs": true,
         "es6": true
     },
+    // "parser": "babel-eslint",
     "extends": "eslint:recommended",
     "parserOptions": {
-        "ecmaVersion": 7,
+        "ecmaVersion": 8,
         "sourceType": "module",
+        "allowImportExportEverywhere": false,
+        "codeFrame": false,
         "ecmaFeatures": {
           "jsx": true
         }
     },
     "rules": {
-        "indent": [
-            "error",
-            2
-        ],
-        "linebreak-style": [
-            "error",
-            "unix"
-        ],
+        // "indent": [
+        //   "error",
+        //   "tab"
+        // ],
         "quotes": [
-            "error",
-            "single"
+          "error",
+          "single"
         ],
         "semi": [
-            "error",
-            "never"
+          "error",
+          "never"
         ],
         "curly": [
-            "error",
-            "multi-line"
+          "error",
+          "multi-line"
+        ],
+        "array-bracket-spacing": [
+          "error", "never"
+        ],
+        "block-spacing": "error",
+        "brace-style": [
+          "error",
+          "1tbs",
+          { "allowSingleLine": true }
         ],
       }
 

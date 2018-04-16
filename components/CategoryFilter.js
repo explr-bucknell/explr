@@ -1,22 +1,21 @@
-import React, { Component } from 'react'
+import React, { Component } from 'react' // eslint-disable-line no-unused-vars
 import {
   StyleSheet,
-  View,
+  View, // eslint-disable-line no-unused-vars
   Text, // eslint-disable-line no-unused-vars
-  Easing,
-  Modal,
-  ScrollView,
-  TouchableOpacity
+  ScrollView, // eslint-disable-line no-unused-vars
+  TouchableOpacity // eslint-disable-line no-unused-vars
 } from 'react-native'
 import { primary, white, gray } from '../utils/colors'
 import { types } from '../utils/poiTypes'
-import SearchFilterOption from './SearchFilterOption'
-import { Ionicons } from '@expo/vector-icons'
+import SearchFilterOption from './SearchFilterOption' // eslint-disable-line no-unused-vars
+import { Ionicons } from '@expo/vector-icons' // eslint-disable-line no-unused-vars
 
+// Component that allows users to select filters to limit the POIs showed on the Map
 export default class CategoryFilter extends Component {
 
   constructor (props) {
-    super(props)
+    super (props)
     this.state = {
       selectedFilters: [],
       selectingFilters: false,
@@ -25,20 +24,20 @@ export default class CategoryFilter extends Component {
   }
 
   componentWillReceiveProps (props) {
-    this.setState({ types: props.types })
+    this.setState ({ types: props.types })
   }
 
   toggleFilter (filterType) {
     let { selectedFilters } = this.state
     let newFilters = []
-    if (selectedFilters.includes(filterType)){
-      const index = selectedFilters.indexOf(filterType)
-      newFilters = selectedFilters.slice(0, index).concat(selectedFilters.slice(index + 1, selectedFilters.length))
+    if (selectedFilters.includes (filterType)){
+      const index = selectedFilters.indexOf (filterType)
+      newFilters = selectedFilters.slice (0, index).concat (selectedFilters.slice (index + 1, selectedFilters.length))
     } else {
-      newFilters = selectedFilters.concat([filterType])
+      newFilters = selectedFilters.concat ([filterType])
     }
-    this.setState({ selectedFilters: newFilters})
-    this.props.updateFilters(newFilters)
+    this.setState ({ selectedFilters: newFilters})
+    this.props.updateFilters (newFilters)
   }
 
   render () {
@@ -66,17 +65,17 @@ export default class CategoryFilter extends Component {
           {selectingFilters ?
             <Text>Clear Filters</Text> :
             <View style={{paddingLeft: 2, paddingRight: 2}}>
-              <Ionicons name='ios-options' size={20}/>
+              <Ionicons name='ios-options' size={20} color={gray}/>
             </View>
           }
         </TouchableOpacity>
         {selectingFilters && Object.keys(this.state.types).map((filterType, index) =>
           <SearchFilterOption
-            handleFilterPress={() => this.toggleFilter(filterType)}
+            handleFilterPress={() => this.toggleFilter (filterType)}
             color={types[filterType].color}
             filterName={types[filterType].name}
             key={index}
-            selected={selectedFilters.includes(filterType)}
+            selected={selectedFilters.includes (filterType)}
             quantity={this.state.types[filterType]}
           />
         )}
@@ -86,11 +85,7 @@ export default class CategoryFilter extends Component {
 
 }
 
-const styles = StyleSheet.create({
-  filtersContainer: {
-    width: '100%',
-    height: 50
-  },
+const styles = StyleSheet.create ({
   selectFilterButton: {
     borderRadius: 7,
     backgroundColor: white,

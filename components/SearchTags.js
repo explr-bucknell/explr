@@ -7,11 +7,10 @@ import { primary, white, gray, black } from '../utils/colors'
 export default class SearchTags extends Component {
   constructor(props) {
     super(props)
-  }
-
-  state = {
-    tagOrder: [],
-    tags: {}
+    this.state = {
+      tagOrder: [],
+      tags: {}
+    }
   }
 
   componentDidMount() {
