@@ -1,8 +1,7 @@
 import React, { Component } from 'react'
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, Button, TextInput } from 'react-native'
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
 import { Ionicons } from '@expo/vector-icons'
-import { white, primary, transparentWhite } from '../utils/colors'
-import Modal from 'react-native-modal'
+import { white, primary } from '../utils/colors'
 import { createTrip, getTrips, addLocationToTrip, createTripWithLocation } from '../network/Requests'
 import TripContainer from './TripContainer'
 import Tags from '../components/Tags'
@@ -75,7 +74,7 @@ export default class UserTrips extends Component {
 							<View style={{width: '100%', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
 								<View style={{width: '80%'}}>
 								{!this.props.adding &&
-									<Text style={{fontSize: 16, fontWeight: 'bold', color: white}}>Create new trip</Text>
+									<Text style={{fontSize: 16, fontWeight: 'bold', color: white}}>Create new i</Text>
 								}
 								{this.props.adding &&
 									<Text style={{fontSize: 16, fontWeight: 'bold', color: white}}>
@@ -133,28 +132,4 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		justifyContent: 'space-between'
 	},
-	modalContent: {
-		margin: 0,
-		marginTop: 320,
-		padding: 20,
-		flex: 1,
-		backgroundColor: primary
-	},
-	modalText: {
-		color: white
-	},
-	newTripNameContainer: {
-		height: 30,
-		borderColor: transparentWhite,
-		borderBottomWidth: 1,
-		marginTop: 10,
-		marginBottom: 10,
-		paddingLeft: 5,
-		color: white
-	},
-	submitCancelContainer: {
-		justifyContent: 'space-between',
-		flexDirection: 'row',
-		width: '100%'
-	}
 })

@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component } from 'react' // eslint-disable-line no-unused-vars
 import {
   StyleSheet,
   Text, // eslint-disable-line no-unused-vars
@@ -296,16 +296,16 @@ export default class MapPage extends Component {
                 }}
                 pinColor={ types[locations[locationId].type].color }
               >
-              <MapView.Callout>
-                <MapMarkerCallout
-                  key={locations[locationId].id}
-                  title={locations[locationId].name}
-                  imageUrl={locations[locationId].image}
-                  id={locations[locationId].id}
-                  uid={this.props.uid}
-                  navigate={this.props.navigate}
-                />
-              </MapView.Callout>
+                <MapView.Callout>
+                  <MapMarkerCallout
+                    key={locations[locationId].id}
+                    title={locations[locationId].name}
+                    imageUrl={locations[locationId].image}
+                    id={locations[locationId].id}
+                    uid={this.props.uid}
+                    navigate={this.props.navigate}
+                  />
+                </MapView.Callout>
               </MapView.Marker>
             )
           }

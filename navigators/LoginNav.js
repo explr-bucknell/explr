@@ -1,50 +1,50 @@
-import React, { Component } from 'react';
-import { StyleSheet, View, KeyboardAvoidingView, Text } from 'react-native';
-import Dimensions from 'Dimensions';
-import { StackNavigator, navigationOptions } from 'react-navigation';
-import Logo from './logo';
-import Buttons from './buttons';
-import LoginLogo from './Login/loginLogo';
-import LoginForm from './Login/loginForm';
-import LoginOther from './Login/loginOther';
-import SignupName from './SignUp/signupName';
-import SignupHandle from './SignUp/signupHandle';
-import SignupEmail from './SignUp/signupEmail';
-import SignupPwd from './SignUp/signupPwd';
-import SignupConfirm from './SignUp/signupConfirm';
-import SignupDone from './SignUp/signupDone';
-import ForgotPwd from './Login/ForgotPwd';
-import ResetPwd from './Login/ResetPwd';
-import MainNavigator from '../main.js';
-import { primary, white } from '../utils/colors';
+import React, { Component } from 'react'
+import { StyleSheet, View, Text } from 'react-native'
+import Dimensions from 'Dimensions'
+import { StackNavigator, navigationOptions } from 'react-navigation'
+import Logo from '../LoginScreens/logo'
+import Buttons from '../LoginScreens/buttons'
+import LoginLogo from '../LoginScreens/Login/loginLogo'
+import LoginForm from '../LoginScreens/Login/loginForm'
+import LoginOther from '../LoginScreens/Login/loginOther'
+import SignupName from '../LoginScreens/SignUp/signupName'
+import SignupHandle from '../LoginScreens/SignUp/signupHandle'
+import SignupEmail from '../LoginScreens/SignUp/signupEmail'
+import SignupPwd from '../LoginScreens/SignUp/signupPwd'
+import SignupConfirm from '../LoginScreens/SignUp/signupConfirm'
+import SignupDone from '../LoginScreens/SignUp/signupDone'
+import ForgotPwd from '../LoginScreens/Login/ForgotPwd'
+import ResetPwd from '../LoginScreens/Login/ResetPwd'
+import MainNavigator from './MainNav'
+import { primary, white } from '../utils/colors'
 
-const DEVICE_WIDTH = Dimensions.get('window').width;
-const DEVICE_HEIGHT = Dimensions.get('window').height;
+const DEVICE_WIDTH = Dimensions.get('window').width
+const DEVICE_HEIGHT = Dimensions.get('window').height
 
-const MARGIN_LEFT = DEVICE_WIDTH * 0.1;
-const MARGIN_RIGHT = MARGIN_LEFT;
-const TEXT_SKIP = DEVICE_HEIGHT / 10;
+const MARGIN_LEFT = DEVICE_WIDTH * 0.1
+const MARGIN_RIGHT = MARGIN_LEFT
+const TEXT_SKIP = DEVICE_HEIGHT / 10
 
 const StartScreen = ( {navigation} ) => (
 	<View style={styles.container}>
     <Logo />
     <Buttons nav={navigation}/>
   </View>
-);
+)
 
 const PromptName = ( {navigation} ) => (
 	<View style={styles.container}>
 		<Text style={styles.text}>What's your name?</Text>
 		<SignupName nav={navigation}/>
 	</View>
-);
+)
 
 const PromptEmail = ( {navigation} ) => (
 	<View style={styles.container}>
 		<Text style={styles.text}>And, your email?</Text>
 		<SignupEmail nav={navigation}/>
 	</View>
-);
+)
 
 const PromptPwd = ( {navigation} ) => (
 	<View style={styles.container}>
@@ -52,7 +52,7 @@ const PromptPwd = ( {navigation} ) => (
 		<Text style={[styles.text, styles.secondaryText]}>Your password must include at least one symbol and be 8 or more characters long.</Text>
 		<SignupPwd nav={navigation}/>
 	</View>
-);
+)
 
 const PromptHandle = ( {navigation} ) => (
 	<View style={styles.container}>
@@ -60,19 +60,19 @@ const PromptHandle = ( {navigation} ) => (
 		<Text style={[styles.text, styles.secondaryText]}>Your handle must be unique and must only contain lowercase letters and digits.</Text>
 		<SignupHandle nav={navigation}/>
 	</View>
-);
+)
 
 const EmailConfirmation = ( {navigation} ) => (
 	<View style={styles.container}>
 		<SignupConfirm nav={navigation}/>
 	</View>
-);
+)
 
 const SignUpComplete = ( {navigation} ) => (
 	<View style={styles.container}>
 		<SignupDone nav={navigation}/>
 	</View>
-);
+)
 
 const LoginScreen = ( {navigation} ) => (
 	<View style={{flex: 1, backgroundColor: white}}>
@@ -80,28 +80,28 @@ const LoginScreen = ( {navigation} ) => (
 		<LoginForm nav={navigation}/>
 		<LoginOther nav={navigation}/>
 	</View>
-);
+)
 
 const ForgotScreen = ( {navigation} ) => (
 	<View style={styles.container}>
 		<Text style={styles.text}>What's your email?</Text>
 		<ForgotPwd nav={navigation}/>
 	</View>
-);
+)
 
 const ResetScreen = ( {navigation} ) => (
 	<View style={styles.container}>
 		<Text style={styles.text}>Create a new password:</Text>
 		<ResetPwd nav={navigation}/>
 	</View>
-);
+)
 
 const MainPage = ( {navigation} ) => (
 	<MainNavigator nav={navigation} screenProps={navigation.state.params}/>
-);
+)
 
 const SignUpNavOpts = {
-	headerTitle: "Create Account",
+	headerTitle: 'Create Account',
 	headerStyle: {
 		backgroundColor: primary,
 		borderBottomWidth: 0,
@@ -157,7 +157,7 @@ const LoginNavigator = StackNavigator({
 	ForgotPwd: {
 		screen: ForgotScreen,
 		navigationOptions: {
-			headerTitle: "Forgot Password",
+			headerTitle: 'Forgot Password',
 			headerStyle: {
 				backgroundColor: primary,
 				borderBottomWidth: 0,
@@ -170,7 +170,7 @@ const LoginNavigator = StackNavigator({
 	ResetPwd: {
 		screen: ResetScreen,
 		navigationOptions: {
-			headerTitle: "Reset Password",
+			headerTitle: 'Reset Password',
 			headerStyle: {
 				backgroundColor: primary,
 				borderBottomWidth: 0,
@@ -187,9 +187,9 @@ const LoginNavigator = StackNavigator({
     	gesturesEnabled: false,
   	},
 	}
-}, );
+}, )
 
-export default LoginNavigator;
+export default LoginNavigator
 
 const styles = StyleSheet.create({
 	container: {
@@ -208,4 +208,4 @@ const styles = StyleSheet.create({
 		marginTop: TEXT_SKIP / 3,
 		fontWeight: '600',
 	},
-});
+})

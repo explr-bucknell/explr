@@ -1,61 +1,23 @@
-import React, { Component } from 'react'
-import { StyleSheet, Text, View, ScrollView, TouchableOpacity, Button, Animated } from 'react-native'
-import SearchFilterContainer from './SearchFilterContainer'
-import SearchOption from './SearchOption'
-import { FontAwesome, Ionicons } from '@expo/vector-icons'
+import React, { Component } from 'react' // eslint-disable-line no-unused-vars
+import {
+  StyleSheet,
+  Text, // eslint-disable-line no-unused-vars
+  View, // eslint-disable-line no-unused-vars
+  ScrollView, // eslint-disable-line no-unused-vars
+  TouchableOpacity, // eslint-disable-line no-unused-vars
+} from 'react-native'
+import SearchFilterContainer from './SearchFilterContainer' // eslint-disable-line no-unused-vars
+import SearchOption from './SearchOption' // eslint-disable-line no-unused-vars
+import { Ionicons } from '@expo/vector-icons' // eslint-disable-line no-unused-vars
 
-class CustomPinSearchContainer extends React.Component {
-  state = {
-    yPos: new Animated.Value(-200)
-  }
-
-  componentDidMount () {
-    Animated.timing(
-      this.state.yPos,
-      {
-        toValue: 0,
-        duration: 500
-      }
-    ).start()
-  }
-
-  componentWillUnmount () {
-    Animated.timing(
-      this.state.yPos,
-      {
-        toValue: -200,
-        duration: 500
-      }
-    ).start()
-  }
-
-  render () {
-    let { yPos } = this.state
-    return (
-      <Animated.View
-        style={{
-          width: '100%',
-          height: 250,
-          position: 'absolute',
-          left: 0,
-          right: 0,
-          backgroundColor: 'white',
-          bottom: 0,
-        }}
-      >
-        {this.props.children}
-      </Animated.View>
-    )
-  }
-}
-
+// Component allowing users to add their own POIs to our database, as long as they exist on Google's Places API
 export default class CustomPinSearch extends Component {
   constructor (props) {
     super(props)
     this.state = {
       customPinSearchResults: [],
       selectedFilters: [],
-      selectedOption: 'blah'
+      selectedOption: ''
     }
   }
 
@@ -88,21 +50,21 @@ export default class CustomPinSearch extends Component {
         <View style={styles.customPinBanner}>
           <TouchableOpacity
             onPress={() => this.props.onCancel()}>
-      			<Ionicons
-      		      name='md-close'
-      		      size={25}
-      		      style={{ color: 'white', marginLeft: 15, marginTop: 3 }}
-      		    />
-      		</TouchableOpacity>
+            <Ionicons
+                name='md-close'
+                size={25}
+                style={{ color: 'white', marginLeft: 15, marginTop: 3 }}
+              />
+          </TouchableOpacity>
           <Text style={{color: 'white', fontSize: 20}}>Points of Interest</Text>
           <TouchableOpacity
-            onPress={() => {this.state.selectedOption != 'blah' && this.props.poiSubmit()}}>
-      			<Ionicons
-    		      name='md-checkmark'
-    		      size={25}
-    		      style={{ color: 'white', marginRight: 15, marginTop: 3 }}
-    		    />
-      		</TouchableOpacity>
+            onPress={() => { this.state.selectedOption != '' && this.props.poiSubmit() }}>
+            <Ionicons
+              name='md-checkmark'
+              size={25}
+              style={{ color: 'white', marginRight: 15, marginTop: 3 }}
+            />
+          </TouchableOpacity>
         </View>
         <ScrollView style={styles.resultsContainer}>
           { this.state.customPinSearchResults.map((poi, index) =>
@@ -137,20 +99,4 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 200,
   },
-  poiContainer: {
-    width: '100%',
-    height: 50,
-    borderColor: '#bbb',
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderTopWidth: StyleSheet.hairlineWidth,
-    paddingLeft: 20,
-    alignItems: 'flex-start',
-    justifyContent: 'center'
-  },
-  filterContainer: {
-    width: '100%',
-    height: 50,
-    position: 'absolute',
-    bottom: 250
-  }
 })

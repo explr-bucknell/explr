@@ -1,16 +1,14 @@
 import React from 'react'
-import { Platform, ScrollView } from 'react-native'
+import { Platform } from 'react-native'
 import { TabNavigator, navigationOptions } from 'react-navigation'
 import Dimensions from 'Dimensions'
-import MapPage from './MapPage'
-import ProfilePage from './ProfilePage'
-import SettingsPage from './SettingsPage'
-import NotificationPage from './NotificationPage'
-import TripsPage from './TripsPage'
+import MapPage from '../pages/MapPage'
+import ProfilePage from '../pages/ProfilePage'
+import SettingsPage from '../pages/SettingsPage'
+import NotificationPage from '../pages/NotificationPage'
+import TripsPage from '../pages/TripsPage'
 import { FontAwesome } from '@expo/vector-icons'
 import { primary, white, gray } from '../utils/colors'
-
-const DEVICE_HEIGHT = Dimensions.get('window').height;
 
 const MapScreen = (props) => (
 	<MapPage {...props.screenProps} />
@@ -22,10 +20,6 @@ const TripsScreen = (props) => (
 
 const ProfileScreen = (props) => (
 	<ProfilePage {...props.screenProps} />
-)
-
-const SettingsScreen = (props) => (
-  <SettingsPage {...props.screenProps} />
 )
 
 const NotificationScreen = (props) => (
@@ -46,33 +40,32 @@ navOpts = (labelName, iconName) => ({
 const MapNav = TabNavigator({
 	MapPage: {
 		screen: props => MapScreen(props),
-    navigationOptions: navOpts('Explore', 'map')
+    navigationOptions: this.navOpts('Explore', 'map')
 	},
 	TripPage: {
 		screen: props => TripsScreen(props),
-		navigationOptions: navOpts('Trips', 'list')
+		navigationOptions: this.navOpts('Trips', 'list')
 	},
   NotificationPage: {
     screen: props => NotificationScreen(props),
-    navigationOptions: navOpts('Notifications', 'bell')
+    navigationOptions: this.navOpts('Notifications', 'bell')
   },
 	ProfilePage: {
 		screen: props => ProfileScreen(props),
-    navigationOptions: navOpts('Profile', 'user')
+    navigationOptions: this.navOpts('Profile', 'user')
 	},
 }
 , {
 	animationEnabled: true,
-  tabBarPosition: "bottom",
+  tabBarPosition: 'bottom',
 	tabBarOptions: {
-    showLabel: Platform.OS === 'android' ? false : true,
+    //showLabel: Platform.OS === 'android' ? false : true,
 		activeTintColor: primary,
     inactiveTintColor: gray,
 		showIcon: true,
 		activeBackgroundColor: white,
 		inactiveBackgroundColor: white,
 		style: {
-			//height: Platform.OS === 'android' ? 60 : 50,
       backgroundColor: white,
       borderTopWidth: 0,
       elevation: 5,
