@@ -67,6 +67,6 @@
   <td> Contains the page to input your password as well as password strength verification</td>
   </tr>
   <tr>
-  <td colspan="2"><i>explr/assets</i></td>
+  <td colspan="2"><i>explr/components</i></td>
   </tr>
 </table>
