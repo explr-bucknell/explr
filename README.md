@@ -69,4 +69,44 @@
   <tr>
   <td colspan="2"><i>explr/components</i></td>
   </tr>
+  <tr>
+  <td> CategoryFilter.js</td>
+  <td> Component to allow a user to select filters that limit the types of POIs shown on the map</td>
+  </tr>
+  <tr>
+  <td> ContentGrid.js</td>
+  <td> Component to format a grid, used in displaying user's favorited locations</td>
+  </tr>
+  <tr>
+  <td> CustomPinSearch.js</td>
+  <td> Component to allow users to add their own POIs to the Firebase database, and functions to verify that the POIs exist in Google Places API to ensure validity</td>
+  </tr>
+  <tr>
+  <td> MapMarkerCallout.js</td>
+  <td> Component to display a preview of the POI's information and image upon pin selection</td>
+  </tr>
+  <tr>
+  <td> NewTagModal.js</td>
+  <td> <b>INFO REQUIRED</b></td>
+  </tr>
+  <tr>
+  <td> SavedLocations.js</td>
+  <td> Component utilizing the content grid for saved locations</td>
+  </tr>
+  <tr>
+  <td> SearchFilterContainer.js</td>
+  <td> Component to house search filtered search results</td>
+  </tr>
+  <tr>
+  <td> SearchFilterOption.js</td>
+  <td> <b>INFO REQUIRED</b></td>
+  </tr>
+  <tr>
+  <td> SearchPlaces.js</td>
+  <td> Component to handle searching</td>
+  </tr>
+  <tr>
+  <td> </td>
+  <td> </td>
+  </tr>
 </table>
