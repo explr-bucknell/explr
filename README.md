@@ -106,7 +106,35 @@
   <td> Component to handle searching</td>
   </tr>
   <tr>
-  <td> </td>
-  <td> </td>
+  <td> SearchTags.js</td>
+  <td> Component to handle the tag search feature</td>
+  </tr>
+  <tr>
+  <td> SearchUsers.js</td>
+  <td> Component to handle the user search feature</td>
+  </tr>
+  <tr>
+  <td> Tag.js</td>
+  <td> Component for tags</td>
+  </tr>
+  <tr>
+  <td> Tags.js</td>
+  <td> Functions to add and remove tags</td>
+  </tr>
+  <tr>
+  <td> TagsArea.js</td>
+  <td> Component for the tags display</td>
+  </tr>
+  <tr>
+  <td> TripContainer.js</td>
+  <td> Component used to house trips and associated information</td>
+  </tr>
+  <tr>
+  <td> TripsList.js</td>
+  <td> Component to display a trips list</td>
+  </tr>
+  <tr>
+  <td> UserTrips.js</td>
+  <td> Contains functions to load trips, add location to trips, and for rendering the prior trip components into one feature</td>
   </tr>
 </table>
