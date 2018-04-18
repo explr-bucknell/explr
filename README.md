@@ -1,3 +1,48 @@
+**Original Problem Statement**
+
+"This project comes from my personal experience traveling the US to visit national parks. I was looking on the google play store for an app to track which national parks we have seen vs. not seen. I assumed there would be an app that could track this for us and maybe even present a map or visualization of our progress that I could share on Facebook. This app doesn’t exist at the moment (some similar sites exist like travbuddy.com, but this isn’t exactly easy to use or very powerful). So, we should create it but why limit it to national parks? 
+
+I would like to develop an app/web platform where users can create a list of places to visit or things to do. Then other users can sign up for these lists and track their progress. We could build in national parks, national monuments, even restaurants in Lewisburg. But the best feature would be users could create new lists. This would allow very diverse and interesting lists to be created everything from Civil War battlefields to national ballparks. The site would have allow searching for nearby sites (geotagged) and leaderboards with statistics about who is in each challenge along with nice visualizations and social media connections." Prof. Alan Marchiori
+
+**Design Revisions**
+
+* Challenges were removed from the list of desired features halfway through production, as there was no satisfactory solution found that fit the feel or theme of the app.
+* The ability to create, optimize, share, follow, and join trips was added in the place of challenges, and to satisfy the lists request. Allowing users to coordinate trips without the point or leaderboard system.
+* The final design ended up being entirely mobile based, there is no option for a web based platform as of launch.
+* Expansion beyond just parks and national parks. Any point of interest that appears in Google Maps can be put into a trip.
+* User created trips are not public by default, instead a user can create private trips, trips shared only with friends, and public trips.
+* Instead of representing trip completion on the map, which would involve extensive revisions to accommodate mapping directions, we elected to simply record individual locations as visited or not.
+	* Directions can be found using a provided re-direct from our app to Google Maps.
+
+**Dev Build Instructions**
+
+* Initial requirements
+	* NPM - Node Package Manager
+	* Expo XDE - Installed on your workstation
+	* Expo (Expo Project) - Installed on your mobile device
+* On first download open NPM and run “npm install”
+	This will install all requirements listed Explr package.json
+	* All packages must be successfully installed, as reported by NPM, for the app to successfully run
+* In the Expo XDE, select “Open existing project…”
+* Select the Explr project folder
+	* The project should automatically load in Expo, wait for the “Project opened!” message
+* Once the message has displayed locate the three buttons in the upper right corner. (Publish, Share, Device)
+	* Publish - Pushes the app to the Expo app for testing. Note, no console commands will be printed using this method.
+	* Share - Presents the user with a QR code and link that you can use in the Expo app to navigate to a testing environment. The console will print out all issues using this method.
+	* Device will push the app to a connected device. The console will also work with this method.
+
+**Scrum - User Stories**
+* Largest completed additions
+	* Fully interactable map with visual POIs, ability to add new locations, geo-query for location and screen size based rendering, and detailed callouts for each POI redirecting to a location information page.
+	* Profile page with relevant information for followers, favorite locations, profile image, user handle, users public trips.
+	* Trip page with ability to edit, rename, reorganize locations, and optimize trips. Each trip also includes a distance calculator to allow the user to see how their edits will change the final trip length.
+	* Trip optimization to efficiently reorganize all locations so that the overall trip length is at a minimum.
+	* Intuitive searches for locations, trips, and users based off of names, and tags.
+	* Push notifications to alert a user when INSERT ALL ADDED FEATURES HERE
+	* Trip map, allows users to see only the pins that are relevant to their trip.
+	* Third party login and verification, utilizing Gmail and Facebook to sign up for Xplor.
+
+
 *Javascript Files*
 
 <table>
