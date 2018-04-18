@@ -1,6 +1,6 @@
 import React, { Component } from 'react' // eslint-disable-line no-unused-vars
 import { StyleSheet, Text, TouchableOpacity} from 'react-native' // eslint-disable-line no-unused-vars
-import { primary, white, gray, black, liked, transparentWhite } from '../utils/colors'
+import { primary, white, gray, black, liked } from '../utils/colors'
 
 export default class SearchFilterOption extends Component {
   render () {
@@ -34,7 +34,7 @@ const styles = StyleSheet.create ({
     shadowOpacity: 0.8,
     shadowRadius: 2,
     elevation: 1,
-    backgroundColor: transparentWhite,
+    backgroundColor: white,
     borderWidth: 1
   },
 })

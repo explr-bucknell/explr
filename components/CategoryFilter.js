@@ -53,7 +53,7 @@ export default class CategoryFilter extends Component {
               })
             }
           >
-            <Ionicons name='ios-arrow-back' size={20}/>
+            <Ionicons name='ios-arrow-back' size={20} color={gray}/>
           </TouchableOpacity>
         }
         <TouchableOpacity
