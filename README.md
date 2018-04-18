@@ -184,6 +184,18 @@
   <td> Contains the function to implement registration for push notifications</td>
   </tr>
   <tr>
-  <td colspan="2"><i>explr/navigators</i></td>
+  <td colspan="2"><i>explr/navigators <b> needs more info</b></i></td>
+  </tr>
+  <tr>
+  <td> LoginNav.js</td>
+  <td> Contains all constants necessary to operator the navigator leaving the login page and going to all singup options, logins, forgot/reset password, and the central page</td>
+  </tr>
+  <tr>
+  <td> MainNav.js</td>
+  <td> Contains all constants necessary to operator the central navigator, including the redirects to all main pages, including map, search, profile, trips, following, create trip, location page, tag page, and settings.</td>
+  </tr>
+  <tr>
+  <td> MapNav.js</td>
+  <td> Contains all constants necessary for naviagtion out of the map page </td>
   </tr>
 </table>
