@@ -211,5 +211,31 @@
   <tr>
   <td> Contains all pages in the app</td>
   <td> This folder contains all javascript files to implement every page in the app. The names of the files are labeled to clearly indicate which page they correlate to. These pages implement all components and functions relevant to operate their individual pages, and also implement their own unique functions for navigation, and unique database calls.</td>
-  </tr>  
+  </tr>
+  <tr>
+  <td colspan="2"><i>explr/utils</i></td>
+  </tr>
+  <tr>
+  <td> colors.js</td>
+  <td> Contains a standardized list of all colors used in the app</td>
+  </tr>
+  <tr>
+  <td> poiTypes.js</td>
+  <td> Contains a standardized stylesheet for all poi types used on the map</td>
+  </tr>
+  <tr>
+  <td> tag_utils.js</td>
+  <td> <b>INFO REQUIRED</b></td>
+  </tr>
+  <tr>
+  <td colspan="2"><i>explr</i></td>
+  </tr>
+  <tr>
+  <td> .eslintrc.js</td>
+  <td> <b>INFO REQUIRED</b></td>
+  </tr>
+  <tr>
+  <td> App.js</td>
+  <td> Contains all information required for Expo to build and launch the app</td>
+  </tr>
 </table>
