@@ -137,4 +137,27 @@
   <td> UserTrips.js</td>
   <td> Contains functions to load trips, add location to trips, and for rendering the prior trip components into one feature</td>
   </tr>
+  <tr>
+  <td colspan="2"><i>explr/components/Notifications</i></td>
+  </tr>
+  <tr>
+  <td> FollowApproval.js</td>
+  <td> <b>INFO REQUIRED</b></td>
+  </tr>
+  <tr>
+  <td> FollowRequest.js</td>
+  <td> Contains functions for a user issue a follow request, approve request, and send approval notifications</td>
+  </tr>
+  <tr>
+  <td> JoinTripApproval.js</td>
+  <td> Component to display an approval for a join request</td>
+  </tr>
+  <tr>
+  <td> JoinTripRequest.js</td>
+  <td> Contains functions to deny requests, approve requests, and send approval notifications</td>
+  </tr>
+  <tr>
+  <td> push_listener.js</td>
+  <td> Used to handle notifications received while the app is open or is opened after closing</td>
+  </tr>
 </table>
