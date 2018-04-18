@@ -183,4 +183,7 @@
   <td> push_code.js</td>
   <td> Contains the function to implement registration for push notifications</td>
   </tr>
+  <tr>
+  <td colspan="2"><i>explr/navigators</i></td>
+  </tr>
 </table>
