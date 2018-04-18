@@ -160,4 +160,27 @@
   <td> push_listener.js</td>
   <td> Used to handle notifications received while the app is open or is opened after closing</td>
   </tr>
+  <tr>
+  <td colspan="2"><i>explr/functions</i></td>
+  </tr>
+  <tr>
+  <td> FirebaseTripCode.js</td>
+  <td> Contains the first iteration of functions used to construct trips in Firebase. No longer implemented</td>
+  </tr>
+  <tr>
+  <td> index.js</td>
+  <td> Initialize the Firebase configuration.</td>
+  </tr>
+  <tr>
+  <td> location_to_geo.js</td>
+  <td> Contains functions to grab points from the Firebase database and convert them into geofire points</td>
+  </tr>
+  <tr>
+  <td> nps_poi.js</td>
+  <td> Contains the functions to grab information from the national park service and push them to Firebase</td>
+  </tr>
+  <tr>
+  <td> push_code.js</td>
+  <td> Contains the function to implement registration for push notifications</td>
+  </tr>
 </table>
