@@ -209,7 +209,7 @@
   <td colspan="2"><i>explr/pages</i></td>
   </tr>
   <tr>
-  <td> All pages in the app</td>
+  <td> Contains all pages in the app</td>
   <td> This folder contains all javascript files to implement every page in the app. The names of the files are labeled to clearly indicate which page they correlate to. These pages implement all components and functions relevant to operate their individual pages, and also implement their own unique functions for navigation, and unique database calls.</td>
   </tr>  
 </table>
