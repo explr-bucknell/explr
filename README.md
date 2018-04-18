@@ -1,10 +1,10 @@
-**Original Problem Statement**
+**_Original Problem Statement_**
 
 "This project comes from my personal experience traveling the US to visit national parks. I was looking on the google play store for an app to track which national parks we have seen vs. not seen. I assumed there would be an app that could track this for us and maybe even present a map or visualization of our progress that I could share on Facebook. This app doesn’t exist at the moment (some similar sites exist like travbuddy.com, but this isn’t exactly easy to use or very powerful). So, we should create it but why limit it to national parks? 
 
 I would like to develop an app/web platform where users can create a list of places to visit or things to do. Then other users can sign up for these lists and track their progress. We could build in national parks, national monuments, even restaurants in Lewisburg. But the best feature would be users could create new lists. This would allow very diverse and interesting lists to be created everything from Civil War battlefields to national ballparks. The site would have allow searching for nearby sites (geotagged) and leaderboards with statistics about who is in each challenge along with nice visualizations and social media connections." Prof. Alan Marchiori
 
-**Design Revisions**
+**_Design Revisions_**
 
 * Challenges were removed from the list of desired features halfway through production, as there was no satisfactory solution found that fit the feel or theme of the app.
 * The ability to create, optimize, share, follow, and join trips was added in the place of challenges, and to satisfy the lists request. Allowing users to coordinate trips without the point or leaderboard system.
@@ -14,7 +14,7 @@ I would like to develop an app/web platform where users can create a list of pla
 * Instead of representing trip completion on the map, which would involve extensive revisions to accommodate mapping directions, we elected to simply record individual locations as visited or not.
 	* Directions can be found using a provided re-direct from our app to Google Maps.
 
-**Dev Build Instructions**
+**_Dev Build Instructions_**
 
 * Initial requirements
 	* NPM - Node Package Manager
@@ -31,7 +31,7 @@ I would like to develop an app/web platform where users can create a list of pla
 	* Share - Presents the user with a QR code and link that you can use in the Expo app to navigate to a testing environment. The console will print out all issues using this method.
 	* Device will push the app to a connected device. The console will also work with this method.
 
-**Scrum - User Stories**
+**_Scrum - User Stories_**
 * Largest completed additions
 	* Fully interactable map with visual POIs, ability to add new locations, geo-query for location and screen size based rendering, and detailed callouts for each POI redirecting to a location information page.
 	* Profile page with relevant information for followers, favorite locations, profile image, user handle, users public trips.
@@ -43,7 +43,7 @@ I would like to develop an app/web platform where users can create a list of pla
 	* Third party login and verification, utilizing Gmail and Facebook to sign up for Xplor.
 
 
-*Javascript Files*
+**_Javascript Files_**
 
 <table>
   <tr>
