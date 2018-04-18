@@ -192,10 +192,17 @@
   </tr>
   <tr>
   <td> MainNav.js</td>
-  <td> Contains all constants necessary to operator the central navigator, including the redirects to all main pages, including map, search, profile, trips, following, create trip, location page, tag page, and settings.</td>
+  <td> Contains all constants necessary to operator the central navigator, including the redirects to all main pages, including map, search, profile, trips, following, create trip, location page, tag page, and settings</td>
   </tr>
   <tr>
   <td> MapNav.js</td>
   <td> Contains all constants necessary for naviagtion out of the map page </td>
+  </tr>
+  <tr>
+  <td colspan="2"><i>explr/network</i></td>
+  </tr>
+  <tr>
+  <td> Requests.js</td>
+  <td> Contains all functions for interaction with the Firebase database for creating, editing, adding to, and managing trips; also includes the route optimization and route distance calculator</td>
   </tr>
 </table>
