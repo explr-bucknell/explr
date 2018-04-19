@@ -1,6 +1,6 @@
-import React from 'react';
-import firebase from 'firebase';
-const fetch = require('node-fetch');
+import React from 'react'
+import firebase from 'firebase'
+const fetch = require('node-fetch')
 import { types } from '../utils/poiTypes'
 
 var config = {
@@ -8,7 +8,7 @@ var config = {
 }
 
 export async function createTrip(uid, tripName, tripTags, permission) {
-  var tripId = firebase.database().ref(`trips/`).push().key
+  var tripId = firebase.database().ref(`trips/`).push().key // eslint-disable-line
   await firebase.database().ref(`trips/${tripId}`).update({
     name: tripName,
     tags: tripTags,
@@ -30,7 +30,7 @@ export async function createTrip(uid, tripName, tripTags, permission) {
 }
 
 export async function createTripWithLocation(uid, tripName, tripTags, permission, locationId, locationName) {
-  var tripId = firebase.database().ref(`trips/`).push().key
+  var tripId = firebase.database().ref(`trips/`).push().key // eslint-disable-line
   await firebase.database().ref(`trips/${tripId}`).update({
     name: tripName,
     tags: tripTags,
@@ -94,24 +94,24 @@ export async function addLocationToTrip(tripId, locationId, locationName) {
   var exist = false
   await firebase.database().ref(`trips/${tripId}/locations/${locationId}`).once('value', function(snapshot) {
     if (snapshot.numChildren()) {
-      exist = true;
+      exist = true
     }
-  });
+  })
   if (exist) {
-    return;
+    return
   }
 
-  var numLocations = 0;
+  var numLocations = 0
   await firebase.database().ref(`trips/${tripId}/numLocs/`).transaction(function(numLocs) {
-    numLocations = numLocs;
-    return numLocs + 1;
-  });
+    numLocations = numLocs
+    return numLocs + 1
+  })
 
   await firebase.database().ref(`trips/${tripId}/locations/${locationId}`).set({
     visited: false,
     name: locationName,
     index: numLocations
-  });
+  })
 }
 
 export async function toggleVisited(tripId, locationId, visited) {
@@ -134,19 +134,19 @@ export async function getTrip (tripId) {
     let tripJson = await trip.json()
     return tripJson
   } catch (error) {
-    console.error(error)
+    console.error(error) // eslint-disable-line
     return null
   }
 }
 
 export async function getLocations (locationType) {
   try {
-    let locations = await fetch(`https://senior-design-explr.firebaseio.com/${locationType}.json`);
-    let locationsJson = await locations.json();
+    let locations = await fetch(`https://senior-design-explr.firebaseio.com/${locationType}.json`)
+    let locationsJson = await locations.json()
     return locationsJson
   } catch (error) {
     // Handle error
-    console.error(error);
+    console.error(error) // eslint-disable-line
   }
 }
 
@@ -166,7 +166,7 @@ export async function getPOIFromLatLng (lat, lng) {
     let pointsOfInterest = await fetch(
       `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${lat},${lng}&radius=500&key=${config.apiKey}`
     )
-    let poiJson = await pointsOfInterest.json();
+    let poiJson = await pointsOfInterest.json()
     poiJson.results.forEach((poi) => {
       var type = getMatchingType(poi['types'])
       if (type != 'undefined') {
@@ -184,10 +184,10 @@ export async function getPOIFromLatLngWithFilter (lat, lng, selectedFilter) {
     let pointsOfInterest = await fetch(
       `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${lat},${lng}&radius=500&type=${selectedFilter}&key=${config.apiKey}`
     )
-    let poiJson = await pointsOfInterest.json();
+    let poiJson = await pointsOfInterest.json()
     return poiJson
   } catch (error) {
-    console.error(error)
+    console.error(error) // eslint-disable-line
   }
 }
 
@@ -199,7 +199,7 @@ export async function getPOIDetails (placeId) {
     let poiDetailJson = await poiDetail.json()
     return poiDetailJson
   } catch (error) {
-    console.error(error)
+    console.error(error) // eslint-disable-line
   }
 }
 
@@ -223,12 +223,12 @@ export async function makePhotoRequest (photoReference) {
     )
     return photoUrl
   } catch (error) {
-    console.error(error)
+    console.error(error) // eslint-disable-line
   }
 }
 
 export function getMatchingType (poiTypes) {
-  for (i = 0; i < poiTypes.length; i++) {
+  for (let i = 0; i < poiTypes.length; i++) {
     if (Object.keys(types).includes(poiTypes[i])) {
       return poiTypes[i]
     }
@@ -237,16 +237,26 @@ export function getMatchingType (poiTypes) {
 }
 
 export async function submitPoiToFirebase (poi, photoUrl) {
-  let defaultPic = 'https://picsum.photos/200/300/?image=693'
-  let type = getMatchingType(poi.types)
-  firebase.database().ref('pois/' + poi.place_id).set({
-    name: poi.name,
-    id: poi.place_id,
-    image: photoUrl ? photoUrl.url : types[poi.type].defaultPic,
-    lat: poi.geometry.location.lat,
-    long: poi.geometry.location.lng,
-    description: poi.name, // FIX THIS,
-    type: type
+  if (checkDuplicateLocation(poi.place_id)) {
+    let type = getMatchingType(poi.types)
+    firebase.database().ref('pois/' + poi.place_id).set({
+      name: poi.name,
+      id: poi.place_id,
+      image: photoUrl ? photoUrl.url : types[poi.type].defaultPic,
+      lat: poi.geometry.location.lat,
+      long: poi.geometry.location.lng,
+      description: poi.name, // FIX THIS,
+      type: type
+    })
+    return 'success'
+  } else {
+    return 'failure'
+  }
+}
+
+const checkDuplicateLocation = (locId) => {
+  firebase.database().ref('pois/').once('value', function(snapshot) {
+    return snapshot.hasChild(locId)
   })
 }
 
@@ -266,30 +276,30 @@ export async function uploadNewProfilePic(base64, uid) {
 }
 
 export async function calculateDistance(trip) {
-  var urlStart = "";
-  var urlEnd = "&waypoints=";
+  var urlStart = ''
+  var urlEnd = '&waypoints='
   for (var i = 0; i < trip.length; i++) {
     if (i == 0) {
-      urlStart += "origin=place_id:" + trip[i].locId;
+      urlStart += 'origin=place_id:' + trip[i].locId
     } else if (i == trip.length - 1) {
-      urlStart += "&destination=place_id:" + trip[i].locId;
+      urlStart += '&destination=place_id:' + trip[i].locId
     } else {
-      urlEnd += "place_id:" + trip[i].locId + "|"
+      urlEnd += 'place_id:' + trip[i].locId + '|'
     }
   }
 
-  var urlWaypoints = urlStart + urlEnd;
-  var urlFinal = "https://maps.googleapis.com/maps/api/directions/json?" + urlWaypoints + "&key=AIzaSyBbEBNs_oq5jkeq2rRkSd1mKBkVGX7RjGg";
+  var urlWaypoints = urlStart + urlEnd
+  var urlFinal = 'https://maps.googleapis.com/maps/api/directions/json?' + urlWaypoints + '&key=AIzaSyBbEBNs_oq5jkeq2rRkSd1mKBkVGX7RjGg'
 
   return fetch(urlFinal).then(function(response) {
     var googleRet = response.json()
     return googleRet.then((data) => {
-      var distance = 0;
-      var parsed = "";
+      var distance = 0
+      var parsed = ''
       for (var i = 0; i < (trip.length - 1); i++) {
-        parsed = (data.routes[0].legs[i].distance.text);
-        parsed = parseFloat(parsed.replace(",","").replace(" mi",""));
-        distance += parsed;
+        parsed = (data.routes[0].legs[i].distance.text)
+        parsed = parseFloat(parsed.replace(',','').replace(' mi',''))
+        distance += parsed
       }
       return distance
     })
@@ -297,37 +307,35 @@ export async function calculateDistance(trip) {
 }
 
 export async function optimizeTrip(trip, tripID, tripName, callback) {
-  var urlStart = "";
-  var urlEnd = "&waypoints=optimize:true|";
+  var urlStart = ''
+  var urlEnd = '&waypoints=optimize:true|'
   for (var i = 0; i < trip.length; i++) {
     if (i == 0) {
-      urlStart += "origin=place_id:" + trip[i].locId;
+      urlStart += 'origin=place_id:' + trip[i].locId
     } else if (i == trip.length - 1) {
-      urlStart += "&destination=place_id:" + trip[i].locId;
+      urlStart += '&destination=place_id:' + trip[i].locId
     } else {
-      urlEnd += "place_id:" + trip[i].locId + "|"
+      urlEnd += 'place_id:' + trip[i].locId + '|'
     }
   }
 
-  var urlWaypoints = urlStart + urlEnd;
-  var urlFinal = "https://maps.googleapis.com/maps/api/directions/json?" + urlWaypoints + "&key=AIzaSyBbEBNs_oq5jkeq2rRkSd1mKBkVGX7RjGg";
+  var urlWaypoints = urlStart + urlEnd
+  var urlFinal = 'https://maps.googleapis.com/maps/api/directions/json?' + urlWaypoints + '&key=AIzaSyBbEBNs_oq5jkeq2rRkSd1mKBkVGX7RjGg'
 
   fetch(urlFinal).then(function(response) {
-    googleRet = response.json()
+    const googleRet = response.json()
     googleRet.then((data) => {
-      var waypointArr = data.routes[0].waypoint_order;
-      var dist = data.routes[0].legs[0].distance.text;
-      var parsed = parseFloat(dist.replace(",","").replace(" mi",""));
+      var waypointArr = data.routes[0].waypoint_order
 
-      var resArray = [];
+      var resArray = []
       for (var i = 0; i < trip.length; i++) {
         if (i != 0 && i != trip.length - 1) {
-        resArray.push(trip[waypointArr[i-1]+1]);
+        resArray.push(trip[waypointArr[i-1]+1])
         } else {
-        resArray.push(trip[i]);
+        resArray.push(trip[i])
         }
       }
-      recreateTrip(tripID, tripName, resArray);
+      recreateTrip(tripID, tripName, resArray)
       callback(resArray)
     })
   })
@@ -335,13 +343,13 @@ export async function optimizeTrip(trip, tripID, tripName, callback) {
 }
 
 export async function recreateTrip(tripId, tripName, resArray) {
-  await resetTrip(tripId, tripName, resArray);
+  await resetTrip(tripId, tripName, resArray)
 
-  var numLocations = -1;
+  var numLocations = -1
   await firebase.database().ref(`trips/${tripId}/numLocs/`).transaction(function(numLocs) {
-    numLocations = numLocs;
-  });
-  await addAllLocations(tripId, tripName, resArray);
+    numLocations = numLocs
+  })
+  await addAllLocations(tripId, tripName, resArray)
 }
 
 export async function resetTrip(tripId, tripName, resArray) {
@@ -349,14 +357,14 @@ export async function resetTrip(tripId, tripName, resArray) {
     numLocs: 0,
     locations: {}
   })
-  return;
+  return
 }
 
 export async function addAllLocations(tripId, tripName, locationArray) {
   for (var i = 0; i < locationArray.length; i++) {
     await addLocationToTrip(tripId, locationArray[i].locId, locationArray[i].name)
   }
-  return;
+  return
 }
 
 //Delete a trip
@@ -388,23 +396,23 @@ export function deleteTrip(tripId) {
 
       firebase.database().ref(`trips/${tripId}`).set(null)
     }
-  });
+  })
 }
 
 //Remove a location
 export async function removeLocation(tripId, locationID) {
-	await firebase.database().ref(`trips/${tripId}/locations/${locationID}`).set(null);
+	await firebase.database().ref(`trips/${tripId}/locations/${locationID}`).set(null)
 
-	var numLocations = 0;
+	var numLocations = 0
 	await firebase.database().ref(`trips/${tripId}/numLocs/`).transaction(function(numLocs) {
-		numLocations = numLocs;
-		return numLocs - 1;
-	});
+		numLocations = numLocs
+		return numLocs - 1
+	})
 }
 
 //Mark a location as visited
 export async function markVisited(tripId, locationID) {
   await firebase.database().ref(`trips/${tripId}/locations/${locationID}`).update({
     visited: true
-  });
+  })
 }

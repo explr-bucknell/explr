@@ -229,24 +229,38 @@ export default class MapPage extends Component {
 
   submitPoi () {
     let poi = this.state.selectedPOI
-    let poiType = this.state.selectedFilter
     getPOIDetails(poi.place_id)
       .then((details) => {
           if (details.result.photos) {
             makePhotoRequest(details.result.photos[0].photo_reference)
             .then((photoUrl) => {
               submitPoiToFirebase(poi, photoUrl)
-              .then(() => {
-                this.updateLocations (poi.place_id)
+              .then((response) => {
+                if (response === 'success') {
+                  this.updateLocations (poi.place_id)
+                } else {
+                  this.displayError()
+                }
               })
             })
           } else {
             submitPoiToFirebase(poi, undefined)
-            .then(() => {
-              this.updateLocations (poi.place_id)
+            .then((response) => {
+              if (response === 'success') {
+                this.updateLocations (poi.place_id)
+              } else {
+                this.displayError()
+              }
             })
           }
       })
+  }
+
+  displayError() {
+    this.setState({ errorDisplaying: true})
+    setTimeout(() => {
+      this.setState({errorDisplaying: false})
+    }, 2000)
   }
 
   updateLocations (id) {
@@ -335,6 +349,7 @@ export default class MapPage extends Component {
 
         { this.state.editingCustomPin &&
           <CustomPinSearch
+            errorDisplaying={this.state.errorDisplaying}
             types={this.state.customPinFilterTypes}
             updateSelectedFilters={(selectedFilters) => this.filterCustomPinResults(selectedFilters)}
             handleOptionSelect={(selectedOption) => this.handlePOISelect(selectedOption)}
