@@ -9,6 +9,7 @@ import {
 import SearchFilterContainer from './SearchFilterContainer' // eslint-disable-line no-unused-vars
 import SearchOption from './SearchOption' // eslint-disable-line no-unused-vars
 import { Ionicons } from '@expo/vector-icons' // eslint-disable-line no-unused-vars
+import { white } from '../utils/colors'
 
 // Component allowing users to add their own POIs to our database, as long as they exist on Google's Places API
 export default class CustomPinSearch extends Component {
@@ -42,7 +43,12 @@ export default class CustomPinSearch extends Component {
 
   render () {
     return (
-      <CustomPinSearchContainer style={styles.customPinSearchContainer}>
+      <View style={styles.customPinSearchContainer}>
+        {this.props.errorDisplaying &&
+          <View style={styles.toaster}>
+            <Text style={{color: 'red', fontSize: 16}}>That location already exists in our database!</Text>
+          </View>
+        }
         <SearchFilterContainer
           filters={this.props.types}
           updateFilters={(selectedFilters) => this.props.updateSelectedFilters(selectedFilters)}
@@ -81,12 +87,21 @@ export default class CustomPinSearch extends Component {
             </View>
           }
         </ScrollView>
-      </CustomPinSearchContainer>
+      </View>
     )
   }
 }
 
 const styles = StyleSheet.create({
+  customPinSearchContainer: {
+    width: '100%',
+    height: 250,
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    backgroundColor: 'white',
+    bottom: 0,
+  },
   customPinBanner: {
     width: '100%',
     height: 50,
@@ -99,4 +114,14 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 200,
   },
+  toaster: {
+    position: 'absolute',
+    bottom: 300,
+    width: '100%',
+    height: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: white,
+    borderRadius: 5
+  }
 })
