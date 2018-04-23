@@ -115,11 +115,40 @@ export function deleteTrip (tripId) {
   })
 }
 
-export function getTrips(uid, callback) {
+export function getTrips (uid, callback) {
   let ref = firebase.database().ref('trips/')
   ref.orderByChild('creator').equalTo(uid).on('value', function(snapshot) {
     if (snapshot.numChildren()) {
       callback(snapshot.val())
+    }
+  })
+  return ref
+}
+
+export function getJoinedOrFollowedTrips (uid, type, callback) {
+  var path = `users/main/${uid}/`
+  if (type) {
+    path += 'joinedTrips'
+  } else {
+    path += 'followedTrips'
+  }
+  var ref = firebase.database().ref(path)
+  ref.orderByValue().on('value', function(snapshot) {
+    if (snapshot.numChildren()) {
+      var tripIds = Object.keys(snapshot.val()).reverse()
+      var trips = []
+      tripIds.forEach(tripId => {
+        firebase.database().ref(`trips/${tripId}`).once('value', function(snapshot2) {
+          if (snapshot2.numChildren) {
+            var trip = snapshot2.val()
+            trip.tripId = tripId
+            trips.push (trip)
+            if (trips.length === tripIds.length) {
+              callback(trips)
+            }
+          }
+        })
+      })
     }
   })
   return ref
@@ -334,5 +363,39 @@ export function getTripLocationsDetail (locations, uid, callback) {
         }
       }
     })
+  })
+}
+
+export function getTrendTags (callback) {
+  var ref = firebase.database().ref('tags')
+  ref.orderByChild('count').limitToLast(100).once('value', function(snapshot) {
+    if (snapshot.numChildren()) {
+      var tags = {}
+      var tagOrder = []
+      snapshot.forEach(function(tag) {
+        var tagName = tag.key
+        var tagVal = tag.val()
+        tags[tagName] = tagVal
+        tagOrder.push(tagName)
+      })
+      tagOrder.sort((a, b) => (tags[a].count > tags[b].count ? -1 : 1))
+      callback(tags, tagOrder)
+    }
+  })
+}
+
+export function getTags (query, callback) {
+  var ref = firebase.database().ref('tags')
+  ref.orderByKey().startAt(query).endAt(query + '\uf8ff').limitToFirst(100).on('value', function(snapshot) {
+    var tags = {}
+    var tagOrder = []
+    snapshot.forEach(function(tag) {
+      var tagName = tag.key
+      var tagVal = tag.val()
+      tags[tagName] = tagVal
+      tagOrder.push(tagName)
+    })
+    tagOrder.sort((a, b) => (tags[a].count > tags[b].count ? -1 : 1))
+    callback(tags, tagOrder)
   })
 }

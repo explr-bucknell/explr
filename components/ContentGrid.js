@@ -7,9 +7,9 @@ import {
 	TouchableOpacity, // eslint-disable-line no-unused-vars
 	Dimensions, // eslint-disable-line no-unused-vars
 } from 'react-native'
-import firebase from 'firebase'
 import { FontAwesome } from '@expo/vector-icons' // eslint-disable-line no-unused-vars
 import { black, liked } from '../utils/colors'
+import { getCurrUid, getSavedLocations } from '../network/users'
 
 // Grid for displaying users' liked/saved locations
 export default class ContentGrid extends Component {
@@ -26,25 +26,28 @@ export default class ContentGrid extends Component {
 	componentWillMount () {
 		var self = this
 		var uid = this.props.uid
-		var ref = firebase.database().ref('users/main/' + uid + '/saved') // eslint-disable-line func-call-spacing
 
-		var currUid = firebase.auth().currentUser.uid
-
-		ref.on('value', function(snapshot) {
-			if (snapshot.val()) {
-				if (currUid == uid) {
-					self.updateGrid(snapshot.val())		// Current logged in user is the owner of saved locations
-				} else {
-					self.updateGrid(snapshot.val(), currUid)
-				}
-			}
-		})
+		this.locationsRef = getSavedLocations(uid, this.onGetSavedLocationsComplete)
 	}
 
-	updateGrid (snapshot, uid=null) {
-		var ids = Object.keys(snapshot)
-		var names = ids.map(id => snapshot[id].name)
-		var images = ids.map(id => snapshot[id].image)
+	componentWillUnmount() {
+		this.locationsRef.off('value')
+	}
+
+	onGetSavedLocationsComplete = (locations) => {
+		var uid = this.props.uid
+		var currUid = getCurrUid()
+		if (currUid == uid) {
+			this.updateGrid(locations)
+		} else {
+			this.updateGrid(locations, currUid)
+		}
+	}
+
+	updateGrid (locations, uid=null) {
+		var ids = Object.keys(locations)
+		var names = ids.map(id => locations[id].name)
+		var images = ids.map(id => locations[id].image)
 		var liked = []
 
 		if (uid == null) {
@@ -53,14 +56,7 @@ export default class ContentGrid extends Component {
 		} else {
 			this.setState({ ids, names, images })
 			var self = this
-			var ref = firebase.database().ref('users/main/' + uid + '/saved')
-			ref.on('value', function(snapshot2) {
-				if (snapshot2.val()) {
-					var content = snapshot2.val()
-					var liked = ids.map(id => (content[id] != null))
-					self.setState({ liked })
-				}
-			})
+			getSavedLocations(uid, (content) => { self.setState({ liked: ids.map(id => (content[id] != null)) }) })
 		}
 	}
 

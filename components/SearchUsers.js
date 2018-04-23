@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Image, StyleSheet, Text, TouchableOpacity, View, ScrollView } from 'react-native'
-import firebase from 'firebase'
+import { getUsersByHandle } from '../network/users'
 import { primary, white, gray, black } from '../utils/colors'
 
 export default class SearchUsers extends Component {
@@ -24,22 +24,11 @@ export default class SearchUsers extends Component {
 			return
 		}
 		text = text.toLowerCase()
-		var self = this
-		var ref = firebase.database().ref('users/main')
-		ref.orderByChild('handle').startAt(text).endAt(text + '\uf8ff').limitToFirst(100).on('value', function(snapshot) {
-			var uids = []
-  		var names = []
-  		var handles = []
-  		var images = []
-  		snapshot.forEach(function(user) {
-  			var userVal = user.val()
-  			uids.push(user.key)
-  			names.push(userVal.firstname + " " + userVal.lastname)
-  			handles.push(userVal.handle)
-  			images.push(userVal.imageUrl)
-  		})
-	  	self.setState({ uids, names, handles, images })
-		})
+		getUsersByHandle(text, this.onGetUsersComplete)
+	}
+
+	onGetUsersComplete = (uids, names, handles, images) => {
+		this.setState({ uids, names, handles, images })
 	}
 
 	render() {

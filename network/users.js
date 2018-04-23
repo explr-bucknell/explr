@@ -88,6 +88,16 @@ export function getProfilePic (url, callback) {
   })
 }
 
+export function getSavedLocations (uid, callback) {
+  var ref = firebase.database().ref('users/main/' + uid + '/saved')
+  ref.on('value', function(snapshot) {
+    if (snapshot.numChildren()) {
+      callback(snapshot.val())
+    }
+  })
+  return ref
+}
+
 export function uploadNewProfilePic (base64, uid) {
   var url = 'https://us-central1-senior-design-explr.cloudfunctions.net/profileImageUpload'
   fetch(url, {
@@ -140,4 +150,22 @@ export function getUserFollowStatus (currUid, uid, callback) {
     }
   })
   return ref
+}
+
+export function getUsersByHandle (query, callback) {
+  var ref = firebase.database().ref('users/main')
+  ref.orderByChild('handle').startAt(query).endAt(query + '\uf8ff').limitToFirst(100).once('value', function(snapshot) {
+    var uids = []
+    var names = []
+    var handles = []
+    var images = []
+    snapshot.forEach(function(user) {
+      var userVal = user.val()
+      uids.push(user.key)
+      names.push(userVal.firstname + " " + userVal.lastname)
+      handles.push(userVal.handle)
+      images.push(userVal.imageUrl)
+    })
+    callback(uids, names, handles, images)
+  })
 }

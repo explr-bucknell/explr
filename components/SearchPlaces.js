@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { StyleSheet, Text, TouchableOpacity, View, ScrollView } from 'react-native'
-import { getPOIAutocomplete } from '../network/Requests'
+import { getPOIAutocomplete } from '../network/pois'
 import { primary, white, gray, black } from '../utils/colors'
 
 export default class SearchPlaces extends Component {

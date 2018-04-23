@@ -3,7 +3,9 @@ import { View, Image, Text, TouchableOpacity, StyleSheet } from 'react-native'
 import firebase from 'firebase'
 import { Ionicons } from '@expo/vector-icons'
 import { primary, white, gray, black } from '../../utils/colors'
+
 const APPROVED_ENDPOINT = 'https:///us-central1-senior-design-explr.cloudfunctions.net/sendFollowApprovalNotification/'
+
 export default class FollowRequest extends React.Component {
 	constructor(props) {
 		// props.uid

@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
 import { Ionicons } from '@expo/vector-icons'
 import { white, primary } from '../utils/colors'
-import { createTrip, getTrips, addLocationToTrip, createTripWithLocation } from '../network/Requests'
+import { getTrips } from '../network/trips'
 import TripContainer from './TripContainer'
 import Tags from '../components/Tags'
 
@@ -22,10 +22,17 @@ export default class UserTrips extends Component {
 
 	componentWillReceiveProps () {
 		this.retrieveTrips()
+		if (this.tripsRef && this.tripsRef.off) {
+			this.tripsRef.off('value')
+		}
+	}
+
+	componentWillUnmount() {
+		this.tripsRef.off('value')
 	}
 
 	retrieveTrips = () => {
-		getTrips(this.props.uid, this.loadTrips)
+		this.tripsRef = getTrips(this.props.uid, this.loadTrips)
 	}
 
 	loadTrips = (trips) => {
@@ -50,13 +57,6 @@ export default class UserTrips extends Component {
 				trips: updatedTrips
 			})
 		}
-	}
-
-	addLocationToTrip (trip_id, location_id, location_name) {
-		addLocationToTrip(this.props.uid, trip_id, location_id, location_name)
-		.then(() => {
-			this.retrieveTrips()
-		})
 	}
 
 	render () {

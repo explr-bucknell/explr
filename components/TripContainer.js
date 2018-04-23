@@ -2,7 +2,7 @@ import React, { Component } from 'react' // eslint-disable-line no-unused-vars
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Image, Dimensions } from 'react-native' // eslint-disable-line no-unused-vars
 import { Ionicons } from '@expo/vector-icons' // eslint-disable-line no-unused-vars
 import { primary, white, progress } from '../utils/colors'
-import { getLocation } from '../network/Requests'
+import { getLocation } from '../network/pois'
 
 var Scroll_Width = Dimensions.get ('window').width * 0.83
 var Btn_Width = Dimensions.get ('window').width * 0.15 - 25
@@ -22,21 +22,19 @@ export default class TripContainer extends Component {
     let locs = this.props.trip.locations
     let numCompleted = 0
     let self = this
-    { locs && Object.keys (locs).forEach ((locId) => {
+    locs && Object.keys (locs).forEach((locId) => {
       numCompleted = locs[locId].visited ? numCompleted + 1 : numCompleted
-      this.setState ({
-
-      })
-      getLocation (locId).then ((location) => {
-        let tripIcons = self.state.tripIcons
-        tripIcons.push (location.image)
-        this.setState ({
-          tripIcons
-        })
-      })
-    }) }
+      getLocation(locId, this.onGetLocationComplete)
+    })
     this.setState ({
       completed: numCompleted
+    })
+  }
+
+  onGetLocationComplete = (location) => {
+    let tripIcons = this.state.tripIcons
+    this.setState ({
+      tripIcons: tripIcons.concat([location.image])
     })
   }
 
