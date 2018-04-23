@@ -5,6 +5,7 @@ import { white, primary, transparentWhite, gray, black, progress } from '../util
 import { FontAwesome, Ionicons } from '@expo/vector-icons'
 import { getPOIAutocomplete } from '../network/pois'
 import { getTrip, addLocationToTrip, calculateDistance, recreateTrip, optimizeTrip, toggleVisited } from '../network/trips'
+import { Toaster } from '../components/Toaster'
 
 const { StatusBarManager } = NativeModules
 const STATUSBAR_HEIGHT = Platform.OS === 'ios' ? 20 : StatusBarManager.HEIGHT
@@ -22,7 +23,8 @@ export default class TripPage extends Component {
       addingLocation: false,
       locations: [],
       editing: false,
-      distance: 0
+      distance: 0,
+      errorDisplaying: false
     }
   }
 
@@ -52,7 +54,13 @@ export default class TripPage extends Component {
 
   addLocation (trip_id, place_id, location_name) {
 		addLocationToTrip(trip_id, place_id, location_name)
-    .then(() => {this.updateTrip()})
+    .then((result) => {
+      if (result === 'failure') {
+        this.displayError()
+      } else {
+        this.updateTrip()
+      }
+    })
 	}
 
   updateTrip () {
@@ -167,6 +175,13 @@ export default class TripPage extends Component {
     this.props.nav.goBack()
   }
 
+  displayError() {
+    this.setState({ errorDisplaying: true, addingLocation: false})
+    setTimeout(() => {
+      this.setState({errorDisplaying: false})
+    }, 2000)
+  }
+
   render () {
     let { trip, tripLocations } = this.state
     let { tripId, name, numLocs, tags, followers, participants, creator, permission } = trip
@@ -174,6 +189,11 @@ export default class TripPage extends Component {
     var numParticipants = participants ? Object.keys(participants).length : 0
     return (
       <View style={{backgroundColor: white, height: '100%', position: 'relative'}}>
+        {this.state.errorDisplaying &&
+          <View style={styles.toaster}>
+            <Toaster text='You&apos;ve already added that location to this trip!'/>
+          </View>
+        }
         <Modal
           isVisible={this.state.addingLocation}
           backdropColor={'black'}
@@ -401,8 +421,7 @@ const styles = StyleSheet.create({
   tripLocationsContainer: {
     borderTopWidth: 1,
     borderColor: primary,
-    paddingBottom: 200,
-    marginBottom: 100
+    marginBottom: 250,
   },
   tripLocation: {
     width: '96%',
@@ -429,7 +448,7 @@ const styles = StyleSheet.create({
 		alignItems: 'center',
 		padding: 10,
 		flexDirection: 'row',
-		justifyContent: 'space-between'
+		justifyContent: 'space-between',
 	},
   modalContent: {
 		margin: 0,
@@ -509,5 +528,11 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: progress,
     borderRadius: 5
+  },
+  toaster: {
+    width: '100%',
+    position: 'absolute',
+    top: 155,
+    zIndex: 3
   }
 })

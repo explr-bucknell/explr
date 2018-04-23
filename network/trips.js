@@ -144,7 +144,7 @@ export async function addLocationToTrip (tripId, locationId, locationName) {
     }
   })
   if (exist) {
-    return
+    return 'failure'
   }
 
   var numLocations = 0
@@ -158,6 +158,7 @@ export async function addLocationToTrip (tripId, locationId, locationName) {
     name: locationName,
     index: numLocations
   })
+  return 'success'
 }
 
 export function getTripsByTag (tag, uid, following, callback) {
