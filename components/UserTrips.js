@@ -74,7 +74,7 @@ export default class UserTrips extends Component {
 							<View style={{width: '100%', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
 								<View style={{width: '80%'}}>
 								{!this.props.adding &&
-									<Text style={{fontSize: 16, fontWeight: 'bold', color: white}}>Create new i</Text>
+									<Text style={{fontSize: 16, fontWeight: 'bold', color: white}}>Create new trip</Text>
 								}
 								{this.props.adding &&
 									<Text style={{fontSize: 16, fontWeight: 'bold', color: white}}>

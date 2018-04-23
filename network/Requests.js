@@ -89,29 +89,32 @@ export async function editTrip(tripId, name, tags, permission, oldTags) {
   })
 }
 
+const checkDuplicateLocationInTrip = (tripId, locationId) => {
+  firebase.database().ref(`trips/${tripId}/locations`).once('value', function(snapshot) {
+    return snapshot.hasChild(locationId)
+  })
+}
+
+
 //Add a new location to a trip
 export async function addLocationToTrip(tripId, locationId, locationName) {
-  var exist = false
-  await firebase.database().ref(`trips/${tripId}/locations/${locationId}`).once('value', function(snapshot) {
-    if (snapshot.numChildren()) {
-      exist = true
-    }
-  })
-  if (exist) {
-    return
+
+  if (checkDuplicateLocation) {
+    return 'failure'
+  } else {
+    var numLocations = 0
+    await firebase.database().ref(`trips/${tripId}/numLocs/`).transaction(function(numLocs) {
+      numLocations = numLocs
+      return numLocs + 1
+    })
+
+    await firebase.database().ref(`trips/${tripId}/locations/${locationId}`).set({
+      visited: false,
+      name: locationName,
+      index: numLocations
+    })
+    return 'success'
   }
-
-  var numLocations = 0
-  await firebase.database().ref(`trips/${tripId}/numLocs/`).transaction(function(numLocs) {
-    numLocations = numLocs
-    return numLocs + 1
-  })
-
-  await firebase.database().ref(`trips/${tripId}/locations/${locationId}`).set({
-    visited: false,
-    name: locationName,
-    index: numLocations
-  })
 }
 
 export async function toggleVisited(tripId, locationId, visited) {
@@ -352,7 +355,7 @@ export async function recreateTrip(tripId, tripName, resArray) {
   await addAllLocations(tripId, tripName, resArray)
 }
 
-export async function resetTrip(tripId, tripName, resArray) {
+export async function resetTrip(tripId) {
   await firebase.database().ref('trips/' + tripId).update({
     numLocs: 0,
     locations: {}

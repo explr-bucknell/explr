@@ -8,6 +8,7 @@ import {
 } from 'react-native'
 import SearchFilterContainer from './SearchFilterContainer' // eslint-disable-line no-unused-vars
 import SearchOption from './SearchOption' // eslint-disable-line no-unused-vars
+import Toaster from './Toaster'
 import { Ionicons } from '@expo/vector-icons' // eslint-disable-line no-unused-vars
 import { white } from '../utils/colors'
 
@@ -46,7 +47,7 @@ export default class CustomPinSearch extends Component {
       <View style={styles.customPinSearchContainer}>
         {this.props.errorDisplaying &&
           <View style={styles.toaster}>
-            <Text style={{color: 'red', fontSize: 16}}>That location already exists in our database!</Text>
+            <Toaster text='That location already exists in our database!'/>
           </View>
         }
         <SearchFilterContainer
@@ -116,12 +117,7 @@ const styles = StyleSheet.create({
   },
   toaster: {
     position: 'absolute',
-    bottom: 300,
     width: '100%',
-    height: 40,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: white,
-    borderRadius: 5
+    bottom: 300,
   }
 })
