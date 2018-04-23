@@ -19,8 +19,16 @@ export default class JoinTripApproval extends React.Component {
   }
 
   componentWillMount() {
-    var approverId = this.props.data.approver
-    var tripId = this.props.data.tripId
+    this.loadNotification(this.props)
+  }
+
+  componentWillReceiveProps(nextProps) {
+    this.loadNotification(nextProps)
+  }
+
+  loadNotification = (props) => {
+    var approverId = props.data.approver
+    var tripId = props.data.tripId
     var approverRef = firebase.database().ref("users/main/" + approverId)
     var tripRef = firebase.database().ref("trips/" + tripId)
     var self = this

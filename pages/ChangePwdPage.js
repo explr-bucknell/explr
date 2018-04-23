@@ -4,7 +4,6 @@ import { Card, FormLabel, FormInput, FormValidationMessage } from 'react-native-
 import firebase from 'firebase'
 import { ImagePicker } from 'expo'
 import { FontAwesome } from '@expo/vector-icons'
-import { uploadNewProfilePic } from '../network/Requests'
 import { primary, white, gray, black } from '../utils/colors'
 
 export default class ChangePwdPage extends React.Component {

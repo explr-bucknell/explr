@@ -2,7 +2,6 @@ import React from 'react'
 import { View } from 'react-native'
 import { Container, Header, Content, Tab, Tabs } from 'native-base';
 import { primary, white, gray } from '../utils/colors'
-import firebase from 'firebase'
 import SearchUsers from '../components/SearchUsers'
 import SearchPlaces from '../components/SearchPlaces'
 import SearchTags from '../components/SearchTags'

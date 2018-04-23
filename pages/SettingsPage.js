@@ -1,9 +1,9 @@
 import React from 'react'
 import { ScrollView, View, Text, TouchableOpacity, StyleSheet } from 'react-native'
 import { Container, Content, Card, CardItem, Right, Switch } from 'native-base'
-import firebase from 'firebase'
 import { FontAwesome, Ionicons } from '@expo/vector-icons'
 import { primary, white, gray, black, transparentWhite, facebook, twitter, google } from '../utils/colors'
+import { authStateObserver } from '../network/users'
 
 export default class SettingsPage extends React.Component {
   constructor(props) {
@@ -19,25 +19,26 @@ export default class SettingsPage extends React.Component {
   }
 
   componentDidMount() {
+    this.authObserver = authStateObserver(() => null, this.onSignOutDetected)
+  }
+
+  componentWillUnmount() {
+    this.authObserver()
+  }
+
+  onSignOutDetected = () => {
     var nav = this.props.nav.state.params.loginNav
-    firebase.auth().onAuthStateChanged(function(user) {
-      if (user) {
-        // User is signed in.
-      } else {
-        // No user is signed in.
-        nav.navigate('Start')
-      }
-    })
+    this.authObserver()
+    nav.navigate('Start')
   }
 
   userSignOut = () => {
     var nav = this.props.nav.state.params.loginNav
-    firebase.auth().signOut().then(() => {
-      nav.navigate('Start')
-    })
+    firebase.auth().signOut()
   }
 
   facebookSignin = () => {
+    /*
     console.log('facebook')
     var self = this
     let auth = firebase.auth()
@@ -57,6 +58,7 @@ export default class SettingsPage extends React.Component {
       // Handle Errors here.
       console.log('Facebook linking failed', error)
     });
+    */
   }
 
   twitterSignin = () => {
@@ -121,7 +123,7 @@ export default class SettingsPage extends React.Component {
             <CardItem style={styles.row}>
               <Text style={styles.rowText}>Edit Profile</Text>
               <Right>
-                <TouchableOpacity onPress={() => this.props.nav.navigate('ProfileEditPage', {uid: this.props.nav.state.params.uid})}>
+                <TouchableOpacity onPress={() => this.props.nav.navigate('ProfileEditPage', {uid: this.props.nav.state.params.uid, refreshProfile: this.props.nav.state.params.refreshProfile})}>
                   <Ionicons style={styles.icon} name='ios-arrow-forward'/>
                 </TouchableOpacity>
               </Right>

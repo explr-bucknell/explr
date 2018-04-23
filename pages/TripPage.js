@@ -3,20 +3,14 @@ import { StyleSheet, Text, View, ScrollView, TouchableOpacity, TextInput, Button
 import Modal from 'react-native-modal'
 import { white, primary, transparentWhite, gray, black, progress } from '../utils/colors'
 import { FontAwesome, Ionicons } from '@expo/vector-icons'
-import {
-  getTrip,
-  getPOIAutocomplete,
-  addLocationToTrip,
-  calculateDistance,
-  recreateTrip,
-  optimizeTrip,
-  toggleVisited
-} from '../network/Requests'
+import { getPOIAutocomplete } from '../network/pois'
+import { getTrip, addLocationToTrip, calculateDistance, recreateTrip, optimizeTrip, toggleVisited } from '../network/trips'
 
 const { StatusBarManager } = NativeModules
 const STATUSBAR_HEIGHT = Platform.OS === 'ios' ? 20 : StatusBarManager.HEIGHT
 const REQUEST_JOIN = 'https:///us-central1-senior-design-explr.cloudfunctions.net/sendTripJoinRequestNotification/'
 const FOLLOW_TRIP = 'https:///us-central1-senior-design-explr.cloudfunctions.net/sendTripFollowNotification/'
+
 export default class TripPage extends Component {
 
   constructor (props) {
@@ -56,29 +50,30 @@ export default class TripPage extends Component {
 		}
 	}
 
-  async addLocation (trip_id, place_id, location_name) {
-		await addLocationToTrip(trip_id, place_id, location_name)
+  addLocation (trip_id, place_id, location_name) {
+		addLocationToTrip(trip_id, place_id, location_name)
     .then(() => {this.updateTrip()})
 	}
 
   updateTrip () {
-    getTrip(this.state.trip.tripId)
-    .then((trip) => {
-      var tripLocations = []
-      trip.locations && Object.keys(trip.locations).forEach((locId) => {
-        trip.locations[locId].locId = locId
-        tripLocations[trip.locations[locId].index] = trip.locations[locId]
-      })
-      trip.tripId = this.state.trip.tripId
+    getTrip(this.state.trip.tripId, this.onGetTripComplete)
+  }
+
+  onGetTripComplete = (trip) => {
+    var tripLocations = []
+    trip.locations && Object.keys(trip.locations).forEach((locId) => {
+      trip.locations[locId].locId = locId
+      tripLocations[trip.locations[locId].index] = trip.locations[locId]
+    })
+    trip.tripId = this.state.trip.tripId
+    this.setState({
+      tripLocations
+    })
+    calculateDistance(tripLocations).then((distance) => {
       this.setState({
-        tripLocations
-      })
-      calculateDistance(tripLocations).then((distance) => {
-        this.setState({
-          distance,
-          trip,
-          addingLocation: false
-        })
+        distance,
+        trip,
+        addingLocation: false
       })
     })
   }
@@ -142,7 +137,7 @@ export default class TripPage extends Component {
     if (!this.state.editing) {
       console.log('editing')
     } else {
-      recreateTrip(trip.tripId, trip.name, this.state.tripLocations)
+      recreateTrip(trip.tripId, this.state.tripLocations)
     }
     this.setState({
       oldTripLocations: this.state.tripLocations,
@@ -152,7 +147,7 @@ export default class TripPage extends Component {
 
   optimizeTrip () {
     let { trip } = this.state
-    optimizeTrip(this.state.tripLocations, trip.tripId, trip.name, this.optimizeTripCallback)
+    optimizeTrip(this.state.tripLocations, trip.tripId, this.optimizeTripCallback)
   }
 
   optimizeTripCallback = (newTripArray) => {

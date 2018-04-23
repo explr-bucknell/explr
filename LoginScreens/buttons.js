@@ -30,8 +30,8 @@ export default class Buttons extends Component {
 		this.unsubscribe = firebase.auth().onAuthStateChanged(function(user) {
 		  if (user) {
 		    // User is signed in.
-		    var nav = self.props.nav
 		    self.unsubscribe()
+		    var nav = self.props.nav
 		    nav.navigate('MainPage', {uid: user.uid, loginNav: nav})
 		  } else {
 		    // No user is signed in.
@@ -44,7 +44,6 @@ export default class Buttons extends Component {
 	}
 
 	render() {
-		console.log(this.state.loggedIn);
 		return (
 			<View style={styles.container}>
 				{ this.state.loggedIn || <View>

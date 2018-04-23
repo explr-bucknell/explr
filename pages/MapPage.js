@@ -11,20 +11,19 @@ import {
   ScrollView,
   TouchableOpacity
 } from 'react-native'
-import firebase from 'firebase'
 import { FontAwesome } from '@expo/vector-icons'
 import { Location, Permissions } from 'expo'
 import MapView from 'react-native-maps' // eslint-disable-line no-unused-vars
 import MapMarkerCallout from '../components/MapMarkerCallout'
 import {
-  getLocations,
+  getGeoqueryLocations,
   getLocation,
   getPOIFromLatLng,
   getPOIDetails,
   makePhotoRequest,
   submitPoiToFirebase,
   getMatchingType
-} from '../network/Requests'
+} from '../network/pois'
 import CustomPinSearch from '../components/CustomPinSearch'
 import CategoryFilter from '../components/CategoryFilter'
 import { primary, white, gray, compass } from '../utils/colors'
@@ -64,22 +63,27 @@ export default class MapPage extends Component {
     if (this.props.state.params && this.props.state.params.id) {
       let place_id = this.props.state.params.id
       this.centerChosenPOI = true
-      getLocation(place_id).then((data) => {
-        var locations = {}
-        locations[data.id] = data
-        this.setState({
-          region: {
-            latitude: data.lat,
-            longitude: data.long,
-            latitudeDelta: 0.0922,
-            longitudeDelta: 0.0421,
-          },
-          locations: locations
-        })
-      })
+      getLocation(place_id, this.onGetLocationComplete)
     }
     else {
       this.getCurrentLocation()
+    }
+  }
+
+  onGetLocationComplete = (data) => {
+    if (data) {
+      var locations = {}
+      locations[data.id] = data
+      this.setState({
+        region: {
+          latitude: data.lat,
+          longitude: data.long,
+          latitudeDelta: 0.0922,
+          longitudeDelta: 0.0421,
+        },
+        locations: locations,
+        filteredLocations: locations
+      })
     }
   }
 
@@ -104,39 +108,33 @@ export default class MapPage extends Component {
     }
   }
 
-  runGeoQuery(region) {
-    var ref = firebase.database().ref('pois/')
-    var locations = {}
-    var self = this
-    ref.orderByChild("lat").startAt(region.latitude - region.latitudeDelta/2).endAt(region.latitude + region.latitudeDelta/2).on("value", function(querySnapshot) {
-      if (querySnapshot.numChildren()) {
-        querySnapshot.forEach(function(poiSnapshot) {
-          if ((region.longitude - region.longitudeDelta/2) <= poiSnapshot.val().long && poiSnapshot.val().long <= (region.longitude + region.longitudeDelta/2)) {
-            locations[poiSnapshot.key] = poiSnapshot.val()
-          }
-        });
-        let { locs, fLocs } = self.filterLocations(locations)
+  runGeoQuery = (region) => {
+    if (this.geoQueryRef) {
+      this.geoQueryRef.off('value')
+    }
+    this.geoQueryRef = getGeoqueryLocations(region, this.onGeoQueryComplete)
+  }
 
-        var POIs = {};
-        for (var key in locations) {
-          var retTypes = locations[key].type;
-          if (POIs.hasOwnProperty(retTypes) == false) {
-            POIs[retTypes] = 1;
-          } else {
-            POIs[retTypes] += 1;;
-          }
-        }
-        var keysSorted = Object.keys(POIs).sort(function(a,b){return POIs[b]-POIs[a]})
-        var types = {};
-        for (var i = 0; i < keysSorted.length; i++) {
-          types[keysSorted[i]] = POIs[keysSorted[i]];
-        }
-
-        if (self.state.region === region) {
-          self.setState({ locations: locs, filteredLocations: fLocs, types });
-        }
+  onGeoQueryComplete = (region, locations) => {
+    let { locs, fLocs } = this.filterLocations(locations)
+    var POIs = {};
+    for (var key in locations) {
+      var retTypes = locations[key].type;
+      if (POIs.hasOwnProperty(retTypes) == false) {
+        POIs[retTypes] = 1;
+      } else {
+        POIs[retTypes] += 1;;
       }
-    })
+    }
+    var keysSorted = Object.keys(POIs).sort(function(a,b){return POIs[b]-POIs[a]})
+    var types = {};
+    for (var i = 0; i < keysSorted.length; i++) {
+      types[keysSorted[i]] = POIs[keysSorted[i]];
+    }
+
+    if (this.state.region === region) {
+      this.setState({ locations: locs, filteredLocations: fLocs, types });
+    }
   }
 
   filterLocations (locations) {
@@ -192,7 +190,7 @@ export default class MapPage extends Component {
       this.centerChosenPOI = false
     }
     else {
-      this.setState({ region }, this.runGeoQuery(region))
+      this.setState({ region }, () => this.runGeoQuery(region))
     }
   }
 
@@ -228,30 +226,33 @@ export default class MapPage extends Component {
   }
 
   submitPoi () {
+    var self = this
     let poi = this.state.selectedPOI
     getPOIDetails(poi.place_id)
       .then((details) => {
           if (details.result.photos) {
             makePhotoRequest(details.result.photos[0].photo_reference)
             .then((photoUrl) => {
-              submitPoiToFirebase(poi, photoUrl)
-              .then((response) => {
-                if (response === 'success') {
-                  this.updateLocations (poi.place_id)
-                } else {
-                  this.displayError()
-                }
-              })
-            })
-          } else {
-            submitPoiToFirebase(poi, undefined)
-            .then((response) => {
+              let response = submitPoiToFirebase(poi, photoUrl)
               if (response === 'success') {
-                this.updateLocations (poi.place_id)
+                this.setState({
+                  editingCustomPin: false,
+                  customPinSearchCoords: {}
+                })
               } else {
-                this.displayError()
+                self.displayError()
               }
             })
+          } else {
+            let response = submitPoiToFirebase(poi, undefined)
+            if (response === 'success') {
+              this.setState({
+                editingCustomPin: false,
+                customPinSearchCoords: {}
+              })
+            } else {
+              self.displayError()
+            }
           }
       })
   }
@@ -261,18 +262,6 @@ export default class MapPage extends Component {
     setTimeout(() => {
       this.setState({errorDisplaying: false})
     }, 2000)
-  }
-
-  updateLocations (id) {
-    let locations = this.state.locations
-    getLocation(id).then((locationData) => {
-      locations[id] = locationData
-      this.setState({
-        locations,
-        editingCustomPin: false,
-        customPinSearchCoords: {}
-      })
-    })
   }
 
   handlePOISelect (poi) {

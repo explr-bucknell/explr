@@ -1,7 +1,7 @@
 import React from 'react'
 import { View, FlatList, StyleSheet } from 'react-native'
 import { List, ListItem } from 'react-native-elements'
-import firebase from 'firebase'
+import { getCurrUid, getConnections, getConnectionsDetail } from '../network/users'
 import { primary, white, gray, black } from '../utils/colors'
 
 export default class ConnectionsPage extends React.Component {
@@ -20,7 +20,7 @@ export default class ConnectionsPage extends React.Component {
 	}
 
 	componentDidMount() {
-		var currUid = firebase.auth().currentUser.uid
+		var currUid = getCurrUid()
 		var { uid, type } = this.props.nav.state.params
   	this.setState({ 
   		uid, 
@@ -28,53 +28,21 @@ export default class ConnectionsPage extends React.Component {
   		currUid,
   		manageFollowing: currUid == uid && type == "following"
   	})
-  	this.loadConnections(uid, type, currUid)
+  	this.connectionRef = getConnections(uid, type, this.loadUserData)
   }
 
-  loadConnections = (uid, type, currUid) => {
-  	let ref = firebase.database().ref('users/main/' + uid + '/' + type)
-
-  	var self = this
-  	
-  	ref.once('value', function(snapshot) {
-  		if (snapshot.val()) {
-  			var connectionIds = Object.keys(snapshot.val())
-  			self.loadUserData(connectionIds)
-  		}
-  	})
+  componentWillUnmount() {
+    this.connectionRef.off('value')
   }
 
   loadUserData = (uids) => {
-  	var self = this
-  	this.data = []
-  	uids.forEach(function(id) {
-		  var userRef = firebase.database().ref('users/main/' + id)
-		  userRef.once('value', function(snapshot) {
-		  	if (snapshot.val()) {
-		  		var userData = snapshot.val()
-		  		var profile = {}
-		  		profile.uid = id
-		  		profile.name = userData.firstname + " " + userData.lastname
-		  		profile.handle = userData.handle
-		  		if (userData.imageUrl) {
-						var gsReference = firebase.storage().ref(userData.imageUrl)
-						gsReference.getDownloadURL().then(function(imageUrl) {
-							profile.imageUrl = imageUrl
-							self.data = [...self.data, profile]
+    getConnectionsDetail(uids, this.onLoadConnectionsDetailComplete)
+  }
 
-							if (self.data.length == uids.length) {
-				  			self.setState({ data: self.data })
-				  		}
-						})
-		  		} else {
-		  			self.data = [...self.data, profile]
-						if (self.data.length == uids.length) {
-			  			self.setState({ data: self.data })
-			  		}
-		  		}
-		  	}
-		  })
-		})
+  onLoadConnectionsDetailComplete = (data) => {
+    this.setState({
+      data
+    })
   }
 
   renderSeparator = () => {

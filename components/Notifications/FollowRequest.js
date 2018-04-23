@@ -20,7 +20,15 @@ export default class FollowRequest extends React.Component {
 	}
 
 	componentWillMount() {
-		var senderId = this.props.data.sender
+    this.loadNotification(this.props)
+  }
+
+  componentWillReceiveProps(nextProps) {
+    this.loadNotification(nextProps)
+  }
+
+	loadNotification = (props) => {
+		var senderId = props.data.sender
 		var senderRef = firebase.database().ref("users/main/" + senderId)
 		var self = this
 		senderRef.once("value", function(snapshot) {

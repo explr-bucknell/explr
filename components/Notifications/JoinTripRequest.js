@@ -20,8 +20,16 @@ export default class JoinTripRequest extends React.Component {
   }
 
   componentWillMount() {
-    var requesterId = this.props.data.requester
-    var tripId = this.props.data.tripId
+    this.loadNotification(this.props)
+  }
+
+  componentWillReceiveProps(nextProps) {
+    this.loadNotification(nextProps)
+  }
+
+  loadNotification = (props) => {
+    var requesterId = props.data.requester
+    var tripId = props.data.tripId
     var requesterRef = firebase.database().ref("users/main/" + requesterId)
     var tripRef = firebase.database().ref("trips/" + tripId)
     var self = this

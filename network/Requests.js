@@ -1,4 +1,3 @@
-import React from 'react'
 import firebase from 'firebase'
 const fetch = require('node-fetch')
 import { types } from '../utils/poiTypes'
@@ -275,7 +274,7 @@ export async function uploadNewProfilePic(base64, uid) {
   })
 }
 
-export async function calculateDistance(trip) {
+export function calculateDistance(trip) {
   var urlStart = ''
   var urlEnd = '&waypoints='
   for (var i = 0; i < trip.length; i++) {
