@@ -7,6 +7,7 @@ import { primary, white, gray, black, liked } from '../utils/colors'
 import ContentGrid from '../components/ContentGrid'
 import SavedLocations from '../components/SavedLocations'
 import UserTrips from '../components/UserTrips'
+import Toaster from '../components/Toaster'
 import { getTrips, addLocationToTrip } from '../network/trips'
 
 const {width: SCREEN_WIDTH} = Dimensions.get("window");
@@ -41,7 +42,8 @@ export default class LocationProfile extends React.Component {
       locationId: '',
       liked: false,
       addingLocationToTrip: false,
-      trips: []
+      trips: [],
+      errorDisplaying: false
     }
   }
 
@@ -108,7 +110,19 @@ export default class LocationProfile extends React.Component {
 
   addLocation (trip) {
     addLocationToTrip(trip.tripId, this.state.locationId, this.state.locationName)
+    .then((result) => {
+      if (result === 'failure') {
+        this.displayError()
+      }
+    })
     this.toggleAddLocation()
+  }
+
+  displayError() {
+    this.setState({ errorDisplaying: true, addingLocation: false})
+    setTimeout(() => {
+      this.setState({errorDisplaying: false})
+    }, 2000)
   }
 
   getUserTrips () {
@@ -135,6 +149,11 @@ export default class LocationProfile extends React.Component {
     let { navigate } = this.props.nav
     return (
       <View style={styles.container}>
+        {this.state.errorDisplaying &&
+          <View style={styles.toaster}>
+            <Toaster text='You&apos;ve already added this location to that trip!'/>
+          </View>
+        }
         <Modal
           visible={this.state.addingLocationToTrip}
           animationType={'slide'}
@@ -213,4 +232,10 @@ const styles = StyleSheet.create({
   heartIcon: {
     color: liked,
   },
+  toaster: {
+    width: '100%',
+    position: 'absolute',
+    top: 155,
+    zIndex: 3
+  }
 });

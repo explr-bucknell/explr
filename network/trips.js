@@ -164,30 +164,40 @@ export function getTrip (tripId, callback) {
   return ref
 }
 
-//Add a new location to a trip
-export async function addLocationToTrip (tripId, locationId, locationName) {
-  var exist = false
-  await firebase.database().ref(`trips/${tripId}/locations/${locationId}`).once('value', function(snapshot) {
-    if (snapshot.numChildren()) {
-      exist = true
+const checkDuplicateLocationInTrip = (tripId, locationId) => {
+  return firebase.database().ref(`trips/${tripId}`).once('value').then(function(snapshot) {
+    if (!snapshot.hasChild('locations')) {
+      return false
+    } else {
+      return firebase.database().ref(`trips/${tripId}/locations`).once('value').then(function(snapshot) {
+        return snapshot.hasChild(locationId)
+      })
     }
   })
-  if (exist) {
-    return 'failure'
-  }
+}
 
-  var numLocations = 0
-  await firebase.database().ref(`trips/${tripId}/numLocs/`).transaction(function(numLocs) {
-    numLocations = numLocs
-    return numLocs + 1
-  })
+//Add a new location to a trip
+export async function addLocationToTrip(tripId, locationId, locationName) {
+  return checkDuplicateLocationInTrip(tripId, locationId)
+  .then((locationExists) => {
+    if (locationExists) {
+      return 'failure'
+    } else {
+      var numLocations = 0
+      firebase.database().ref(`trips/${tripId}/numLocs/`).transaction(function(numLocs) {
+        numLocations = numLocs
+        return numLocs + 1
+      })
 
-  await firebase.database().ref(`trips/${tripId}/locations/${locationId}`).set({
-    visited: false,
-    name: locationName,
-    index: numLocations
+      firebase.database().ref(`trips/${tripId}/locations/${locationId}`).set({
+        visited: false,
+        name: locationName,
+        index: numLocations
+      })
+      return 'success'
+    }
   })
-  return 'success'
+  return 'failure'
 }
 
 export function getTripsByTag (tag, uid, following, callback) {
