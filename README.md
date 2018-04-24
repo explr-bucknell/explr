@@ -284,3 +284,148 @@ I would like to develop an app/web platform where users can create a list of pla
   <td> Contains all information required for Expo to build and launch the app</td>
   </tr>
 </table>
+
+## **_Firebase Structure_**
+
+<table>
+  <tr>
+  <th>Tables/Entries</th>
+  <th>Description</th>
+  </tr>
+  <tr>
+  <td colspan="2"><i>explr/pois</i></td>
+  </tr>
+  <tr>
+  <td> Location codes</td>
+  <td> Contains all of the locations and their unique information. The IDs are unique location IDs pulled from Google.</td>
+  </tr>
+  <tr>
+  <td colspan="2"><i>explr/pois/Unique-IDs</i></td>
+  </tr>
+  <tr>
+  <td> description</td>
+  <td> A short description for each location</td>
+  </tr>
+  <tr>
+  <td> id</td>
+  <td> Identical to the unique identifier at the top level for POIs</td>
+  </tr>
+  <tr>
+  <td> image</td>
+  <td> A url linking to an image for the destination</td>
+  </tr>
+  <tr>
+  <td> lat</td>
+  <td> The locations latitude</td>
+  </tr>
+  <tr>
+  <td> long</td>
+  <td> The locations longitude</td>
+  </tr>
+  <tr>
+  <td> name</td>
+  <td> The destinations name</td>
+  </tr>
+  <tr>
+  <td> type</td>
+  <td> This is used for sorting all POIs into specific categories for sorting on the map. These are: National Park, National Monument, Park, Museum, Amusement Park, Aquarium, Gallery, Bar, Campground, Library, Restaurant, Theater, Stadium, Zoo, Others</td>
+  </tr>
+  <tr>
+  <td colspan="2"><i>explr/tags</i></td>
+  </tr>
+  <tr>
+  <td> User entered tags</td>
+  <td> Each of these entries contain the count of how many trips include this tag, and the ID for each of these trips</td>
+  </tr>  
+  <tr>
+  <td colspan="2"><i>explr/trips</i></td>
+  </tr>
+  <tr>
+  <td> Trip codes</td>
+  <td> Contains all of the trips and their uniquely generated ID, along with all of their relevent information</td>
+  </tr>
+  <tr>
+  <td colspan="2"><i>explr/trips/Unique-IDs</i></td>
+  </tr>
+  <tr>
+  <td> creator</td>
+  <td> The uniquely generated user ID from the original trip creator</td>
+  </tr>
+  <tr>
+  <td> followers</td>
+  <td> The unique user ID for all of the trips followers</td>
+  </tr>
+  <tr>
+  <td> locations</td>
+  <td> Contains all of the location IDs, and each location contains it's index, name, and whether or not it has been visited</td>
+  </tr>
+  <tr>
+  <td> name</td>
+  <td> The trips name</td>
+  </tr>
+  <tr>
+  <td> numLocs</td>
+  <td> How many locations the trip has</td>
+  </tr>
+  <tr>
+  <td> participants</td>
+  <td> The unique user ID for all of the trips participants</td>
+  </tr>
+  <tr>
+  <td> permission</td>
+  <td> Who is allowed to see the trip: everyone, only you, and followers</td>
+  </tr>
+  <tr>
+  <td> tags</td>
+  <td> All tags for this trip</td>
+  </tr>
+  <tr>
+  <td colspan="2"><i>explr/users</i></td>
+  </tr>
+  <tr>
+  <td> handles</td>
+  <td> Contains all of the users handles paired with their unique IDs</td>
+  </tr>
+  <tr>
+  <td colspan="2"><i>explr/users/main</i></td>
+  </tr>
+  <tr>
+  <td> firstname</td>
+  <td> The firstname provided at signup</td>
+  </tr>
+  <tr>
+  <td> handle</td>
+  <td> The user's chosen handle</td>
+  </tr>
+  <tr>
+  <td> lastname</td>
+  <td> The lastname provided at signup</td>
+  </tr>
+  <tr>
+  <td> numFollowers</td>
+  <td> How many people are following this user</td>
+  </tr>
+  <tr>
+  <td> numFollowing</td>
+  <td> How many people this user is following</td>
+  </tr>
+  <tr>
+  <td> saved</td>
+  <td> All saved/favorited locations identified by their unique ID. Contains that locations image, and name</td>
+  </tr>
+  <tr>
+  <td colspan="2"><i>explr/users/notifications/player-IDs/unique-notification-ID</i></td>
+  </tr>
+  <tr>
+  <td> data</td>
+  <td> The sender's ID</td>
+  </tr>
+  <tr>
+  <td> time</td>
+  <td> The time the notification was sent</td>
+  </tr>
+  <tr>
+  <td> type</td>
+  <td> A descriptor for which type of notification was sent</td>
+  </tr>
+</table>

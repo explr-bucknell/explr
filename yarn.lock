@@ -5249,6 +5249,12 @@ react-native-maps@^0.17.1:
   version "0.17.1"
   resolved "https://registry.yarnpkg.com/react-native-maps/-/react-native-maps-0.17.1.tgz#ab2236341fd984dac8864202ae55331bc262f60c"
 
+react-native-modal-dropdown@^0.6.2:
+  version "0.6.2"
+  resolved "https://registry.yarnpkg.com/react-native-modal-dropdown/-/react-native-modal-dropdown-0.6.2.tgz#da6027b3546d2031fbce46242bffc95561e13599"
+  dependencies:
+    prop-types "^15.6.0"
+
 react-native-modal@^5.0.0:
   version "5.0.0"
   resolved "https://registry.yarnpkg.com/react-native-modal/-/react-native-modal-5.0.0.tgz#d9a056e68a985678d9545fce38dcc1ac3299ba31"
