@@ -24,7 +24,7 @@ export default class SearchTags extends Component {
 
   handleTextChange = (text) => {
     if (!text) {
-      this.showTrends()
+      getTrendTags(this.showTrends)
       return
     }
     text = text.toLowerCase()
