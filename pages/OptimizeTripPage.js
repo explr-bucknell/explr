@@ -1,7 +1,7 @@
 import React, { Component } from 'react' // eslint-disable-line no-unused-vars
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native' // eslint-disable-line no-unused-vars
 import ModalDropdown from 'react-native-modal-dropdown'
-import { optimizeTrip, calculateDistance } from '../network/Requests'
+import { optimizeTrip } from '../network/trips'
 import { primary, white } from '../utils/colors'
 
 export default class OptimizeTripPage extends Component {
@@ -63,7 +63,7 @@ export default class OptimizeTripPage extends Component {
   optimizeTrip (newLocations) {
     let { trip } = this.state
     let { tripId, name } = this.props.nav.state.params
-    optimizeTrip(newLocations, tripId, name, this.optimizeTripCallback)
+    optimizeTrip(newLocations, tripId, this.optimizeTripCallback)
   }
 
   optimizeTripCallback = (newTripArray) => {
