@@ -102,8 +102,8 @@ export function submitPoiToFirebase (poi, photoUrl) {
 }
 
 function checkDuplicateLocation (locId) {
-  firebase.database().ref(`pois/${locId}`).once('value', function(snapshot) {
-    return snapshot.numChildren()
+  firebase.database().ref('pois/').once('value', function(snapshot) {
+    return snapshot.hasChild(locId)
   })
 }
 
