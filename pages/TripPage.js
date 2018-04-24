@@ -10,7 +10,6 @@ import {
   addLocationToTrip,
   calculateDistance,
   recreateTrip,
-  optimizeTrip,
   toggleVisited
 } from '../network/Requests'
 
@@ -157,11 +156,6 @@ export default class TripPage extends Component {
       oldTripLocations: this.state.tripLocations,
       editing: !this.state.editing
     })
-  }
-
-  optimizeTrip () {
-    let { trip } = this.state
-    optimizeTrip(this.state.tripLocations, trip.tripId, trip.name, this.optimizeTripCallback)
   }
 
   optimizeTripCallback = (newTripArray) => {
@@ -363,7 +357,22 @@ export default class TripPage extends Component {
         <View style={styles.distanceContainer}>
           <Text style={{color: white, fontSize: 16}}>Distance: {this.state.distance} miles</Text>
           {!this.state.editing &&
-            <TouchableOpacity style={styles.optimizeButton} onPress={() => this.optimizeTrip()}>
+            <TouchableOpacity style={styles.optimizeButton}
+              onPress={() => this.state.tripLocations.length > 2 &&
+                this.props.nav.navigate(
+                  'OptimizeTripPage',
+                  {
+                    nav: this.props.nav,
+                    locs: this.state.tripLocations,
+                    tripName: this.state.trip.name,
+                    tripId: this.state.trip.tripId,
+                    trip: this.state.trip,
+                    uid: this.state.uid,
+                    onGoBack: (newTripArray) => this.optimizeTripCallback(newTripArray)
+                  }
+                )
+              }
+            >
               <Text style={{color: white}}>Optimize Route</Text>
             </TouchableOpacity>
           }

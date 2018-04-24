@@ -90,16 +90,21 @@ export async function editTrip(tripId, name, tags, permission, oldTags) {
 }
 
 const checkDuplicateLocationInTrip = (tripId, locationId) => {
-  firebase.database().ref(`trips/${tripId}/locations`).once('value', function(snapshot) {
-    return snapshot.hasChild(locationId)
+  firebase.database().ref(`trips/${tripId}`).once('value', function(snapshot) {
+    if (!snapshot.hasChild('locations')) {
+      return false
+    } else {
+      firebase.database().ref(`trips/${tripId}/locations`).once('value', function(snapshot) {
+        return snapshot.hasChild(locationId)
+      })
+    }
   })
 }
 
 
 //Add a new location to a trip
 export async function addLocationToTrip(tripId, locationId, locationName) {
-
-  if (checkDuplicateLocation) {
+  if (checkDuplicateLocationInTrip(tripId, locationId)) {
     return 'failure'
   } else {
     var numLocations = 0
