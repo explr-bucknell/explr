@@ -39,8 +39,8 @@ export default class MapPage extends Component {
       region: {
         latitude: 39.381266,
         longitude: -97.922211,
-        latitudeDelta: 0.0922,
-        longitudeDelta: 0.0421
+        latitudeDelta: 73.76,
+        longitudeDelta: 33.68
       },
       locations: {},
       filteredLocations: {},
@@ -107,7 +107,10 @@ export default class MapPage extends Component {
   }
 
   runGeoQuery = (region) => {
-    getGeoqueryLocations(region, this.onGeoQueryComplete)
+    if (this.geoQueryRef) {
+      this.geoQueryRef.off('value')
+    }
+    this.geoQueryRef = getGeoqueryLocations(region, this.onGeoQueryComplete)
   }
 
   onGeoQueryComplete = (region, locations) => {
@@ -127,7 +130,9 @@ export default class MapPage extends Component {
       types[keysSorted[i]] = POIs[keysSorted[i]];
     }
 
-    this.setState({ region, locations: locs, filteredLocations: fLocs, types });
+    if (this.state.region === region) {
+      this.setState({ locations: locs, filteredLocations: fLocs, types });
+    }
   }
 
   filterLocations (locations) {
@@ -159,27 +164,21 @@ export default class MapPage extends Component {
 
   searchForPOI (coords) {
     getPOIFromLatLng(coords.latitude, coords.longitude)
-      .then((promises) => {
-        Promise.all(promises).then((locations) => {
-          joinedLocations = []
-          locations.forEach((location) => {
-            joinedLocations = joinedLocations.concat(location)
-          })
-          var POIs = {}
-          joinedLocations.forEach((location) => {
-            var locType = getMatchingType(location['types'])
-            if (POIs.hasOwnProperty(locType)) {
-              POIs[locType] += 1
-            } else {
-              POIs[locType] = 1
-            }
-          })
-          this.setState({
-            customPinSearchResults: joinedLocations,
-            filteredCustomPinSearchResults: joinedLocations,
-            customPinSearchCoords: coords,
-            customPinFilterTypes: POIs
-          })
+      .then((locations) => {
+        var POIs = {}
+        locations.forEach((location) => {
+          var locType = getMatchingType(location['types'])
+          if (POIs.hasOwnProperty(locType)) {
+            POIs[locType] += 1
+          } else {
+            POIs[locType] = 1
+          }
+        })
+        this.setState({
+          customPinSearchResults: locations,
+          filteredCustomPinSearchResults: locations,
+          customPinSearchCoords: coords,
+          customPinFilterTypes: POIs
         })
       })
   }
@@ -189,7 +188,7 @@ export default class MapPage extends Component {
       this.centerChosenPOI = false
     }
     else {
-      this.runGeoQuery(region)
+      this.setState({ region }, () => this.runGeoQuery(region))
     }
   }
 
@@ -292,13 +291,13 @@ export default class MapPage extends Component {
   }
 
   render() {
-    let { locations, filteredLocations } = this.state
+    let { region, locations, filteredLocations } = this.state
     return (
       <View style={styles.container}>
         <MapView
           style={this.state.editingCustomPin ? styles.mapSquished : styles.map}
-          initialRegion={this.state.region}
-          region={this.state.region}
+          initialRegion={region}
+          region={region}
           onRegionChangeComplete={(region) => this.onRegionChangeComplete(region)}
           onLongPress={e => this.dropPin(e.nativeEvent.coordinate)}
         >
@@ -356,8 +355,8 @@ export default class MapPage extends Component {
         }
         <TouchableOpacity style={styles.customPinButtonWrapper}
           onPress={() => this.dropPin({
-            latitude: this.state.region.latitude,
-            longitude: this.state.region.longitude
+            latitude: region.latitude,
+            longitude: region.longitude
           })}>
           <FontAwesome name='map-pin' style={styles.compass}/>
         </TouchableOpacity>

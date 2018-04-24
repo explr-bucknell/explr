@@ -1,6 +1,6 @@
 import firebase from 'firebase'
 const fetch = require('node-fetch')
-import { types, googleTypes } from '../utils/poiTypes'
+import { types } from '../utils/poiTypes'
 
 var config = {
   apiKey: 'AIzaSyBztce7Z8iOrB5EgV4IE8gjlFGAy6MXSkQ'
@@ -9,7 +9,7 @@ var config = {
 export function getGeoqueryLocations (region, callback) {
   var ref = firebase.database().ref('pois/')
   var locations = {}
-  ref.orderByChild("lat").startAt(region.latitude - region.latitudeDelta/2).endAt(region.latitude + region.latitudeDelta/2).once("value", function(querySnapshot) {
+  ref.orderByChild("lat").startAt(region.latitude - region.latitudeDelta/2).endAt(region.latitude + region.latitudeDelta/2).on("value", function(querySnapshot) {
     if (querySnapshot.numChildren()) {
       querySnapshot.forEach(poiSnapshot => {
         if ((region.longitude - region.longitudeDelta/2) <= poiSnapshot.val().long && poiSnapshot.val().long <= (region.longitude + region.longitudeDelta/2)) {
@@ -19,6 +19,7 @@ export function getGeoqueryLocations (region, callback) {
       callback(region, locations)
     }
   })
+  return ref
 }
 
 export function getLocation (locationId, callback) {
@@ -30,25 +31,23 @@ export function getLocation (locationId, callback) {
   })
 }
 
-async function getPOIByType (lat, lng, type) {
-  return fetch (
-    `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${lat},${lng}&radius=400&type=${type}&key=${config.apiKey}`
-  )
-  .then((response) => response.json())
-  .then((responseJson) => {
-    return responseJson.results
-  })
-}
-
 export async function getPOIFromLatLng (lat, lng) {
   let results = []
-  Object.keys(googleTypes).forEach((type) => {
-    results = results.concat(getPOIByType(lat, lng, type)
-      .then((result) => {
-        return result
-      }))
-  })
-  return results
+  try {
+    let pointsOfInterest = await fetch(
+      `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${lat},${lng}&radius=500&key=${config.apiKey}`
+    )
+    let poiJson = await pointsOfInterest.json()
+    poiJson.results.forEach((poi) => {
+      var type = getMatchingType(poi['types'])
+      if (type != 'undefined') {
+        results.push(poi)
+      }
+    })
+    return results
+  } catch (error) {
+    console.error(error)
+  }
 }
 
 export async function getPOIDetails (placeId) {
