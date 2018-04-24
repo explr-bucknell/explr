@@ -83,28 +83,32 @@ export function getMatchingType (poiTypes) {
 }
 
 export function submitPoiToFirebase (poi, photoUrl) {
-  if (!checkDuplicateLocation(poi.place_id)) {
-    let type = getMatchingType(poi.types)
-    firebase.database().ref('pois/' + poi.place_id).set({
-      name: poi.name,
-      id: poi.place_id,
-      image: photoUrl ? photoUrl.url : types[poi.type].defaultPic,
-      lat: poi.geometry.location.lat,
-      long: poi.geometry.location.lng,
-      description: poi.name, // FIX THIS,
-      type: type
-    })
-    return 'success'
-  } else {
-    return 'failure'
-  }
+  return checkDuplicateLocation(poi.place_id)
+  .then((locExists) => {
+    if (!locExists) {
+      let type = getMatchingType(poi.types)
+      firebase.database().ref('pois/' + poi.place_id).set({
+        name: poi.name,
+        id: poi.place_id,
+        image: photoUrl !== undefined ? photoUrl.url : types[poi.type].defaultPic,
+        lat: poi.geometry.location.lat,
+        long: poi.geometry.location.lng,
+        description: poi.name, // FIX THIS,
+        type: type
+      })
+      return 'success'
+    } else {
+      return 'failure'
+    }
+  })
 }
 
-function checkDuplicateLocation (locId) {
-  firebase.database().ref('pois/').once('value', function(snapshot) {
+const checkDuplicateLocation = (locId) => {
+  return firebase.database().ref('pois/').once('value').then(function(snapshot) {
     return snapshot.hasChild(locId)
   })
 }
+
 
 export async function getPOIAutocomplete (query) {
   const BONSAI_URL = 'https://explrelasticsearch.herokuapp.com'

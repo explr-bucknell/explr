@@ -229,7 +229,21 @@ export default class MapPage extends Component {
           if (details.result.photos) {
             makePhotoRequest(details.result.photos[0].photo_reference)
             .then((photoUrl) => {
-              let response = submitPoiToFirebase(poi, photoUrl)
+              submitPoiToFirebase(poi, photoUrl)
+              .then((response) => {
+                if (response === 'success') {
+                  this.setState({
+                    editingCustomPin: false,
+                    customPinSearchCoords: {}
+                  })
+                } else {
+                  self.displayError()
+                }
+              })
+            })
+          } else {
+            submitPoiToFirebase(poi, undefined)
+            .then((response) => {
               if (response === 'success') {
                 this.setState({
                   editingCustomPin: false,
@@ -239,16 +253,6 @@ export default class MapPage extends Component {
                 self.displayError()
               }
             })
-          } else {
-            let response = submitPoiToFirebase(poi, undefined)
-            if (response === 'success') {
-              this.setState({
-                editingCustomPin: false,
-                customPinSearchCoords: {}
-              })
-            } else {
-              self.displayError()
-            }
           }
       })
   }
