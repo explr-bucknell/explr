@@ -153,11 +153,6 @@ export default class TripPage extends Component {
     })
   }
 
-  optimizeTrip () {
-    let { trip } = this.state
-    optimizeTrip(this.state.tripLocations, trip.tripId, this.optimizeTripCallback)
-  }
-
   optimizeTripCallback = (newTripArray) => {
     calculateDistance(newTripArray).then((distance) => {
       this.setState({distance, tripLocations: newTripArray})
@@ -357,7 +352,22 @@ export default class TripPage extends Component {
         <View style={styles.distanceContainer}>
           <Text style={{color: white, fontSize: 16}}>Distance: {this.state.distance} miles</Text>
           {!this.state.editing &&
-            <TouchableOpacity style={styles.optimizeButton} onPress={() => this.optimizeTrip()}>
+            <TouchableOpacity style={styles.optimizeButton}
+              onPress={() => this.state.tripLocations.length > 2 &&
+                this.props.nav.navigate(
+                  'OptimizeTripPage',
+                  {
+                    nav: this.props.nav,
+                    locs: this.state.tripLocations,
+                    tripName: this.state.trip.name,
+                    tripId: this.state.trip.tripId,
+                    trip: this.state.trip,
+                    uid: this.state.uid,
+                    onGoBack: (newTripArray) => this.optimizeTripCallback(newTripArray)
+                  }
+                )
+              }
+            >
               <Text style={{color: white}}>Optimize Route</Text>
             </TouchableOpacity>
           }

@@ -11,13 +11,12 @@ const options = ["Only you", "Followers", "Everyone"]
 export default class CreateTripPage extends Component {
   constructor(props) {
     super(props)
-  }
-
-  state = {
-    name: '',
-    tags: [],
-    selectedOption: options[0],
-    showAlert: false
+    this.state = {
+      name: '',
+      tags: [],
+      selectedOption: options[0],
+      showAlert: false
+    }
   }
 
   componentDidMount() {

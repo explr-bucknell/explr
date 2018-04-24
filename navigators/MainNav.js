@@ -16,6 +16,7 @@ import ConnectionsPage from '../pages/ConnectionsPage'
 import ProfileEditPage from '../pages/ProfileEditPage'
 import ChangePwdPage from '../pages/ChangePwdPage'
 import SettingsPage from '../pages/SettingsPage'
+import OptimizeTripPage from '../pages/OptimizeTripPage'
 import TagPage from '../pages/TagPage'
 import { primary, white, transparentWhite } from '../utils/colors'
 
@@ -94,10 +95,10 @@ const TripPageOpts = ({ navigation }) => ({
 	headerLeft:
 		<TouchableOpacity onPress={() => navigation.goBack(null)} style={{ paddingLeft: 10, paddingRight: 10 }}>
 			<FontAwesome
-		      name='angle-left'
-		      size={35}
-		      style={{ color: white }}
-		    />
+				name='angle-left'
+				size={35}
+				style={{ color: white }}
+			/>
 		</TouchableOpacity>,
 	headerRight:
 		<TouchableOpacity onPress={
@@ -109,6 +110,23 @@ const TripPageOpts = ({ navigation }) => ({
 					style={{ color: white }}
 				/>
 		</TouchableOpacity>
+})
+
+const OptimizeTripPageOpts = ({ navigation }) => ({
+	headerTitle: `Optimizing: ${navigation.state.params.tripName}`,
+	headerStyle: {
+		backgroundColor: primary,
+		borderBottomWidth: 0,
+	},
+	headerTintColor: white,
+	headerLeft:
+		<TouchableOpacity onPress={() => navigation.goBack(null)} style={{ paddingLeft: 10, paddingRight: 10 }}>
+			<FontAwesome
+				name='angle-left'
+				size={35}
+				style={{ color: white }}
+			/>
+		</TouchableOpacity>,
 })
 
 const TripMapPageOpts = ({ navigation }) => ({
@@ -275,10 +293,10 @@ const TagPageOpts = ({ navigation }) => ({
 	headerLeft:
 		<TouchableOpacity onPress={() => navigation.goBack(null)} style={{ paddingLeft: 10 }}>
 			<FontAwesome
-		      name='angle-left'
-		      size={35}
-		      style={{ color: white }}
-		    />
+				name='angle-left'
+				size={35}
+				style={{ color: white }}
+			/>
 		</TouchableOpacity>,
 })
 
@@ -296,6 +314,10 @@ const TripProfileScreen = ({ navigation }) => (
 
 const TripScreen = ({ navigation }) => (
 	<TripPage nav={navigation} />
+)
+
+const OptimizeTripScreen = ({ navigation }) => (
+	<OptimizeTripPage nav={navigation} />
 )
 
 const TripMapScreen = ({ navigation }) => (
@@ -378,6 +400,10 @@ const MainNavigator = StackNavigator({
 	TripPage: {
 		screen: TripScreen,
 		navigationOptions: TripPageOpts
+	},
+	OptimizeTripPage: {
+		screen: OptimizeTripScreen,
+		navigationOptions: OptimizeTripPageOpts
 	},
 	CreateTripPage: {
 		screen: CreateTripScreen,
