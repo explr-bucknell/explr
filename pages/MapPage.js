@@ -39,8 +39,8 @@ export default class MapPage extends Component {
       region: {
         latitude: 39.381266,
         longitude: -97.922211,
-        latitudeDelta: 73.76,
-        longitudeDelta: 33.68
+        latitudeDelta: 0.0922,
+        longitudeDelta: 0.0421
       },
       locations: {},
       filteredLocations: {},
@@ -96,7 +96,7 @@ export default class MapPage extends Component {
         region.longitude = location.coords.longitude
         region.latitudeDelta = 0.0922
         region.longitudeDelta = 0.0421
-        this.onRegionChangeComplete(region)
+        this.setState({ region })
       }
       else {
         this.runGeoQuery(this.state.region)
@@ -107,10 +107,7 @@ export default class MapPage extends Component {
   }
 
   runGeoQuery = (region) => {
-    if (this.geoQueryRef) {
-      this.geoQueryRef.off('value')
-    }
-    this.geoQueryRef = getGeoqueryLocations(region, this.onGeoQueryComplete)
+    getGeoqueryLocations(region, this.onGeoQueryComplete)
   }
 
   onGeoQueryComplete = (region, locations) => {
@@ -121,7 +118,7 @@ export default class MapPage extends Component {
       if (POIs.hasOwnProperty(retTypes) == false) {
         POIs[retTypes] = 1;
       } else {
-        POIs[retTypes] += 1;;
+        POIs[retTypes] += 1;
       }
     }
     var keysSorted = Object.keys(POIs).sort(function(a,b){return POIs[b]-POIs[a]})
@@ -130,9 +127,7 @@ export default class MapPage extends Component {
       types[keysSorted[i]] = POIs[keysSorted[i]];
     }
 
-    if (this.state.region === region) {
-      this.setState({ locations: locs, filteredLocations: fLocs, types });
-    }
+    this.setState({ region, locations: locs, filteredLocations: fLocs, types });
   }
 
   filterLocations (locations) {
@@ -194,7 +189,7 @@ export default class MapPage extends Component {
       this.centerChosenPOI = false
     }
     else {
-      this.setState({ region }, () => this.runGeoQuery(region))
+      this.runGeoQuery(region)
     }
   }
 
