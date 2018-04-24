@@ -164,21 +164,27 @@ export default class MapPage extends Component {
 
   searchForPOI (coords) {
     getPOIFromLatLng(coords.latitude, coords.longitude)
-      .then((locations) => {
-        var POIs = {}
-        locations.forEach((location) => {
-          var locType = getMatchingType(location['types'])
-          if (POIs.hasOwnProperty(locType)) {
-            POIs[locType] += 1
-          } else {
-            POIs[locType] = 1
-          }
-        })
-        this.setState({
-          customPinSearchResults: locations,
-          filteredCustomPinSearchResults: locations,
-          customPinSearchCoords: coords,
-          customPinFilterTypes: POIs
+      .then((promises) => {
+        Promise.all(promises).then((locations) => {
+          joinedLocations = []
+          locations.forEach((location) => {
+            joinedLocations = joinedLocations.concat(location)
+          })
+          var POIs = {}
+          joinedLocations.forEach((location) => {
+            var locType = getMatchingType(location['types'])
+            if (POIs.hasOwnProperty(locType)) {
+              POIs[locType] += 1
+            } else {
+              POIs[locType] = 1
+            }
+          })
+          this.setState({
+            customPinSearchResults: joinedLocations,
+            filteredCustomPinSearchResults: joinedLocations,
+            customPinSearchCoords: coords,
+            customPinFilterTypes: POIs
+          })
         })
       })
   }
