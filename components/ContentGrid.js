@@ -10,6 +10,7 @@ import {
 import { FontAwesome } from '@expo/vector-icons' // eslint-disable-line no-unused-vars
 import { black, liked } from '../utils/colors'
 import { getCurrUid, getSavedLocations } from '../network/users'
+import CardView from 'react-native-cardview'
 
 // Grid for displaying users' liked/saved locations
 export default class ContentGrid extends Component {
@@ -77,8 +78,14 @@ export default class ContentGrid extends Component {
 			<View>
 				<View style={styles.contentGrid}>
 					{this.state.names ? (this.state.names.map((name, i) =>
-						<View key={i} style={ i%2 ? styles.photoWrapRight : styles.photoWrapLeft }>
-							<Image style={styles.photo} source={{ uri: this.state.images[i] }} />
+						<CardView
+		          cardElevation={2}
+		          cardMaxElevation={2}
+		          cornerRadius={5}
+		          key={i}
+		          style={ i%2 ? styles.photoWrapRight : styles.photoWrapLeft }
+		          >
+		          <Image style={styles.photo} source={{ uri: this.state.images[i] }} />
 							<View style={styles.row}>
 								<TouchableOpacity style={styles.titleWrap}>
 									<Text style={styles.title}>{name}</Text>
@@ -87,7 +94,7 @@ export default class ContentGrid extends Component {
 									<FontAwesome name={this.state.liked[i] ? 'heart' : 'heart-o'} style={styles.icon}/>
 								</TouchableOpacity>
 							</View>
-						</View>
+						</CardView>
 					)) : (<Text style={styles.noText}>No saved locations yet</Text>)}
 				</View>
 			</View>
@@ -110,20 +117,14 @@ const styles = StyleSheet.create({
 		marginRight: 3,
 		padding: 3,
 		width: (Dimensions.get('window').width / 2) - 8,
-		borderRadius: 5,
-		shadowOffset: { width: 1, height: 2 },
-		shadowColor: 'rgba(0,0,0,0.2)',
-		shadowOpacity: 0.5
+		elevation: 1
 	},
 	photoWrapRight: {
 		margin: 5,
 		marginLeft: 3,
 		padding: 3,
 		width: (Dimensions.get('window').width / 2) - 8,
-		borderRadius: 5,
-		shadowOffset: { width: 1, height: 2 },
-		shadowColor: 'rgba(0,0,0,0.2)',
-		shadowOpacity: 0.5
+		elevation: 1
 	},
 	photo: {
 		flex: 1,

@@ -5173,6 +5173,10 @@ react-native-branch@2.0.0-beta.3:
   version "2.0.0-beta.3"
   resolved "https://registry.yarnpkg.com/react-native-branch/-/react-native-branch-2.0.0-beta.3.tgz#2167af86bbc9f964bd45bd5f37684e5b54965e32"
 
+react-native-cardview@1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/react-native-cardview/-/react-native-cardview-1.1.0.tgz#517a61d0b26fa7e1da993e87699adf19d689c7af"
+
 react-native-dismiss-keyboard@1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/react-native-dismiss-keyboard/-/react-native-dismiss-keyboard-1.0.0.tgz#32886242b3f2317e121f3aeb9b0a585e2b879b49"

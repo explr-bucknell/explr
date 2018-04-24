@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Image, Dimensions
 import { Ionicons } from '@expo/vector-icons' // eslint-disable-line no-unused-vars
 import { primary, white, progress } from '../utils/colors'
 import { getLocation } from '../network/pois'
+import CardView from 'react-native-cardview'
 
 var Scroll_Width = Dimensions.get ('window').width * 0.83
 var Btn_Width = Dimensions.get ('window').width * 0.15 - 25
@@ -42,7 +43,12 @@ export default class TripContainer extends Component {
     let { trip, currUser } = this.props
     const { tripIcons } = this.state
     return (
-      <View style={styles.tripContainer}>
+      <CardView 
+        cardElevation={2}
+        cardMaxElevation={2}
+        cornerRadius={5}
+        style={styles.tripContainer}
+        >
         <View style={{flexDirection: 'column'}}>
           <View
             style={styles.touchableContainer}>
@@ -102,7 +108,7 @@ export default class TripContainer extends Component {
             />
 					</TouchableOpacity>
         }
-      </View>
+      </CardView>
     )
   }
 }
@@ -112,13 +118,9 @@ const styles = StyleSheet.create ({
     flexDirection: 'row',
     justifyContent: 'space-between',
     backgroundColor: white,
-    borderRadius: 5,
     marginLeft: 10,
     marginRight: 10,
     marginBottom: 15,
-    shadowOffset: { width: 1, height: 2 },
-    shadowColor: 'rgba(0,0,0,0.3)',
-    shadowOpacity: 0.5,
     maxHeight: 156
   },
   touchableContainer: {

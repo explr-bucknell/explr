@@ -11,7 +11,7 @@ import { FontAwesome } from '@expo/vector-icons'
 import { primary, white, gray } from '../utils/colors'
 
 const MapScreen = (props) => (
-	<MapPage {...props.screenProps} />
+	<MapPage {...props.screenProps} navigation={props.navigation} />
 )
 
 const TripsScreen = (props) => (
@@ -72,9 +72,19 @@ const MapNav = TabNavigator({
       shadowOpacity: 0.2,
       shadowColor: gray
 		},
+    tabStyle: {
+      padding: 0,
+      margin: 0
+    },
     iconStyle: {
       width: 35,
-      height: 30
+      height: 30,
+      marginBottom: 0,
+      paddingBottom: 0
+    },
+    labelStyle: {
+      fontSize: 10,
+      paddingTop: 0
     },
     indicatorStyle: {
       display: 'none'

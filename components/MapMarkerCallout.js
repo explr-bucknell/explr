@@ -13,11 +13,6 @@ export default class MapMarkerCallout extends Component {
     return (
       <TouchableOpacity
         style={styles.calloutWrapper}
-        onPress={
-          () => !this.props.trip ?
-          this.props.navigate('LocationPage', {location: this.props}) :
-          this.props.locationPress()
-        }
       >
         <Image style={styles.image} source={{uri: this.props.imageUrl}} />
         <View style={styles.detailsWrapper}>

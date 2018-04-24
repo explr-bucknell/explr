@@ -34,11 +34,16 @@ export default class SearchPlaces extends Component {
 		})
 	}
 
+	displayPOI = (i) => {
+		this.props.nav.state.params.displayPOI(this.state.ids[i])
+		this.props.nav.goBack()
+	}
+
 	render() {
 		return (
 			<ScrollView style={styles.searchContainer}>
 				{this.state.names.map((name, i) => (
-					<TouchableOpacity key={i} style={styles.profileCard} onPress={() => this.props.nav.navigate('MapPage', { id: this.state.ids[i] })}>
+					<TouchableOpacity key={i} style={styles.profileCard} onPress={() => this.displayPOI(i)}>
 						<View style={styles.textWrapper}>
 							<Text style={styles.name}>{name}</Text>
 						</View>

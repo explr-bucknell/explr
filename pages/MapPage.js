@@ -37,10 +37,10 @@ export default class MapPage extends Component {
 
     this.state = {
       region: {
-        latitude: 40.9549774,
-        longitude: -76.8813942,
-        latitudeDelta: 0.0922,
-        longitudeDelta: 0.0421,
+        latitude: 39.381266,
+        longitude: -97.922211,
+        latitudeDelta: 73.76,
+        longitudeDelta: 33.68
       },
       locations: {},
       filteredLocations: {},
@@ -53,21 +53,19 @@ export default class MapPage extends Component {
       filteredCustomPinSearchResults: [],
       selectedFilter: 'park',
       selectedPOI: {},
-      atCurrentLocation: false,
       filters: []
     }
   }
 
   componentDidMount () {
-    // Center map at chosen poi if exists
-    if (this.props.state.params && this.props.state.params.id) {
-      let place_id = this.props.state.params.id
-      this.centerChosenPOI = true
-      getLocation(place_id, this.onGetLocationComplete)
-    }
-    else {
-      this.getCurrentLocation()
-    }
+    this.props.setParams({ displayPOI: this.displayPOI })
+    this.getCurrentLocation()
+  }
+
+  displayPOI = (place_id) => {
+    this.props.navigation.navigate('MapPage')
+    this.centerChosenPOI = true
+    getLocation(place_id, this.onGetLocationComplete)
   }
 
   onGetLocationComplete = (data) => {
@@ -98,7 +96,7 @@ export default class MapPage extends Component {
         region.longitude = location.coords.longitude
         region.latitudeDelta = 0.0922
         region.longitudeDelta = 0.0421
-        this.setState({ region, atCurrentLocation: true })
+        this.onRegionChangeComplete(region)
       }
       else {
         this.runGeoQuery(this.state.region)
@@ -283,6 +281,15 @@ export default class MapPage extends Component {
     })
   }
 
+  goToLocation = (location) => {
+    var data = {}
+    data.id = location.id
+    data.title = location.name
+    data.imageUrl = location.image
+    data.uid = this.props.uid
+    this.props.navigate('LocationPage', {location: data})
+  }
+
   render() {
     let { locations, filteredLocations } = this.state
     return (
@@ -304,14 +311,13 @@ export default class MapPage extends Component {
                 }}
                 pinColor={ types[locations[locationId].type].color }
               >
-                <MapView.Callout>
+                <MapView.Callout onPress={() => this.goToLocation(locations[locationId])}>
                   <MapMarkerCallout
                     key={locations[locationId].id}
                     title={locations[locationId].name}
                     imageUrl={locations[locationId].image}
                     id={locations[locationId].id}
                     uid={this.props.uid}
-                    navigate={this.props.navigate}
                   />
                 </MapView.Callout>
               </MapView.Marker>

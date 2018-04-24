@@ -24,10 +24,10 @@ export default class TripMapPage extends Component {
     super (props)
     this.state = {
       region: {
-        latitude: 40.9549774,
-        longitude: -76.8813942,
-        latitudeDelta: 0.0922,
-        longitudeDelta: 0.0421,
+        latitude: 39.381266,
+        longitude: -97.922211,
+        latitudeDelta: 73.76,
+        longitudeDelta: 33.68
       },
       userLocation: {},
       locations: {},
@@ -95,16 +95,14 @@ export default class TripMapPage extends Component {
                   coordinate={{ latitude: locations[locationId].lat, longitude: locations[locationId].long }}
                   pinColor={locations[locationId].type ? types[locations[locationId].type].color : 'green' }
                 >
-                  <MapView.Callout>
+                  <MapView.Callout onPress={() => this.navToGoogleMaps(locationId)}>
                     <MapMarkerCallout
                       title={locations[locationId].name}
                       // description='asdfasdf'
                       imageUrl={locations[locationId].image}
                       id={locations[locationId].id}
                       uid={this.state.uid}
-                      navigate={this.props.nav}
                       locationPress={() => this.navToGoogleMaps(locationId)}
-                      trip
                     />
                   </MapView.Callout>
                 </MapView.Marker>
