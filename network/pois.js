@@ -9,7 +9,7 @@ var config = {
 export function getGeoqueryLocations (region, callback) {
   var ref = firebase.database().ref('pois/')
   var locations = {}
-  ref.orderByChild("lat").startAt(region.latitude - region.latitudeDelta/2).endAt(region.latitude + region.latitudeDelta/2).on("value", function(querySnapshot) {
+  ref.orderByChild("lat").startAt(region.latitude - region.latitudeDelta/2).endAt(region.latitude + region.latitudeDelta/2).once("value", function(querySnapshot) {
     if (querySnapshot.numChildren()) {
       querySnapshot.forEach(poiSnapshot => {
         if ((region.longitude - region.longitudeDelta/2) <= poiSnapshot.val().long && poiSnapshot.val().long <= (region.longitude + region.longitudeDelta/2)) {
@@ -19,7 +19,6 @@ export function getGeoqueryLocations (region, callback) {
       callback(region, locations)
     }
   })
-  return ref
 }
 
 export function getLocation (locationId, callback) {
