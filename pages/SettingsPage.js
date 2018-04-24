@@ -3,7 +3,7 @@ import { ScrollView, View, Text, TouchableOpacity, StyleSheet } from 'react-nati
 import { Container, Content, Card, CardItem, Right, Switch } from 'native-base'
 import { FontAwesome, Ionicons } from '@expo/vector-icons'
 import { primary, white, gray, black, transparentWhite, facebook, twitter, google } from '../utils/colors'
-import { authStateObserver } from '../network/users'
+import { authStateObserver, signOut } from '../network/users'
 
 export default class SettingsPage extends React.Component {
   constructor(props) {
@@ -34,7 +34,7 @@ export default class SettingsPage extends React.Component {
 
   userSignOut = () => {
     var nav = this.props.nav.state.params.loginNav
-    firebase.auth().signOut()
+    signOut()
   }
 
   facebookSignin = () => {

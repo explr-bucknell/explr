@@ -18,6 +18,10 @@ export function getCurrUid () {
   return firebase.auth().currentUser.uid
 }
 
+export function signOut () {
+  firebase.auth().signOut()
+}
+
 export function getConnections (uid, type, callback) {
   let ref = firebase.database().ref('users/main/' + uid + '/' + type)
   
