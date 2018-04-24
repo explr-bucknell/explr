@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity, TextInput, Dimensions, Alert 
 import Modal from 'react-native-modal'
 import { SegmentedControls } from 'react-native-radio-buttons'
 import Tags from '../components/Tags'
-import { editTrip, deleteTrip } from '../network/Requests'
+import { editTrip, deleteTrip } from '../network/trips'
 import { white, primary, transparentWhite, liked } from '../utils/colors'
 
 const options = ["Only you", "Followers", "Everyone"]

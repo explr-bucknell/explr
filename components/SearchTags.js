@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 import { StyleSheet, Text, TouchableOpacity, View, ScrollView } from 'react-native'
 import { Ionicons } from '@expo/vector-icons'
-import firebase from 'firebase'
 import { primary, white, gray, black } from '../utils/colors'
+import { getTrendTags, getTags } from '../network/trips'
 
 export default class SearchTags extends Component {
   constructor(props) {
@@ -15,24 +15,11 @@ export default class SearchTags extends Component {
 
   componentDidMount() {
     this.props.nav.setParams({ handleTagSearch: this.handleTextChange })
-    this.showTrends()
+    getTrendTags(this.showTrends)
   }
 
-  showTrends = () => {
-    var self = this
-    var ref = firebase.database().ref('tags')
-    ref.orderByChild('count').limitToLast(100).on('value', function(snapshot) {
-      var tags = {}
-      var tagOrder = []
-      snapshot.forEach(function(tag) {
-        var tagName = tag.key
-        var tagVal = tag.val()
-        tags[tagName] = tagVal
-        tagOrder.push(tagName)
-      })
-      tagOrder.sort((a, b) => (tags[a].count > tags[b].count ? -1 : 1))
-      self.setState({ tags, tagOrder })
-    })
+  showTrends = (tags, tagOrder) => {
+    this.setState({ tags, tagOrder })
   }
 
   handleTextChange = (text) => {
@@ -41,20 +28,7 @@ export default class SearchTags extends Component {
       return
     }
     text = text.toLowerCase()
-    var self = this
-    var ref = firebase.database().ref('tags')
-    ref.orderByKey().startAt(text).endAt(text + '\uf8ff').limitToFirst(100).on('value', function(snapshot) {
-      var tags = {}
-      var tagOrder = []
-      snapshot.forEach(function(tag) {
-        var tagName = tag.key
-        var tagVal = tag.val()
-        tags[tagName] = tagVal
-        tagOrder.push(tagName)
-      })
-      tagOrder.sort((a, b) => (tags[a].count > tags[b].count ? -1 : 1))
-      self.setState({ tags, tagOrder })
-    })
+    getTags(text, this.showTrends)
   }
 
   render() {

@@ -1,19 +1,20 @@
 import React from "react"
 import { Animated, Dimensions, Image, Platform, StyleSheet, Text, TouchableOpacity, View } from "react-native"
 import { Body, Header, List, ListItem as Item, ScrollableTab, Tab, TabHeading, Tabs, Title } from "native-base"
-import firebase from 'firebase'
 import { FontAwesome } from '@expo/vector-icons'
 import { primary, white, gray, black, transparentWhite } from '../utils/colors'
 import ContentGrid from '../components/ContentGrid'
 import SavedLocations from '../components/SavedLocations'
 import UserTrips from '../components/UserTrips'
 import SettingsPage from './SettingsPage'
+import { getCurrUid, getUserProfile, getUserFollowStatus, getProfilePic } from '../network/users'
+import { sendFollowRequest, stopFollowing } from '../network/notifications'
 
 const {width: SCREEN_WIDTH} = Dimensions.get("window")
 const HEADER_HEIGHT = 150
 const TAB_HEIGHT = 50
 const SCROLL_HEIGHT = HEADER_HEIGHT + TAB_HEIGHT
-const FOLLOW_ENDPOINT = 'https:///us-central1-senior-design-explr.cloudfunctions.net/sendFollowNotification/'
+
 export default class ProfilePage extends React.Component {
   scroll = new Animated.Value(0)
   tabY = this.scroll.interpolate({
@@ -47,38 +48,25 @@ export default class ProfilePage extends React.Component {
   componentDidMount() {
   	var self = this
   	var uid = this.state.uid
-  	var currUser = firebase.auth().currentUser
-  	if (currUser && currUser.uid == uid) {
+  	var currUid = getCurrUid()
+  	if (currUid == uid) {
   		this.setState({
   			isMyProfile: true,
-  			currUid: currUser.uid
+  			currUid: currUid
   		})
   	} else {
-  		var ref = firebase.database().ref('users/main/' + currUser.uid + '/following')
-  		ref.orderByKey().equalTo(uid).on('value', function(snapshot) {
-  			if (snapshot.numChildren()) {
-  				self.setState({
-  					isMyProfile: false,
-  					currUid: currUser.uid,
-  					isFollowing: true
-  				})
-  			}
-  			else {
-  				self.setState({
-  					isMyProfile: false,
-  					currUid: currUser.uid,
-  					isFollowing: false
-  				})
-  			}
-  		})
+      getUserFollowStatus(currUid, uid, this.onGetFollowStatusComplete)
   	}
 
-  	const url = 'users/main/' + this.state.uid
-  	var userRef = firebase.database().ref(url)
+    getUserProfile(uid, this.updateProfile)
+  }
 
-  	userRef.on('value', function(snapshot) {
-  		self.updateProfile(snapshot.val())
-  	})
+  onGetFollowStatusComplete = (currUid, isFollowing) => {
+    this.setState({
+      isMyProfile: false,
+      currUid: currUid,
+      isFollowing: isFollowing
+    })
   }
 
   updateProfile = (snapshot) => {
@@ -89,73 +77,22 @@ export default class ProfilePage extends React.Component {
       numFollowing: snapshot.numFollowing,
     })
     if (snapshot.imageUrl) {
-    	this.getProfileImg(snapshot.imageUrl)
+    	getProfilePic(snapshot.imageUrl, this.onGetProfilePicComplete)
     }
   }
 
-  getProfileImg = (url) => {
-		var self = this
-		var gsReference = firebase.storage().ref(url)
-		gsReference.getDownloadURL().then(function(imageUrl) {
-			self.setState({ imageUrl })
-		})
+  onGetProfilePicComplete = (imageUrl) => {
+		this.setState({ imageUrl })
 	}
 
-  sendFollowRequest = () => {
-  	var self = this
-  	var ref = firebase.database().ref('users/notifications/' + this.state.uid)
-  	ref.orderByChild('data/sender').equalTo(this.state.currUid).once('value', function(snapshot) {
-  		if (snapshot.numChildren() == 0) {
-  			self.newFollowRequest()
-  		}
-  	})
-  }
-
-  newFollowRequest = () => {
-  	var uid = this.state.uid
-  	var ref = firebase.database().ref('users/notifications/')
-  	var newKey = ref.child(uid).push().key
-  	var newRequest = {}
-  	newRequest[newKey + '/data/sender'] = this.state.currUid
-  	newRequest[newKey + '/time'] = (new Date).getTime()
-  	newRequest[newKey + '/type'] = 'FOLLOW_REQUEST'
-  	ref.child(uid).update(newRequest).then(function() {
-  		console.log("follow request sent")
-  	})
-    fetch(FOLLOW_ENDPOINT, {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      body:JSON.stringify({
-        requester:this.state.currUid, //sending the follow request
-        requestee:this.state.uid //who the request is being sent to
-      }),
-    })
-  }
-
-  stopFollowing = () => {
-  	console.log("stop following")
-  	var { uid, currUid } = this.state
-  	var ref = firebase.database().ref('users/main/' + currUid)
-		var followingRef = firebase.database().ref('users/main/' + uid)
-		ref.child('numFollowing').transaction(function(numFollowing) {
-		  return numFollowing - 1
-		})
-		followingRef.child('numFollowers').transaction(function(numFollowers) {
-		  return numFollowers - 1
-		})
-		ref.child('following/' + uid).remove()
-		followingRef.child('followers/' + currUid).remove()
-  }
-
-  editProfile = () => {
-  	this.state.nav('ProfileEditPage', {uid: this.state.uid})
-  }
-
   settings = () => {
-    this.state.nav('SettingsPage', {loginNav: this.props.loginNav, uid: this.state.uid})
+    this.state.nav('SettingsPage', {loginNav: this.props.loginNav, uid: this.state.uid, refreshProfile: this.refresh})
+  }
+
+  refresh = (url) => {
+    this.setState({
+      imageUrl: this.imageUrl + '/'
+    })
   }
 
   render() {
@@ -173,7 +110,7 @@ export default class ProfilePage extends React.Component {
 		      		<View style={styles.nameContainer}>
 		      			<View style={{flexDirection: 'row'}}>
 		      				<Text style={styles.name}>{ displayName.length < 16 ? displayName: (displayName.slice(0,13) + "...") }</Text>
-		      				<TouchableOpacity onPress={() => (isMyProfile ? this.settings() : (isFollowing ? this.stopFollowing() : this.sendFollowRequest()))}>
+		      				<TouchableOpacity onPress={() => (isMyProfile ? this.settings() : (isFollowing ? stopFollowing(uid, currUid) : sendFollowRequest(uid, currUid)))}>
 				            <FontAwesome
 				            	name={isMyProfile ? 'cogs' : 'user-plus'}
 				            	style={isFollowing ? styles.iconFollowing : styles.icon}
@@ -195,7 +132,7 @@ export default class ProfilePage extends React.Component {
 	      		</View>
       			<View style={styles.profileContainer}>
 							<View style={styles.profilePicHolder}>
-								<Image style={styles.profilePic} key={ imageUrl ? imageUrl : 0 } source={ imageUrl ? {uri: imageUrl} : (require('../assets/images/profilePic.png')) } />
+								<Image style={styles.profilePic} key={ new Date() } source={ imageUrl ? {uri: imageUrl} : (require('../assets/images/profilePic.png')) } />
 							</View>
 						</View>
 					</View>

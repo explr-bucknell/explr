@@ -1,57 +1,12 @@
 import React, { Component } from 'react' // eslint-disable-line no-unused-vars
 import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native' // eslint-disable-line no-unused-vars
 import { FontAwesome } from '@expo/vector-icons' // eslint-disable-line no-unused-vars
-import firebase from 'firebase'
 import { primary, white } from '../utils/colors'
 
 //Displays preview of POI above it's pin when pressed
 export default class MapMarkerCallout extends Component {
   constructor(props) {
     super(props)
-    this.state = {
-      liked: false
-    }
-  }
-
-  componentDidMount() {
-    this.checkLiked(this.props.id, this.props.uid)
-  }
-
-  checkLiked(id, uid) {
-    var ref = firebase.database().ref('users/main/' + uid + '/saved')
-    var self = this
-    var liked
-    ref.child(id).on('value', function(snapshot) {
-      if (snapshot.val()) {
-        liked = true
-      } else {
-        liked = false
-      }
-      self.setLiked(liked)
-    })
-  }
-
-  setLiked (liked) {
-    this.setState({ liked })
-  }
-
-  async addLiked () {
-    this.setState({
-      liked: true
-    })
-
-    await firebase.database().ref('users/main/' + this.props.uid + '/saved/' + this.props.id).set({
-      name: this.props.title,
-      image: this.props.imageUrl
-    })
-  }
-
-  async removeLiked() {
-    this.setState({
-      liked: false
-    })
-
-    await firebase.database().ref('users/main/' + this.props.uid + '/saved/' + this.props.id).set(null)
   }
 
   render () {

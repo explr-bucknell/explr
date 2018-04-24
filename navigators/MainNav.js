@@ -1,6 +1,5 @@
 import React from 'react'
 import { TouchableOpacity, Text, TextInput, Platform } from 'react-native'
-import firebase from 'firebase'
 import Dimensions from 'Dimensions'
 import { StackNavigator, navigationOptions, NavigationActions } from 'react-navigation'
 import { FontAwesome, Ionicons } from '@expo/vector-icons'

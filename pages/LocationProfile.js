@@ -7,7 +7,7 @@ import { primary, white, gray, black, liked } from '../utils/colors'
 import ContentGrid from '../components/ContentGrid'
 import SavedLocations from '../components/SavedLocations'
 import UserTrips from '../components/UserTrips'
-import { getTrips, addLocationToTrip } from '../network/Requests'
+import { getTrips, addLocationToTrip } from '../network/trips'
 
 const {width: SCREEN_WIDTH} = Dimensions.get("window");
 const IMAGE_HEIGHT = 150;
@@ -54,6 +54,12 @@ export default class LocationProfile extends React.Component {
       locationId: location.id
     })
     this.checkLiked(location.id, location.uid)
+  }
+
+  componentWillUnmount() {
+    if (this.tripsRef) {
+      tripsRef.off('value')
+    }
   }
 
   async checkLiked(id, uid) {
@@ -106,7 +112,7 @@ export default class LocationProfile extends React.Component {
   }
 
   getUserTrips () {
-    getTrips(this.props.uid, this.loadTrips)
+    this.tripsRef = getTrips(this.props.uid, this.loadTrips)
   }
 
   loadTrips = (trips) => {

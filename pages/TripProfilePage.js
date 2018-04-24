@@ -3,7 +3,9 @@ import { StyleSheet, Text, Image, View, ScrollView, TouchableOpacity, Button, Di
 import { FontAwesome } from '@expo/vector-icons'
 import Carousel from 'react-native-snap-carousel'
 import firebase from 'firebase'
-import { getLocation } from '../network/Requests'
+import { getTripLocationsDetail } from '../network/trips'
+import { getHandle } from '../network/users'
+import { sendJoinTripRequest, unjoinTrip } from '../network/notifications'
 import { primary, black, white, gray, liked } from '../utils/colors'
 
 const WIDTH = Dimensions.get('window').width
@@ -45,105 +47,26 @@ export default class TripProfilePage extends Component {
   }
 
   getHandle = uid => {
-    var self = this
-    firebase.database().ref('users/handles').orderByValue().equalTo(uid).once('value', function(snapshot) {
-      if (snapshot.numChildren()) {
-        self.setState({
-          handle: Object.keys(snapshot.val())[0]
-        })
-      }
-    })
+    getHandle(uid, (handle) => this.setState({ handle }))
   }
 
-  getLocationDetail = async locations => {
-    var self = this
-    var set = false
-    var uid = this.props.nav.state.params.currUser
-    locations.sort((a, b) => a.index < b.index ? -1 : 1)
-    var results = locations.concat()
+  getLocationDetail = locations => {
+    getTripLocationsDetail(locations, this.props.nav.state.params.currUser, this.onGetLocationDetailComplete)
+  }
 
-    var locIds = locations.map(location => location.id)
-    var liked
-    firebase.database().ref('users/main/' + uid + '/saved').on('value', function(snapshot) {
-      if (snapshot.numChildren()) {
-        var content = snapshot.val()
-        liked = locIds.map(id => (content[id] != null))
-      }
-      else {
-        liked = new Array(locations.length).fill(false)
-      }
-      results = results.map((location, i) => Object.assign({ liked: liked[i] }, location))
-      if (set) {
-        self.setState({ locations: results })
-      }
-      else {
-        set = true
-      }
-    })
-
-    var images = new Array(locations.length).fill(null)
-    var count = 0
-
-    locations.forEach((loc, i) => {
-      getLocation(loc.id).then((location) => {
-        images[i] = location.image
-        count += 1
-        if (count === locations.length) {
-          results = results.map((location, i) => Object.assign({ image: images[i] }, location))
-          if (set) {
-            self.setState({ locations: results })
-          }
-          else {
-            set = true
-          }
-        }
-      })
-    })
+  onGetLocationDetailComplete = (locations) => {
+    this.setState({locations})
   }
 
   joinTrip = () => {
     var tripId = this.state.trip.tripId
     if (this.state.joined) {
-      firebase.database().ref(`users/main/${this.currUser}/joinedTrips`).child(tripId).remove()
-      firebase.database().ref(`trips/${tripId}/participants`).child(this.currUser).remove()
+      unjoinTrip(this.currUser, tripId)
       this.setState({ joined: false })
     }
     else {
-      var self = this
-      var ref = firebase.database().ref('users/notifications/' + this.state.trip.creator)
-      ref.orderByChild('data/requester').equalTo(this.currUser).once('value', function(snapshot) {
-        if (snapshot.numChildren() == 0) {
-          self.sendJoinTripRequest()
-        }
-        else {
-          var data = snapshot.val()
-          var found = false
-          for (let item of Object.keys(data)) {
-            if (data[item].data.tripId === tripId) {
-              found = true
-              break
-            }
-          }
-          if (!found) {
-            self.sendJoinTripRequest()
-          }
-        }
-      })
+      sendJoinTripRequest(this.state.trip.creator, this.currUser, tripId)
     }
-  }
-
-  sendJoinTripRequest = () => {
-    var { creator, tripId } = this.state.trip
-    var ref = firebase.database().ref('users/notifications/')
-    var newKey = ref.child(creator).push().key
-    var newRequest = {}
-    newRequest[newKey + '/data/requester'] = this.currUser
-    newRequest[newKey + '/data/tripId'] = tripId
-    newRequest[newKey + '/time'] = Date.now()
-    newRequest[newKey + '/type'] = 'JOIN_TRIP_REQUEST'
-    ref.child(creator).update(newRequest).then(function() {
-      console.log("join trip request sent")
-    })
   }
 
   followTrip = () => {

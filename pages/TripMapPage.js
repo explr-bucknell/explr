@@ -11,8 +11,8 @@ import {
   ScrollView,
   TouchableOpacity
 } from 'react-native'
-import { getLocation, getTrip } from '../network/Requests'
-import { Location, Permissions } from 'expo'
+import { getTrip } from '../network/trips'
+import { getLocation } from '../network/pois'
 import MapView from 'react-native-maps' // eslint-disable-line no-unused-vars
 import MapMarkerCallout from '../components/MapMarkerCallout'
 import { types } from '../utils/poiTypes'
@@ -35,27 +35,32 @@ export default class TripMapPage extends Component {
     }
   }
 
+  componentWillMount () {
+    this.tripRef = getTrip(this.props.nav.state.params.trip.tripId, this.onGetTripComplete)
+  }
+
+  componentWillUnmount () {
+    this.tripRef.off('value')
+  }
+
+  onGetTripComplete = (trip) => {
+    if (trip.locations && Object.keys(trip.locations).length > 0) {
+      this.normalizeLocations(trip.locations)
+    }
+  }
+
   normalizeLocations (locations) {
-    var self = this
     Object.keys(locations).map((locationId) =>
-      getLocation(locationId)
-      .then((databaseLocation) => {
-        var normalizedLocations = self.state.locations
-        normalizedLocations[locationId] = databaseLocation
-        self.setState({
-          locations: normalizedLocations
-        })
-      })
+      getLocation(locationId, this.onGetLocationComplete)
     )
   }
 
-  componentWillMount () {
-    getTrip(this.props.nav.state.params.trip.tripId)
-    .then((trip) =>
-      {trip.locations && Object.keys(trip.locations).length > 0 &&
-        this.normalizeLocations(trip.locations)
-      }
-    )
+  onGetLocationComplete = (databaseLocation) => {
+    var normalizedLocations = this.state.locations
+    normalizedLocations[databaseLocation.id] = databaseLocation
+    this.setState({
+      locations: normalizedLocations
+    })
   }
 
   navToGoogleMaps (locId) {

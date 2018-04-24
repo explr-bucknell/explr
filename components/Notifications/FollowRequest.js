@@ -3,7 +3,9 @@ import { View, Image, Text, TouchableOpacity, StyleSheet } from 'react-native'
 import firebase from 'firebase'
 import { Ionicons } from '@expo/vector-icons'
 import { primary, white, gray, black } from '../../utils/colors'
+
 const APPROVED_ENDPOINT = 'https:///us-central1-senior-design-explr.cloudfunctions.net/sendFollowApprovalNotification/'
+
 export default class FollowRequest extends React.Component {
 	constructor(props) {
 		// props.uid
@@ -20,7 +22,15 @@ export default class FollowRequest extends React.Component {
 	}
 
 	componentWillMount() {
-		var senderId = this.props.data.sender
+    this.loadNotification(this.props)
+  }
+
+  componentWillReceiveProps(nextProps) {
+    this.loadNotification(nextProps)
+  }
+
+	loadNotification = (props) => {
+		var senderId = props.data.sender
 		var senderRef = firebase.database().ref("users/main/" + senderId)
 		var self = this
 		senderRef.once("value", function(snapshot) {

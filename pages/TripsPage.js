@@ -2,7 +2,6 @@ import React from 'react'
 import { View, ScrollView } from 'react-native'
 import { Container, Header, Content, Tab, Tabs } from 'native-base';
 import { primary, white, gray } from '../utils/colors'
-import firebase from 'firebase'
 import UserTrips from '../components/UserTrips'
 import TripsList from '../components/TripsList'
 

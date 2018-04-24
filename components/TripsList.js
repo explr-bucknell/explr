@@ -1,7 +1,7 @@
 import React, { Component } from 'react' // eslint-disable-line no-unused-vars
 import { StyleSheet, ScrollView, Text } from 'react-native' // eslint-disable-line no-unused-vars
 import firebase from 'firebase'
-import { getTrip } from '../network/Requests'
+import { getJoinedOrFollowedTrips } from '../network/trips'
 import TripContainer from './TripContainer' // eslint-disable-line no-unused-vars
 import { white } from '../utils/colors'
 
@@ -15,28 +15,12 @@ export default class TripsList extends Component {
   }
 
   componentDidMount() {
-    var path = `users/main/${this.props.uid}/`
-    if (this.props.joined) {
-      path += 'joinedTrips'
-    } else {
-      path += 'followedTrips'
-    }
     var self = this
-    firebase.database ().ref (path).orderByValue ().once ('value', function(snapshot) {
-      if (snapshot.numChildren ()) {
-        var tripIds = Object.keys (snapshot.val ()).reverse ()
-        var trips = []
-        tripIds.forEach (tripId => {
-          getTrip (tripId).then (trip => {
-            trip.tripId = tripId
-            trips.push (trip)
-            if (trips.length === tripIds.length) {
-              self.setState ({ trips })
-            }
-          })
-        })
-      }
-    })
+    this.tripsRef = getJoinedOrFollowedTrips(this.props.uid, this.props.joined, (trips) => { self.setState({ trips }) })
+  }
+
+  componentWillUnmount() {
+    this.tripsRef.off('value')
   }
 
   render() {

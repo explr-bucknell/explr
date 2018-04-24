@@ -1,10 +1,9 @@
 import React from 'react'
 import { View, ScrollView, Text, Image, TouchableOpacity, StyleSheet } from 'react-native'
 import { FormLabel, FormInput, FormValidationMessage } from 'react-native-elements'
-import firebase from 'firebase'
 import { ImagePicker } from 'expo'
 import { FontAwesome } from '@expo/vector-icons'
-import { uploadNewProfilePic } from '../network/Requests'
+import { getUserProfile, getProfilePic, uploadNewProfilePic, checkHandleDuplicate, updateHandle, updateUserProfile } from '../network/users'
 import { primary, white, gray, black } from '../utils/colors'
 
 export default class ProfileEditPage extends React.Component {
@@ -30,32 +29,29 @@ export default class ProfileEditPage extends React.Component {
 	componentDidMount() {
 		this.props.nav.setParams({ submitProfileEdit: this.submitProfileEdit })
 
-		var self = this
-		const url = 'users/main/' + this.uid
-  	var userRef = firebase.database().ref(url)
-
-  	userRef.on('value', function(snapshot) {
-  		var snapshot = snapshot.val()
-  		self.setState({
-	  		firstname: snapshot.firstname,
-	  		lastname: snapshot.lastname,
-	  		handle: snapshot.handle,
-	  		about: snapshot.about ? snapshot.about : '',
-	  		location: snapshot.location,
-	  		websites: snapshot.websites
-	    })
-  		if (snapshot.imageUrl) {
-  			self.getProfileImg(snapshot.imageUrl)
-  		}
-  	})
+		this.userProfileRef = getUserProfile(this.uid, this.onGetUserProfileComplete)
 	}
 
-	getProfileImg = (url) => {
-		var self = this
-		var gsReference = firebase.storage().ref(url)
-		gsReference.getDownloadURL().then(function(imageUrl) {
-			self.setState({ imageUrl })
-		})
+	componentWillUnmount() {
+		this.userProfileRef.off('value')
+	}
+
+	onGetUserProfileComplete = (snapshot) => {
+		this.setState({
+  		firstname: snapshot.firstname,
+  		lastname: snapshot.lastname,
+  		handle: snapshot.handle,
+  		about: snapshot.about ? snapshot.about : '',
+  		location: snapshot.location,
+  		websites: snapshot.websites
+    })
+		if (snapshot.imageUrl) {
+			getProfilePic(snapshot.imageUrl, this.onGetProfilePicComplete)
+		}
+	}
+
+	onGetProfilePicComplete = (imageUrl) => {
+		this.setState({ imageUrl })
 	}
 
 	validateHandle = async (handle) => {
@@ -63,16 +59,7 @@ export default class ProfileEditPage extends React.Component {
 			return true
 		}
 		var allowed = (handle.length >= 5) && (handle.length <= 20) && (/^[a-z0-9]+$/.test(handle))
-		var duplicate;
-
-		var handlesRef = firebase.database().ref('users/handles')
-		await handlesRef.child(handle).once("value", function(snapshot) {
-	  	if (snapshot.val()) {
-	  		duplicate = true
-	  	} else {
-	  		duplicate = false
-	  	}
-		})
+		var duplicate = await checkHandleDuplicate(handle)
 		return (!duplicate) && allowed
 	}
 
@@ -102,7 +89,7 @@ export default class ProfileEditPage extends React.Component {
 	}
 
 	changePicture = async () => {
-		let result = await ImagePicker.launchImageLibraryAsync({
+		this.imgUploadResult = await ImagePicker.launchImageLibraryAsync({
 			mediaTypes: 'Images',
       allowsEditing: true,
       aspect: [1, 1],
@@ -110,8 +97,10 @@ export default class ProfileEditPage extends React.Component {
       base64: true
     })
 
-    if (!result.cancelled) {
-    	uploadNewProfilePic(result.base64, this.uid)
+    if (!this.imgUploadResult.cancelled) {
+    	this.setState({
+    		imageUrl: this.imgUploadResult.uri
+    	})
     }
 	}
 
@@ -126,26 +115,28 @@ export default class ProfileEditPage extends React.Component {
 			let oldHandle = this.state.handle
 			if (newHandle != oldHandle) {
 				let uid = this.uid
-				handleRef = firebase.database().ref('users/handles')
-				handleRef.child(oldHandle).remove()
-				handleRef.child(newHandle).set(uid)
+				updateHandle(uid, newHandle, oldHandle)
 			}
 		}
-		var self = this
-		const url = 'users/main/' + this.uid
-  	var userRef = firebase.database().ref(url)
-  	var updates = this.updatedUser
-  	userRef.update({ ...updates }).then(() => {
-  		self.props.nav.goBack()
-  	})
+		if (this.imgUploadResult && !this.imgUploadResult.cancelled) {
+    	uploadNewProfilePic(this.imgUploadResult.base64, this.uid)
+    }
+    
+    updateUserProfile(this.uid, this.updatedUser, this.onUserProfileUpdated)
+	}
+
+	onUserProfileUpdated = () => {
+		this.props.nav.state.params.refreshProfile()
+  	this.props.nav.goBack()
 	}
 
 	render() {
+		const { firstname, lastname, imageUrl, handle, about, location, websites, handleStatus } = this.state
 		return (
 			<ScrollView style={styles.container}>
 				<View style={styles.profilePicContainer}>
 					<View style={styles.profilePicWrapper}>
-						<Image style={styles.profilePic} source={ this.state.imageUrl ? {uri: this.state.imageUrl} : (require('../assets/images/profilePic.png')) } />
+						<Image style={styles.profilePic} source={ imageUrl ? {uri: imageUrl} : (require('../assets/images/profilePic.png')) } />
 					</View>
 					<TouchableOpacity style={styles.editPic} onPress={() => {this.changePicture()}}>
 						<FontAwesome name='pencil' style={styles.icon}/>
@@ -153,26 +144,26 @@ export default class ProfileEditPage extends React.Component {
 				</View>
 				<View style={styles.nameContainer}>
 					<FormLabel>First name</FormLabel>
-					<FormInput defaultValue={this.state.firstname} inputStyle={{color: black}} maxLength={10} onChangeText={(text) => this.updateFirstname(text)}/>
+					<FormInput defaultValue={firstname} inputStyle={{color: black}} maxLength={10} onChangeText={(text) => this.updateFirstname(text)}/>
 					<FormLabel>Last name</FormLabel>
-					<FormInput defaultValue={this.state.lastname} inputStyle={{color: black}} maxLength={10} onChangeText={(text) => this.updateLastname(text)}/>
+					<FormInput defaultValue={lastname} inputStyle={{color: black}} maxLength={10} onChangeText={(text) => this.updateLastname(text)}/>
 				</View>
 				<View style={styles.otherContainer}>
 					<FormLabel>Handle</FormLabel>
-					<FormInput defaultValue={this.state.handle} inputStyle={{color: black}} maxLength={10} autoCapitalize={'none'} onChangeText={(text) => this.updateHandle(text)}/>
-					{ !this.state.handleStatus && <FormValidationMessage>This handle is already taken</FormValidationMessage> }
+					<FormInput defaultValue={handle} inputStyle={{color: black}} maxLength={10} autoCapitalize={'none'} onChangeText={(text) => this.updateHandle(text)}/>
+					{ !handleStatus && <FormValidationMessage>This handle is already taken</FormValidationMessage> }
 				</View>
 				<View style={styles.otherContainer}>
 					<FormLabel>About you</FormLabel>
-					<FormInput defaultValue={this.state.about} inputStyle={{color: black}} maxLength={50} onChangeText={(text) => this.updateAbout(text)}/>
+					<FormInput defaultValue={about} inputStyle={{color: black}} maxLength={50} onChangeText={(text) => this.updateAbout(text)}/>
 				</View>
 				<View style={styles.otherContainer}>
 					<FormLabel>Location</FormLabel>
-					<FormInput defaultValue={this.state.location} inputStyle={{color: black}} maxLength={20} onChangeText={(text) => this.updateLocation(text)}/>
+					<FormInput defaultValue={location} inputStyle={{color: black}} maxLength={20} onChangeText={(text) => this.updateLocation(text)}/>
 				</View>
 				<View style={styles.otherContainer}>
 					<FormLabel>Websites</FormLabel>
-					<FormInput defaultValue={this.state.websites} inputStyle={{color: black}} maxLength={30} onChangeText={(text) => this.updateWebsites(text)}/>
+					<FormInput defaultValue={websites} inputStyle={{color: black}} maxLength={30} onChangeText={(text) => this.updateWebsites(text)}/>
 				</View>
 			</ScrollView>
 		)

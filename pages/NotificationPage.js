@@ -1,10 +1,10 @@
 import React from 'react'
 import { View, StyleSheet } from 'react-native'
-import firebase from 'firebase'
 import FollowRequest from '../components/Notifications/FollowRequest'
 import FollowApproval from '../components/Notifications/FollowApproval'
 import JoinTripRequest from '../components/Notifications/JoinTripRequest'
 import JoinTripApproval from '../components/Notifications/JoinTripApproval'
+import { getUserNotifications, deleteNotification } from '../network/notifications'
 import { white } from '../utils/colors'
 
 export default class NotificationPage extends React.Component {
@@ -26,33 +26,30 @@ export default class NotificationPage extends React.Component {
   		nav: navigate
   	})
 
-  	this.loadNotifications(uid, navigate)
+  	this.notificationRef = getUserNotifications(uid, this.loadNotifications)
   }
 
-  loadNotifications = (uid, nav) => {
-  	var ref = firebase.database().ref('users/notifications/' + uid)
-  	var self = this
-  	ref.on('value', function(snapshot) {
-  		self.setState({
-				data: snapshot.val() ? snapshot.val() : []
-			})
-  	})
+  componentWillUnmount() {
+    this.notificationRef.off('value')
+  }
+
+  loadNotifications = (data) => {
+  	this.setState({ data })
   }
 
   removeNotification = (notificationId) => {
-  	var ref = firebase.database().ref('users/notifications/' + this.state.uid + '/' + notificationId)
-  	ref.remove()
-  	var data = Object.assign({}, this.state.data)
-  	delete data[notificationId]
-  	this.setState({ data })
+  	deleteNotification(this.state.uid, notificationId)
   }
 
 	render() {
 		var notifications = this.state.data
 		var { uid, nav } = this.state
+    var notificationKeys = Object.keys(notifications)
+    notificationKeys.sort((a,b) => notifications[a].time > notifications[b].time ? -1 : 1)
+
 		return (
 			<View style={styles.container}>
-				{Object.keys(notifications).sort((a,b) => notifications[a].time > notifications[b].time ? -1 : 1).map((id, i) => (
+				{notificationKeys.map((id, i) => (
 					(notifications[id].type === 'FOLLOW_REQUEST' && <FollowRequest 
 						key={i} 
 						notificationId={id} 
