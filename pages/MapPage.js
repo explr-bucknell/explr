@@ -130,9 +130,7 @@ export default class MapPage extends Component {
       types[keysSorted[i]] = POIs[keysSorted[i]];
     }
 
-    if (this.state.region === region) {
-      this.setState({ locations: locs, filteredLocations: fLocs, types });
-    }
+    this.setState({ region, locations: locs, filteredLocations: fLocs, types });
   }
 
   filterLocations (locations) {

@@ -91,7 +91,7 @@ function newJoinTripRequest (creatorId, currUid, tripId) {
   var ref = firebase.database().ref('users/notifications/')
   var newKey = ref.child(creatorId).push().key
   var newRequest = {}
-  newRequest[newKey + '/data/requester'] = this.currUid
+  newRequest[newKey + '/data/requester'] = currUid
   newRequest[newKey + '/data/tripId'] = tripId
   newRequest[newKey + '/time'] = Date.now()
   newRequest[newKey + '/type'] = 'JOIN_TRIP_REQUEST'
@@ -102,5 +102,5 @@ function newJoinTripRequest (creatorId, currUid, tripId) {
 
 export function unjoinTrip (currUid, tripId) {
   firebase.database().ref(`users/main/${currUid}/joinedTrips`).child(tripId).remove()
-  firebase.database().ref(`trips/${tripId}/participants`).child(this.currUid).remove()
+  firebase.database().ref(`trips/${tripId}/participants`).child(currUid).remove()
 }
