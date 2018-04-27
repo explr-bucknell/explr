@@ -289,19 +289,19 @@ Thank you [Professor Alan Marchiori](mailto:amm042@bucknell.edu) for being both 
   </tr>
   <tr>
   <td> FollowApproval.js</td>
-  <td> <b>INFO REQUIRED</b></td>
+  <td> Component to display an approval for a follow user request</td>
   </tr>
   <tr>
   <td> FollowRequest.js</td>
-  <td> Contains functions for a user issue a follow request, approve request, and send approval notifications</td>
+  <td> Component to display a follow user requests, and functions to approve or deny request and send approval notification</td>
   </tr>
   <tr>
   <td> JoinTripApproval.js</td>
-  <td> Component to display an approval for a join request</td>
+  <td> Component to display an approval for a join trip request</td>
   </tr>
   <tr>
   <td> JoinTripRequest.js</td>
-  <td> Contains functions to deny requests, approve requests, and send approval notifications</td>
+  <td> Component to display a join trip requests, and functions to approve or deny request and send approval notification</td>
   </tr>
   <tr>
   <td> push_listener.js</td>
@@ -349,8 +349,20 @@ Thank you [Professor Alan Marchiori](mailto:amm042@bucknell.edu) for being both 
   <td colspan="2"><i>explr/network</i></td>
   </tr>
   <tr>
-  <td> Requests.js</td>
+  <td> notifications.js</td>
+  <td> Contains all functions for interaction with the Firebase database for sending and deleting notifications</td>
+  </tr>
+  <tr>
+  <td> pois.js</td>
+  <td> Contains all functions for interaction with the Firebase database for creating, searching, and getting details about pois</td>
+  </tr>
+  <tr>
+  <td> trips.js</td>
   <td> Contains all functions for interaction with the Firebase database for creating, editing, adding to, and managing trips; also includes the route optimization and route distance calculator</td>
+  </tr>
+  <tr>
+  <td> users.js</td>
+  <td> Contains all functions for interaction with the Firebase database for user authetication, profile info editing, and getting users data</td>
   </tr>
   <tr>
   <td colspan="2"><i>explr/pages</i></td>
@@ -371,19 +383,11 @@ Thank you [Professor Alan Marchiori](mailto:amm042@bucknell.edu) for being both 
   <td> Contains a standardized stylesheet for all poi types used on the map</td>
   </tr>
   <tr>
-  <td> tag_utils.js</td>
-  <td> <b>INFO REQUIRED</b></td>
-  </tr>
-  <tr>
   <td colspan="2"><i>explr</i></td>
   </tr>
   <tr>
-  <td> .eslintrc.js</td>
-  <td> <b>INFO REQUIRED</b></td>
-  </tr>
-  <tr>
   <td> App.js</td>
-  <td> Contains all information required for Expo to build and launch the app</td>
+  <td> Entry point of the app, contains all information required for Expo to build and launch the app</td>
   </tr>
 </table>
 
