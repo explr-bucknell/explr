@@ -1,6 +1,6 @@
 ## **_Original Problem Statement_**
 
-"This project comes from my personal experience traveling the US to visit national parks. I was looking on the google play store for an app to track which national parks we have seen vs. not seen. I assumed there would be an app that could track this for us and maybe even present a map or visualization of our progress that I could share on Facebook. This app doesn’t exist at the moment (some similar sites exist like travbuddy.com, but this isn’t exactly easy to use or very powerful). So, we should create it but why limit it to national parks? 
+"This project comes from my personal experience traveling the US to visit national parks. I was looking on the google play store for an app to track which national parks we have seen vs. not seen. I assumed there would be an app that could track this for us and maybe even present a map or visualization of our progress that I could share on Facebook. This app doesn’t exist at the moment (some similar sites exist like travbuddy.com, but this isn’t exactly easy to use or very powerful). So, we should create it but why limit it to national parks?
 
 I would like to develop an app/web platform where users can create a list of places to visit or things to do. Then other users can sign up for these lists and track their progress. We could build in national parks, national monuments, even restaurants in Lewisburg. But the best feature would be users could create new lists. This would allow very diverse and interesting lists to be created everything from Civil War battlefields to national ballparks. The site would have allow searching for nearby sites (geotagged) and leaderboards with statistics about who is in each challenge along with nice visualizations and social media connections." Prof. Alan Marchiori
 
@@ -135,10 +135,10 @@ Thank you [Professor Alan Marchiori](mailto:amm042@bucknell.edu) for being both 
 	* Expo XDE - Installed on your workstation
 	* Expo (Expo Project) - Installed on your mobile device
 * On first download open NPM and run “npm install”
-	This will install all requirements listed Explr package.json
+	This will install all requirements listed xplor package.json
 	* All packages must be successfully installed, as reported by NPM, for the app to successfully run
 * In the Expo XDE, select “Open existing project…”
-* Select the Explr project folder
+* Select the xplor project folder
 	* The project should automatically load in Expo, wait for the “Project opened!” message
 * Once the message has displayed locate the three buttons in the upper right corner. (Publish, Share, Device)
 	* Publish - Pushes the app to the Expo app for testing. Note, no console commands will be printed using this method.
@@ -153,7 +153,7 @@ Thank you [Professor Alan Marchiori](mailto:amm042@bucknell.edu) for being both 
   <th>Description</th>
   </tr>
   <tr>
-  <td colspan="2"><i>explr/LoginScreens</i></td>
+  <td colspan="2"><i>xplor/LoginScreens</i></td>
   </tr>
   <tr>
   <td> button.js</td>
@@ -164,7 +164,7 @@ Thank you [Professor Alan Marchiori](mailto:amm042@bucknell.edu) for being both 
   <td> Contains the logo class and style sheet</td>
   </tr>
   <tr>
-  <td colspan="2"><i>explr/LoginScreens/Login</i></td>  
+  <td colspan="2"><i>xplor/LoginScreens/Login</i></td>  
   </tr>
   <tr>
   <td> ForgotPwd.js</td>
@@ -187,7 +187,7 @@ Thank you [Professor Alan Marchiori](mailto:amm042@bucknell.edu) for being both 
   <td> Contains the redirect for Facebook and Gmail sign in</td>  
   </tr>
   <tr>
-  <td colspan="2"><i>explr/LoginScreens/Signup</i></td>  
+  <td colspan="2"><i>xplor/LoginScreens/Signup</i></td>  
   </tr>
   <tr>
   <td> signupConfirm.js</td>
@@ -214,7 +214,7 @@ Thank you [Professor Alan Marchiori](mailto:amm042@bucknell.edu) for being both 
   <td> Contains the page to input your password as well as password strength verification</td>
   </tr>
   <tr>
-  <td colspan="2"><i>explr/components</i></td>
+  <td colspan="2"><i>xplor/components</i></td>
   </tr>
   <tr>
   <td> CategoryFilter.js</td>
@@ -285,7 +285,7 @@ Thank you [Professor Alan Marchiori](mailto:amm042@bucknell.edu) for being both 
   <td> Contains functions to load trips, add location to trips, and for rendering the prior trip components into one feature</td>
   </tr>
   <tr>
-  <td colspan="2"><i>explr/components/Notifications</i></td>
+  <td colspan="2"><i>xplor/components/Notifications</i></td>
   </tr>
   <tr>
   <td> FollowApproval.js</td>
@@ -308,7 +308,7 @@ Thank you [Professor Alan Marchiori](mailto:amm042@bucknell.edu) for being both 
   <td> Used to handle notifications received while the app is open or is opened after closing</td>
   </tr>
   <tr>
-  <td colspan="2"><i>explr/functions</i></td>
+  <td colspan="2"><i>xplor/functions</i></td>
   </tr>
   <tr>
   <td> FirebaseTripCode.js</td>
@@ -331,7 +331,7 @@ Thank you [Professor Alan Marchiori](mailto:amm042@bucknell.edu) for being both 
   <td> Contains the function to implement registration for push notifications</td>
   </tr>
   <tr>
-  <td colspan="2"><i>explr/navigators</i></td>
+  <td colspan="2"><i>xplor/navigators</i></td>
   </tr>
   <tr>
   <td> LoginNav.js</td>
@@ -346,7 +346,7 @@ Thank you [Professor Alan Marchiori](mailto:amm042@bucknell.edu) for being both 
   <td> Contains all constants necessary for naviagtion out of the map page </td>
   </tr>
   <tr>
-  <td colspan="2"><i>explr/network</i></td>
+  <td colspan="2"><i>xplor/network</i></td>
   </tr>
   <tr>
   <td> notifications.js</td>
@@ -365,14 +365,14 @@ Thank you [Professor Alan Marchiori](mailto:amm042@bucknell.edu) for being both 
   <td> Contains all functions for interaction with the Firebase database for user authetication, profile info editing, and getting users data</td>
   </tr>
   <tr>
-  <td colspan="2"><i>explr/pages</i></td>
+  <td colspan="2"><i>xplor/pages</i></td>
   </tr>
   <tr>
   <td> Contains all pages in the app</td>
   <td> This folder contains all javascript files to implement every page in the app. The names of the files are labeled to clearly indicate which page they correlate to. These pages implement all components and functions relevant to operate their individual pages, and also implement their own unique functions for navigation, and unique database calls.</td>
   </tr>
   <tr>
-  <td colspan="2"><i>explr/utils</i></td>
+  <td colspan="2"><i>xplor/utils</i></td>
   </tr>
   <tr>
   <td> colors.js</td>
@@ -383,7 +383,7 @@ Thank you [Professor Alan Marchiori](mailto:amm042@bucknell.edu) for being both 
   <td> Contains a standardized stylesheet for all poi types used on the map</td>
   </tr>
   <tr>
-  <td colspan="2"><i>explr</i></td>
+  <td colspan="2"><i>xplor</i></td>
   </tr>
   <tr>
   <td> App.js</td>
@@ -399,14 +399,14 @@ Thank you [Professor Alan Marchiori](mailto:amm042@bucknell.edu) for being both 
   <th>Description</th>
   </tr>
   <tr>
-  <td colspan="2"><i>explr/pois</i></td>
+  <td colspan="2"><i>xplor/pois</i></td>
   </tr>
   <tr>
   <td> Location codes</td>
   <td> Contains all of the locations and their unique information. The IDs are unique location IDs pulled from Google.</td>
   </tr>
   <tr>
-  <td colspan="2"><i>explr/pois/Unique-IDs</i></td>
+  <td colspan="2"><i>xplor/pois/Unique-IDs</i></td>
   </tr>
   <tr>
   <td> description</td>
@@ -437,21 +437,21 @@ Thank you [Professor Alan Marchiori](mailto:amm042@bucknell.edu) for being both 
   <td> This is used for sorting all POIs into specific categories for sorting on the map. These are: National Park, National Monument, Park, Museum, Amusement Park, Aquarium, Gallery, Bar, Campground, Library, Restaurant, Theater, Stadium, Zoo, Others</td>
   </tr>
   <tr>
-  <td colspan="2"><i>explr/tags</i></td>
+  <td colspan="2"><i>xplor/tags</i></td>
   </tr>
   <tr>
   <td> User entered tags</td>
   <td> Each of these entries contain the count of how many trips include this tag, and the ID for each of these trips</td>
   </tr>  
   <tr>
-  <td colspan="2"><i>explr/trips</i></td>
+  <td colspan="2"><i>xplor/trips</i></td>
   </tr>
   <tr>
   <td> Trip codes</td>
   <td> Contains all of the trips and their uniquely generated ID, along with all of their relevent information</td>
   </tr>
   <tr>
-  <td colspan="2"><i>explr/trips/Unique-IDs</i></td>
+  <td colspan="2"><i>xplor/trips/Unique-IDs</i></td>
   </tr>
   <tr>
   <td> creator</td>
@@ -486,14 +486,14 @@ Thank you [Professor Alan Marchiori](mailto:amm042@bucknell.edu) for being both 
   <td> All tags for this trip</td>
   </tr>
   <tr>
-  <td colspan="2"><i>explr/users</i></td>
+  <td colspan="2"><i>xplor/users</i></td>
   </tr>
   <tr>
   <td> handles</td>
   <td> Contains all of the users handles paired with their unique IDs</td>
   </tr>
   <tr>
-  <td colspan="2"><i>explr/users/main</i></td>
+  <td colspan="2"><i>xplor/users/main</i></td>
   </tr>
   <tr>
   <td> firstname</td>
@@ -520,7 +520,7 @@ Thank you [Professor Alan Marchiori](mailto:amm042@bucknell.edu) for being both 
   <td> All saved/favorited locations identified by their unique ID. Contains that locations image, and name</td>
   </tr>
   <tr>
-  <td colspan="2"><i>explr/users/notifications/player-IDs/unique-notification-ID</i></td>
+  <td colspan="2"><i>xplor/users/notifications/player-IDs/unique-notification-ID</i></td>
   </tr>
   <tr>
   <td> data</td>

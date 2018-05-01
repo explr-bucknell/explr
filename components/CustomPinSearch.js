@@ -63,7 +63,7 @@ export default class CustomPinSearch extends Component {
                 style={{ color: 'white', marginLeft: 15, marginTop: 3 }}
               />
           </TouchableOpacity>
-          <Text style={{color: 'white', fontSize: 20}}>Points of Interest</Text>
+          <Text style={{color: 'white', fontSize: 20}}>Add a point of interest</Text>
           <TouchableOpacity
             onPress={() => { this.state.selectedOption != '' && this.props.poiSubmit() }}>
             <Ionicons
