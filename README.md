@@ -331,7 +331,7 @@ Thank you [Professor Alan Marchiori](mailto:amm042@bucknell.edu) for being both 
   <td> Contains the function to implement registration for push notifications</td>
   </tr>
   <tr>
-  <td colspan="2"><i>explr/navigators connect screens together and allow the user to switch between them in smooth, animated motion</i></td>
+  <td colspan="2"><i>explr/navigators</i></td>
   </tr>
   <tr>
   <td> LoginNav.js</td>
