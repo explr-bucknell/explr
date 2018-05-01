@@ -234,7 +234,7 @@ Thank you [Professor Alan Marchiori](mailto:amm042@bucknell.edu) for being both 
   </tr>
   <tr>
   <td> NewTagModal.js</td>
-  <td> <b>INFO REQUIRED</b></td>
+  <td> Component for users to add new tags to a trip</td>
   </tr>
   <tr>
   <td> SavedLocations.js</td>
@@ -246,7 +246,7 @@ Thank you [Professor Alan Marchiori](mailto:amm042@bucknell.edu) for being both 
   </tr>
   <tr>
   <td> SearchFilterOption.js</td>
-  <td> <b>INFO REQUIRED</b></td>
+  <td> A component representing a possible category filter and how many locations under this category exist in a query</td>
   </tr>
   <tr>
   <td> SearchPlaces.js</td>
@@ -331,7 +331,7 @@ Thank you [Professor Alan Marchiori](mailto:amm042@bucknell.edu) for being both 
   <td> Contains the function to implement registration for push notifications</td>
   </tr>
   <tr>
-  <td colspan="2"><i>explr/navigators <b> needs more info</b></i></td>
+  <td colspan="2"><i>explr/navigators connect screens together and allow the user to switch between them in smooth, animated motion</i></td>
   </tr>
   <tr>
   <td> LoginNav.js</td>
