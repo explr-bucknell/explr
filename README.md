@@ -98,46 +98,46 @@ I would like to develop an app/web platform where users can create a list of pla
 
 ## **_Development Process & Challenges_**
 
-* Timeline
+### Timeline
 
 ![Timeline](./timeline.png)
 
-* Challenges
-  * Cross platform style differences
-    * Layout changes between Android and iOS
-    * Use and interaction differences
-  * Trip optimization
-    * Utilizing Google Waypoints and Distance API
-  * Making the app more social
-    * Allowing users to follow and join trips
-    * Push notifications for user interaction
-  * Editing, creating, and making new trips and POIs
-    * Giving the user control over their trips and our POIs
-  * Documenting and refactoring the app
-    * Documenting every file, folder, and DB layout for future developers
-    * Making sure all code was easily understandable
+### Challenges
+* Cross platform style differences
+  * Layout changes between Android and iOS
+  * Use and interaction differences
+* Trip optimization
+  * Utilizing Google Waypoints and Distance API
+* Making the app more social
+  * Allowing users to follow and join trips
+  * Push notifications for user interaction
+* Editing, creating, and making new trips and POIs
+  * Giving the user control over their trips and our POIs
+* Documenting and refactoring the app
+  * Documenting every file, folder, and DB layout for future developers
+  * Making sure all code was easily understandable
 
 ## **_Conclusion & Reflection_**
 
-* What we enjoyed?
-  * Building on previously learned React Native knowledge
-  * Seeing our application working smoothly
-  * Utilizing new libraries and APIs(but not too frequently)
-  * Learning new coding practices (asynchronous functions)
-  * Learning a new development flow
-  * Time management for a large scale project
+### What we enjoyed?
+* Building on previously learned React Native knowledge
+* Seeing our application working smoothly
+* Utilizing new libraries and APIs(but not too frequently)
+* Learning new coding practices (asynchronous functions)
+* Learning a new development flow
+* Time management for a large scale project
 
-* What we'd do differently?
-  * Better time management
-  * More testing of the application 
-  * Documenting early and along the way 
-  * Pair Programming 
+### What we'd do differently?
+* Better time management
+* More testing of the application 
+* Documenting early and along the way 
+* Pair Programming 
 
-* What we'd add if we have more time?
-  * Integration with Social Media 
-  * Fixing a few bugs 
-  * Deploying our app to Google Play and Apple Store 
-  * Exporting our database to Mongo 
+### What we'd add if we have more time?
+* Integration with Social Media 
+* Fixing a few bugs 
+* Deploying our app to Google Play and Apple Store 
+* Exporting our database to Mongo 
 
 ## **_Acknowledgements_**
 
