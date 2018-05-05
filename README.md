@@ -60,7 +60,7 @@ I would like to develop an app/web platform where users can create a list of pla
 * Trip page with ability to edit, rename, reorganize locations, and optimize trips. Each trip also includes a distance calculator to allow the user to see how their edits will change the final trip length.
 * Trip optimization to efficiently reorganize all locations so that the overall trip length is at a minimum.
 * Intuitive searches for locations, trips, and users based off of names, and tags.
-* Push notifications to alert a user when INSERT ALL ADDED FEATURES HERE
+* Push notifications to alert a user for follow request and join trip request.
 * Trip map, allows users to see only the pins that are relevant to their trip.
 * Third party login and verification, utilizing Gmail and Facebook to sign up for Xplor.
 
