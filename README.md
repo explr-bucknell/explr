@@ -66,19 +66,24 @@ I would like to develop an app/web platform where users can create a list of pla
 
 ### Feature Demos
 
-![signin](./demo_signin.gif)
+![signnin](./demo_signin.gif)
+
 *Users can create a new account for our app, or login through their Google or Facebook accounts.*
 
 ![addpoi](./demo_addpoi.gif)
+
 *Users can add locations that exist in the Google Places API, filter results by category, and add it to our database.*
 
 ![createtrip](./demo_createtrip.gif)
+
 *Users can create trips through trips screen or a location’s detail page, add tags and permissions, and add locations through search or from the map page.*
 
 ![search](./demo_search.gif)
+
 *Users can search for locations (full-text), users (by handle), and trips (by tag) using the search bar accessible from everywhere.*
 
 ![jointrip](./demo_jointrip.gif)
+
 *Users can request to join a trip by permission of the trip creator, or simply follow a trip.*
 
 ## **_Development Process & Challenges_**
