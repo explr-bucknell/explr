@@ -21,12 +21,12 @@ I would like to develop an app/web platform where users can create a list of pla
 * Get ideas for fun new trips you wouldn’t have known about!
 
 ## **_Design_**
-* User Interface Design Diagram
+### User Interface Design Diagram
 
 ![User Interface Design Diagram](./user_interface_design_diagram.png)
 *This diagram shows the navigation among different screens of our app. The navigators (orange) connects pages in that level through either stack or tab navigator. The pages (blue) represents different screens of our app, which utilize reusable components (green).*
 
-* System Level Design Diagram
+### System Level Design Diagram
 
 ![System Level Design Diagram](./system_design_diagram.png)
 *This diagram shows the system level design of our app. Right now users can access our app through downloading Expo Client on their iOS/Android devices. Our front-end is written using React Native, a JavaScript framework that allows us to build cross-platform apps. Our back-end mostly relies on Firebase services, including Realtime Database (most of our data such as locations, trips, and users), Cloud Storage (user profile images), and Cloud Functions (serverless backend code). ElasticSearch is deployed on Heroku (Bonsai addon) and is used to implement full text search functionalities that Firebase is lack of. We also utilized a variety of Google APIs for maps, places search, distance calculation, and directions.*
