@@ -14,6 +14,120 @@ I would like to develop an app/web platform where users can create a list of pla
 * Instead of representing trip completion on the map, which would involve extensive revisions to accommodate mapping directions, we elected to simply record individual locations as visited or not.
 	* Directions can be found using a provided re-direct from our app to Google Maps.
 
+## **_Background & Motivation_**
+* Make the process of creating and keeping track of trips easier.
+* Browse different types of points of interest nearby you (for inspiration during a trip).
+* Collaborate on trips with friends.
+* Get ideas for fun new trips you wouldn’t have known about!
+
+## **_Design_**
+* User Interface Design Diagram
+
+![User Interface Design Diagram](./user_interface_design_diagram.png)
+*This diagram shows the navigation among different screens of our app. The navigators (orange) connects pages in that level through either stack or tab navigator. The pages (blue) represents different screens of our app, which utilize reusable components (green).*
+
+* System Level Design Diagram
+
+![System Level Design Diagram](./system_design_diagram.png)
+*This diagram shows the system level design of our app. Right now users can access our app through downloading Expo Client on their iOS/Android devices. Our front-end is written using React Native, a JavaScript framework that allows us to build cross-platform apps. Our back-end mostly relies on Firebase services, including Realtime Database (most of our data such as locations, trips, and users), Cloud Storage (user profile images), and Cloud Functions (serverless backend code). ElasticSearch is deployed on Heroku (Bonsai addon) and is used to implement full text search functionalities that Firebase is lack of. We also utilized a variety of Google APIs for maps, places search, distance calculation, and directions.*
+
+## **_Implementation_**
+
+* React Native
+  * react-native-maps: displaying map with markers and callouts on our main screen as well as trip's map page
+  * react-native-vector-icons: a collection of nice looking icons used in our app
+  * react-navigation: supports the navigation between different screens through stack and tab navigator
+* Firebase
+  * Authentication: user signup/login as well as third party login (Google and Facebook)
+  * Realtime database: JSON format database for storing locations, trips, and users data
+  * Cloud storage: file storage service from Google Cloud Platform to store user profile images
+  * Cloud functions: back-end code without server that can be triggered by database updates or http requests
+* ElasticSearch and Heroku
+  * ElasticSearch is used because Firebase does not support full text search. 
+  * ElasticSearch database is updated by cloud function that listens to firebase realtime database changes
+  * Heroku is used to host ElasticSearch as well as express (nodejs) APIs for searching requests
+* Google APIs
+  * Places: nearby places search for user added POIs
+  * Distance: for calculating distance between POIs and trip optimization
+  * Waypoints: for directions
+
+## **_Demo & Results_**
+
+### Major Tasks Completed
+
+* Fully interactable map with visual POIs, ability to add new locations, geo-query for location and screen size based rendering, and detailed callouts for each POI redirecting to a location information page.
+* Profile page with relevant information for followers, favorite locations, profile image, user handle, users public trips.
+* Trip page with ability to edit, rename, reorganize locations, and optimize trips. Each trip also includes a distance calculator to allow the user to see how their edits will change the final trip length.
+* Trip optimization to efficiently reorganize all locations so that the overall trip length is at a minimum.
+* Intuitive searches for locations, trips, and users based off of names, and tags.
+* Push notifications to alert a user when INSERT ALL ADDED FEATURES HERE
+* Trip map, allows users to see only the pins that are relevant to their trip.
+* Third party login and verification, utilizing Gmail and Facebook to sign up for Xplor.
+
+### Feature Demos
+
+![signin](./demo_signin.gif)
+*Users can create a new account for our app, or login through their Google or Facebook accounts.*
+
+![addpoi](./demo_addpoi.gif)
+*Users can add locations that exist in the Google Places API, filter results by category, and add it to our database.*
+
+![createtrip](./demo_createtrip.gif)
+*Users can create trips through trips screen or a location’s detail page, add tags and permissions, and add locations through search or from the map page.*
+
+![search](./demo_search.gif)
+*Users can search for locations (full-text), users (by handle), and trips (by tag) using the search bar accessible from everywhere.*
+
+![jointrip](./demo_jointrip.gif)
+*Users can request to join a trip by permission of the trip creator, or simply follow a trip.*
+
+## **_Development Process & Challenges_**
+
+* Timeline
+
+![Timeline](./timeline.png)
+
+* Challenges
+  * Cross platform style differences
+    * Layout changes between Android and iOS
+    * Use and interaction differences
+  * Trip optimization
+    * Utilizing Google Waypoints and Distance API
+  * Making the app more social
+    * Allowing users to follow and join trips
+    * Push notifications for user interaction
+  * Editing, creating, and making new trips and POIs
+    * Giving the user control over their trips and our POIs
+  * Documenting and refactoring the app
+    * Documenting every file, folder, and DB layout for future developers
+    * Making sure all code was easily understandable
+
+## **_Conclusion & Reflection_**
+
+* What we enjoyed?
+  * Building on previously learned React Native knowledge
+  * Seeing our application working smoothly
+  * Utilizing new libraries and APIs(but not too frequently)
+  * Learning new coding practices (asynchronous functions)
+  * Learning a new development flow
+  * Time management for a large scale project
+
+* What we'd do differently?
+  * Better time management
+  * More testing of the application 
+  * Documenting early and along the way 
+  * Pair Programming 
+
+* What we'd add if we have more time?
+  * Integration with Social Media 
+  * Fixing a few bugs 
+  * Deploying our app to Google Play and Apple Store 
+  * Exporting our database to Mongo 
+
+## **_Acknowledgements_**
+
+Thank you [Professor Alan Marchiori](mailto:amm042@bucknell.edu) for being both our client and advisor during this senior design project.
+
 ## **_Dev Build Instructions_**
 
 * Initial requirements
@@ -30,18 +144,6 @@ I would like to develop an app/web platform where users can create a list of pla
 	* Publish - Pushes the app to the Expo app for testing. Note, no console commands will be printed using this method.
 	* Share - Presents the user with a QR code and link that you can use in the Expo app to navigate to a testing environment. The console will print out all issues using this method.
 	* Device will push the app to a connected device. The console will also work with this method.
-
-## **_Scrum - User Stories_**
-* Largest completed additions
-	* Fully interactable map with visual POIs, ability to add new locations, geo-query for location and screen size based rendering, and detailed callouts for each POI redirecting to a location information page.
-	* Profile page with relevant information for followers, favorite locations, profile image, user handle, users public trips.
-	* Trip page with ability to edit, rename, reorganize locations, and optimize trips. Each trip also includes a distance calculator to allow the user to see how their edits will change the final trip length.
-	* Trip optimization to efficiently reorganize all locations so that the overall trip length is at a minimum.
-	* Intuitive searches for locations, trips, and users based off of names, and tags.
-	* Push notifications to alert a user when INSERT ALL ADDED FEATURES HERE
-	* Trip map, allows users to see only the pins that are relevant to their trip.
-	* Third party login and verification, utilizing Gmail and Facebook to sign up for Xplor.
-
 
 ## **_Javascript Files_**
 
